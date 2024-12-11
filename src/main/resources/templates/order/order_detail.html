@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en", xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 내역</title>
+</head>
+<body>
+<iframe th:src="|/api/order/${orderNo}|"></iframe>
+<table th:each="detail : ${detailList}">
+  <tr>
+    <td th:text="${detail.getPrice()}"></td>
+      <td th:text="${detail.getQuantity()}"></td>
+  </tr>
+</table>
+</body>
+</html>

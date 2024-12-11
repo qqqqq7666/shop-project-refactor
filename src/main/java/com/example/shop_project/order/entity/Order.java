@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "orders")
@@ -32,5 +34,8 @@ public class Order extends OrderBaseEntity{
     @Column(nullable = false, length = 5)
     private String postNo;
     // member
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> orderDetails;
 
 }

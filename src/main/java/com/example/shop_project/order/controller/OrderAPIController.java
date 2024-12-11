@@ -1,7 +1,9 @@
 package com.example.shop_project.order.controller;
 
+import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
+import com.example.shop_project.order.entity.Order;
 import com.example.shop_project.order.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/order")
@@ -18,11 +21,20 @@ public class OrderAPIController {
     @Autowired
     OrderService orderService;
 
-    @GetMapping("/{order-no}")
-    public ResponseEntity<OrderResponseDto> getOrder(@PathVariable(name = "order-no") Long orderNo){
+    public ResponseEntity<List<OrderResponseDto>> orderList(){
+        return ResponseEntity.ok(orderService.getOrderList());
+    }
+
+    @GetMapping("/{orderNo}")
+    public ResponseEntity<OrderResponseDto> getOrder(@PathVariable(name = "orderNo") Long orderNo){
         OrderResponseDto response = orderService.getOrderByOrderNo(orderNo);
         log.warn("postNo : {}", response.getPostNo());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{orderNo}/order-detail")
+    public ResponseEntity<List<OrderDetailDto>> getOrderDetails(@PathVariable Long orderNo){
+        return ResponseEntity.ok(orderService.getOrderDetailList(orderNo));
     }
 
     @PostMapping("/create")
@@ -31,4 +43,7 @@ public class OrderAPIController {
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
     }
+
+//    @GetMapping("/{orderDetail}")
+//    public ResponseEntity<Order>
 }

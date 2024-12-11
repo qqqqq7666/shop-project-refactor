@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 내역</title>
+</head>
+<body>
+<table th:each="order : ${orderList}">
+  <tr>
+    <td th:text="${order.getOrderNo()}"></td>
+    <td>상품이름 : {item}</td>
+      <td><a th:href="|/order/${order.getOrderNo()}|">상세내역 보기</a></td>
+  </tr>
+</table>
+</body>
+</html>
