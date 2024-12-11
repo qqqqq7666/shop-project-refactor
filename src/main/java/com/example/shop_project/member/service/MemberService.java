@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 	private final MemberRepository memberRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
-	private final MemberMapper memberMapper;
+	//private final MemberMapper memberMapper;
 	
 	public void Join(MemberRequestDTO memberDTO) {
 		// 이메일과 닉네임 중복 검사 (비동기로 중복 검사 하지만 안정성을 위해 추가)
@@ -26,8 +26,18 @@ public class MemberService {
 	    // 비밀번호 암호화
 	    String encryptedPassword = passwordEncoder.encode(memberDTO.getPassword());
 	    
-	    Member member = memberMapper.toEntity(memberDTO);
+	    // mapper가 갑자기 안돼서 주석처리..12/12 해결예정
+	    //Member member = memberMapper.toEntity(memberDTO);
+        //member.setPassword(encryptedPassword);
+	    
+	    Member member = new Member();
+        member.setEmail(memberDTO.getEmail());
+        member.setNickname(memberDTO.getNickname());
         member.setPassword(encryptedPassword);
+        member.setPhone(memberDTO.getPhone());
+        member.setPostNo(memberDTO.getPostNo());
+        member.setAddress(memberDTO.getAddress());
+        member.setAddressDetail(memberDTO.getAddressDetail());
         
         memberRepository.save(member);	
 	}

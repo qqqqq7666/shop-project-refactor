@@ -28,12 +28,14 @@ public class Member {
 	@Column(name = "phone", nullable = false)
 	private String phone;
 	
-	// 주소, 우편번호 후순위
-//	@Column(name = "post_no", nullable = false)
-//	private String postNo;
-//	
-//	@Column(name = "address_detail", nullable = false)
-//	private String addressDetail;
+	@Column(name = "post_no", nullable = false)
+	private String postNo;
+	
+	@Column(name = "address", nullable = false)
+	private String address;
+
+	@Column(name = "address_detail", nullable = false)
+	private String addressDetail;
 	
 	@Column(name = "nickname", nullable = false)
 	private String nickname;

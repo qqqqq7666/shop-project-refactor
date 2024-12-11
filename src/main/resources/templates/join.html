@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>회원가입</title>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body>
     <h1>회원가입</h1>
@@ -31,6 +32,22 @@
         <label for="phone">전화번호:</label>
         <input type="text" id="phone" name="phone" required><br>
 
+		 <!-- 주소 입력 -->
+        <label for="postNo">우편번호:</label>
+        <input type="text" id="postNo" name="postNo" readonly /><br>
+
+        <label for="address">주소:</label>
+        <input type="text" id="address" name="address" readonly /><br>
+
+        <!-- 상세 주소 -->
+        <label for="addressDetail">상세 주소:</label>
+        <input type="text" id="addressDetail" name="addressDetail" placeholder="상세 주소를 입력하세요" /><br>
+
+        <!-- 우편번호 검색 버튼 -->
+        <button type="button" onclick="openPostcodePopup()">우편번호 검색</button><br>
+
+
+
 		<!-- 오류 메시지 표시 -->
         <div th:if="${error}" style="color: red;">
             <p th:text="${error}"></p>
@@ -41,5 +58,6 @@
     
     <!-- 자바스크립트 파일 추가 -->
     <script src="/js/joincheck.js"></script>
+    <script src="/js/joinPostInput.js"></script>
 </body>
 </html>
