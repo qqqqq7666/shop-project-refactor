@@ -8,9 +8,13 @@
 <iframe name="ifrm" th:src="|http://localhost:8080/api/order/${orderNo}|"></iframe>
 <table th:each="detail : ${detailList}">
   <tr>
+      <td>가격: </td>
     <td th:text="${detail.getPrice()}"></td>
+      <td>수량: </td>
       <td th:text="${detail.getQuantity()}"></td>
   </tr>
 </table>
+<!--<button onclick="window.location.href = 'update'">수정</button>-->
+<a th:href="|${orderNo}/update|" methods="get">수정</a>
 </body>
 </html>

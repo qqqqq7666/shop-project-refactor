@@ -50,4 +50,10 @@ public class OrderAPIController {
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
     }
+
+    @DeleteMapping("{orderNo}/delete")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long orderNo){
+        orderService.deleteOrder(orderNo);
+        return ResponseEntity.noContent().build();
+    }
 }

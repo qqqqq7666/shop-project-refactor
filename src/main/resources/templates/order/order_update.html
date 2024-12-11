@@ -29,8 +29,12 @@
   <br>
   주문 상태
   <select name="orderStatus">
-    <option value="배송중">배송중</option>
-    <option value="배송완료">배송완료</option>
+    <option value="PREPARING">배송 준비 중</option>
+    <option value="IN_SHIPPING">배송중</option>
+    <option value="ARRIVE">배송 완료</option>
+    <option value="CANCEL">취소 요청</option>
+    <option value="REFUND">환불 요청</option>
+    <option value="EXCHANGE">교환 요청</option>
   </select>
   <br>
   결제 수단

@@ -10,6 +10,7 @@ import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class OrderService {
         return orderMapper.toResponseDto(orderRepository.save(order));
     }
 
+    @Transactional
     public void deleteOrder(Long orderNo) {
         orderRepository.deleteByOrderNo(orderNo);
     }

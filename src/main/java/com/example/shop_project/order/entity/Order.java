@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class Order extends OrderBaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderNo;
     @Column(nullable = false)
-    private Long totalPrice;
+    private Long totalPrice;    // 모든 상품상세 quantity * price 합
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus orderStatus;
@@ -47,5 +48,4 @@ public class Order extends OrderBaseEntity{
         addressDetail = orderRequestDto.getAddressDetail();
         postNo = orderRequestDto.getPostNo();
     }
-
 }

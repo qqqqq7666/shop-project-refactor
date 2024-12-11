@@ -10,7 +10,14 @@
     <td th:text="${order.getOrderNo()}"></td>
     <td>상품이름 : {item}</td>
       <td><a th:href="|/order/${order.getOrderNo()}|">상세내역 보기</a></td>
+      <td>
+          <form th:action="|/api/order/${order.getOrderNo()}/delete|" method="post">
+              <input type="hidden" name="_method" value="delete">
+              <button type="submit">삭제</button>
+      </form>
+      </td>
   </tr>
 </table>
+<button onclick="window.location.href = 'order/create'">주문 생성</button>
 </body>
 </html>
