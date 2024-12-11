@@ -38,4 +38,6 @@ public class Order extends OrderBaseEntity{
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
 
+//    public void updateOrder()
+
 }

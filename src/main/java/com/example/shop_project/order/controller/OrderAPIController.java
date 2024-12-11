@@ -44,6 +44,11 @@ public class OrderAPIController {
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
     }
 
+//    @PatchMapping("/{orderNo}/update")
+//    public ResponseEntity<OrderResponseDto> updateOrder(@PathVariable Long orderNo, @Validated OrderRequestDto orderRequestDto){
+//        OrderResponseDto response = orderService.updateOrder(orderNo)
+//    }
+
 //    @GetMapping("/{orderDetail}")
 //    public ResponseEntity<Order>
 }

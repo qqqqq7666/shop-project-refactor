@@ -5,7 +5,7 @@
     <title>주문 내역</title>
 </head>
 <body>
-<iframe th:src="|/api/order/${orderNo}|"></iframe>
+<iframe name="ifrm" th:src="|http://localhost:8080/api/order/${orderNo}|"></iframe>
 <table th:each="detail : ${detailList}">
   <tr>
     <td th:text="${detail.getPrice()}"></td>

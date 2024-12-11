@@ -20,34 +20,47 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private OrderDetailRepository orderDetailRepository;
-    @Autowired private OrderMapper orderMapper;
+    @Autowired
+    private OrderMapper orderMapper;
 
-    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto){
-        Order newOrder = orderMapper.toEntity(orderRequestDto);
-        return orderMapper.toResponseDto(orderRepository.save(newOrder));
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
+        Order newOrder = orderRepository.save(orderMapper.toEntity(orderRequestDto));
+        createOrderDetail(newOrder);
+        return orderMapper.toResponseDto(newOrder);
     }
 
-    public List<OrderDetailDto> getOrderDetailList(Long orderNo){
+    public void createOrderDetail(Order order) {
+        OrderDetail orderDetail = OrderDetail.builder()
+                .order(order)
+                .quantity(30L)
+                .price(30000L)
+                .build();
+        orderDetailRepository.save(orderDetail);
+    }
+
+    public List<OrderDetailDto> getOrderDetailList(Long orderNo) {
         Order foundOrder = orderRepository.findByOrderNo(orderNo).orElseThrow();
         List<OrderDetail> detailList = orderDetailRepository.findAllByOrder(foundOrder);
         List<OrderDetailDto> detailDtoList = new ArrayList<>();
-        for(OrderDetail orderDetail : detailList)
+        for (OrderDetail orderDetail : detailList)
             detailDtoList.add(orderMapper.toDto(orderDetail));
         return detailDtoList;
     }
 
-    public List<OrderResponseDto> getOrderList(){
+    public List<OrderResponseDto> getOrderList() {
         List<OrderResponseDto> response = new ArrayList<>();
-        for(Order order : orderRepository.findAll())
+        for (Order order : orderRepository.findAll())
             response.add(orderMapper.toResponseDto(order));
         return response;
     }
 
-    public OrderResponseDto getOrderByOrderNo(Long orderNo){
+    public OrderResponseDto getOrderByOrderNo(Long orderNo) {
         return orderMapper.toResponseDto(orderRepository.findByOrderNo(orderNo).orElseThrow());
     }
 
-    public void deleteOrder(Long orderNo){
+//    public OrderResponseDto updateOrder(Long orderNo)
+
+    public void deleteOrder(Long orderNo) {
         orderRepository.deleteByOrderNo(orderNo);
     }
 }
