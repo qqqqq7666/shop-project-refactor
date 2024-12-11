@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>create order</title>
+</head>
+<body>
+<form action="/api/order/create" method="post">
+    우편번호<input type="text" name="postNo">
+    주소<input type="text" name="address">
+    상세주소<input type="text" name="addressDetail">
+    요청사항<input type="text" name="requirement">
+    총 금액<input type="text" name="totalPrice" value="1000">
+    주문 상태<input type="hidden" name="orderStatus" value="신규주문">
+    결제 수단
+    <select name="payMethod">
+        <option value="CARD">카드결제</option>
+        <option value="CASH">계좌이체</option>
+    </select>
+    <button type="submit">주문하기</button>
+</form>
+</body>
+</html>
