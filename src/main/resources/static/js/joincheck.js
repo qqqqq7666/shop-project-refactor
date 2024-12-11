@@ -1,7 +1,7 @@
 
 document.getElementById('emailCheckBtn').addEventListener('click', function() {
 	var email = document.getElementById('email').value;
-	fetch('/check-email?email=' + email)
+	fetch('/api/member/check-email?email=' + email)
 		.then(response => response.json())
 		.then(data => {
 			var emailErrorElement = document.getElementById('emailError');
@@ -19,7 +19,7 @@ document.getElementById('emailCheckBtn').addEventListener('click', function() {
 
 document.getElementById('nicknameCheckBtn').addEventListener('click', function() {
     var nickname = document.getElementById('nickname').value;
-    fetch('/check-nickname?nickname=' + nickname)
+    fetch('/api/member/check-nickname?nickname=' + nickname)
         .then(response => response.json())
         .then(data => {
 			var emailErrorElement = document.getElementById('nicknameError');
@@ -43,7 +43,23 @@ document.getElementById('password').addEventListener('input', function() {
 
     if (!regex.test(password)) {
         passwordError.textContent = '비밀번호는 최소 8자, 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.';
+		passwordError.style.color = 'red'; 
     } else {
-        passwordError.textContent = '';
+        passwordError.textContent = '올바른 패스워드 양식입니다';
+		passwordError.style.color = 'blue'; 
+    }
+});
+
+document.getElementById('confirmPassword').addEventListener('input', function() {
+    var password = document.getElementById('password').value;
+    var confirmPassword = this.value;
+    var passwordConfirmError = document.getElementById('passwordConfirmError');
+
+    if (password !== confirmPassword) {
+        passwordConfirmError.textContent = '비밀번호가 일치하지 않습니다.';
+        passwordConfirmError.style.color = 'red';
+    } else {
+        passwordConfirmError.textContent = '비밀번호가 일치합니다.';
+        passwordConfirmError.style.color = 'blue';
     }
 });
