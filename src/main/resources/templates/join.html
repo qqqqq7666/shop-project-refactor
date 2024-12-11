@@ -21,6 +21,11 @@
         <label for="phone">전화번호:</label>
         <input type="text" id="phone" name="phone" required><br>
 
+		<!-- 오류 메시지 표시 -->
+        <div th:if="${error}" style="color: red;">
+            <p th:text="${error}"></p>
+        </div>
+
         <button type="submit">회원가입</button>
     </form>
 </body>
