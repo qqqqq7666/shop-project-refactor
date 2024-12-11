@@ -1,4 +1,4 @@
-package com.example.shop_project;
+package com.example.shop_project.member.entity;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.processing.Pattern;

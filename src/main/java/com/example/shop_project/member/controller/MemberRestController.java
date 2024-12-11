@@ -1,4 +1,4 @@
-package com.example.shop_project;
+package com.example.shop_project.member.controller;
 
 import java.util.Collections;
 import java.util.Map;
@@ -6,6 +6,8 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.shop_project.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 

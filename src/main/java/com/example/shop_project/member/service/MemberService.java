@@ -1,10 +1,12 @@
-package com.example.shop_project;
+package com.example.shop_project.member.service;
 
 import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.example.shop_project.MemberRepository;
+
+import com.example.shop_project.member.entity.Member;
+import com.example.shop_project.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
