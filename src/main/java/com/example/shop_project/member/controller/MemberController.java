@@ -50,9 +50,7 @@ public class MemberController {
         }
 		
 		try {
-			
-			memberService.Join(memberRequestDTO);
-			
+			memberService.Join(memberRequestDTO);		
 			return "redirect:/login";
 		} catch (IllegalArgumentException e) {
 			model.addAttribute("error", e.getMessage());
