@@ -37,8 +37,8 @@ public class Order extends OrderBaseEntity{
     private String postNo;
     // member
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderDetail> orderDetails;
+//    @OneToMany(mappedBy = "order")
+//    private List<OrderDetail> orderDetails;
 
     public void updateOrder(OrderRequestDto orderRequestDto){
         totalPrice = orderRequestDto.getTotalPrice();

@@ -36,4 +36,9 @@ public class OrderViewController {
     public String orderUpdate(@ModelAttribute @PathVariable Long orderNo){
         return "order/order_update";
     }
+
+    @GetMapping("checkout")
+    public String checkout(){
+        return "order/checkout";
+    }
 }
