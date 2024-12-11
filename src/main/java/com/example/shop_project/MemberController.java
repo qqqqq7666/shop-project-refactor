@@ -32,6 +32,13 @@ public class MemberController {
 			return "join";
 		}
 		
+		// 패스워드 형식 검사 (최소 8글자, 대소문자, 숫자, 특수문자 최소 하나씩 포함)
+		String passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+		if (!password.matches(passwordRegex)) {
+			model.addAttribute("error", "비밀번호는 최소 8글자이며 대소문자, 숫자, 특수문자를 최소 하나씩 포함해야 합니다.");
+			return "join";
+		}
+		
 		// 비밀번호 불일치
 		if (!password.equals(confirmPassword)) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");

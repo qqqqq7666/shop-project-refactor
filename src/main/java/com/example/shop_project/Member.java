@@ -1,6 +1,8 @@
 package com.example.shop_project;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.processing.Pattern;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +18,7 @@ public class Member {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "member_id")
 	private Long id;
-	
+
 	@Column(name = "email", nullable = false)
 	private String email;
 	
