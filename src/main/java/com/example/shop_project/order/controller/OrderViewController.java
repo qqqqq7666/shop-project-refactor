@@ -31,4 +31,9 @@ public class OrderViewController {
         model.addAttribute("orderList", orderService.getOrderList());
         return "order/order_list";
     }
+
+    @GetMapping("/{orderNo}/update")
+    public String orderUpdate(@ModelAttribute @PathVariable Long orderNo){
+        return "order/order_update";
+    }
 }

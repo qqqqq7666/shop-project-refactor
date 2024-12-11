@@ -44,11 +44,10 @@ public class OrderAPIController {
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
     }
 
-//    @PatchMapping("/{orderNo}/update")
-//    public ResponseEntity<OrderResponseDto> updateOrder(@PathVariable Long orderNo, @Validated OrderRequestDto orderRequestDto){
-//        OrderResponseDto response = orderService.updateOrder(orderNo)
-//    }
+    @PatchMapping("/{orderNo}/update")
+    public ResponseEntity<OrderResponseDto> updateOrder(@PathVariable Long orderNo, @Validated OrderRequestDto orderRequestDto){
+        OrderResponseDto response = orderService.updateOrder(orderNo, orderRequestDto);
 
-//    @GetMapping("/{orderDetail}")
-//    public ResponseEntity<Order>
+        return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
+    }
 }

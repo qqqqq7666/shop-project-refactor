@@ -58,7 +58,11 @@ public class OrderService {
         return orderMapper.toResponseDto(orderRepository.findByOrderNo(orderNo).orElseThrow());
     }
 
-//    public OrderResponseDto updateOrder(Long orderNo)
+    public OrderResponseDto updateOrder(Long orderNo, OrderRequestDto request){
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        order.updateOrder(request);
+        return orderMapper.toResponseDto(orderRepository.save(order));
+    }
 
     public void deleteOrder(Long orderNo) {
         orderRepository.deleteByOrderNo(orderNo);
