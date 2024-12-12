@@ -99,6 +99,17 @@ document.addEventListener('DOMContentLoaded', function() {
             passwordConfirmError.style.color = 'blue';
         }
     });
+	
+	// 실시간 입력 마스크
+	phoneInput.addEventListener('input', function() {
+	    let value = phoneInput.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+	    if (value.length > 3 && value.length <= 7) {
+	        value = value.slice(0, 3) + '-' + value.slice(3);
+	    } else if (value.length > 7) {
+	        value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+	    }
+	    phoneInput.value = value;
+	});
 
     // 폼 제출 시 전체 유효성 검사
     form.addEventListener('submit', function(e) {
