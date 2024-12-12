@@ -42,6 +42,11 @@ public class MemberService {
         memberRepository.save(member);	
 	}
 	
+	public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    }
+	
 	private void checkEmailAndNicknameExist(MemberRequestDTO memberDTO) {
         Optional<Member> existingMemberByEmail = memberRepository.findByEmail(memberDTO.getEmail());
         if (existingMemberByEmail.isPresent()) {

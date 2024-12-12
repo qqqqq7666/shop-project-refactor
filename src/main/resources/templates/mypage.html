@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>마이페이지</title>
+</head>
+<body>
+    <h1>마이페이지</h1>
+    <div>
+        <p><strong>이메일:</strong> <span th:text="${member.email}"></span></p>
+        <p><strong>닉네임:</strong> <span th:text="${member.nickname}"></span></p>
+        <p><strong>멤버십:</strong> <span th:text="${member.membership}"></span></p>
+        <p><strong>휴대폰 번호:</strong> <span th:text="${member.phone}"></span></p>
+        <p><strong>주소:</strong> <span th:text="${member.address}"></span></p>
+        <p><strong>가입일:</strong> <span th:text="${member.createdAt}"></span></p>
+    </div>
+</body>
+</html>

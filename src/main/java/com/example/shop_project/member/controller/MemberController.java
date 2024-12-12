@@ -1,4 +1,6 @@
 package com.example.shop_project.member.controller;
+import java.security.Principal;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +21,9 @@ import org.springframework.validation.annotation.Validated;
 @Controller
 public class MemberController {
 	private final MemberService memberService;
-	
-	
+
 	@GetMapping("/join")
 	public String Join() {
-		
 		return "join";
 	}
 	
@@ -63,5 +63,18 @@ public class MemberController {
 			model.addAttribute("error", e.getMessage());
             return "join";
 		}
+	}
+	
+	@GetMapping("/login")
+	public String Login() {
+		return "login";
+	}
+	
+	@GetMapping("/mypage")
+	public String Login(Model model, Principal principal) {
+		String email = principal.getName();
+        Member member = memberService.findByEmail(email);
+        model.addAttribute("member", member);
+		return "mypage";
 	}
 }
