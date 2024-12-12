@@ -115,7 +115,10 @@ document.addEventListener('DOMContentLoaded', function () {
             isValid = false;
         }
 
-        if (!isValid) {
+		if (isValid) {
+            passwordInput.value = btoa(passwordInput.value);
+            confirmPasswordInput.value = btoa(confirmPasswordInput.value);
+        } else {
             e.preventDefault(); // 폼 제출 방지
         }
     });

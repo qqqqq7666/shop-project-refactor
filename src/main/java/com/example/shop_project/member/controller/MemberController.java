@@ -43,7 +43,7 @@ public class MemberController {
 	
 	@PostMapping("/join")
 	public String saveMember(@Validated @ModelAttribute MemberRequestDTO memberRequestDTO,
-				            @RequestParam("confirmPassword") String confirmPassword,
+				            //@RequestParam("confirmPassword") String confirmPassword,
 				            Model model, BindingResult bindingResult) {
 		// 이메일 형식 검사 (@하나 포함, @뒤에 .하나 포함)
 		String emailRegex = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$";
@@ -54,8 +54,10 @@ public class MemberController {
 		
 		// Base64 인코딩된 비밀번호를 디코딩
 		String decodedPassword = new String(Base64.getDecoder().decode(memberRequestDTO.getPassword()), StandardCharsets.UTF_8);
-		
 		memberRequestDTO.setPassword(decodedPassword);
+		String decodedConfirmPassword = new String(Base64.getDecoder().decode(memberRequestDTO.getConfirmPassword()), StandardCharsets.UTF_8);
+		memberRequestDTO.setConfirmPassword(decodedConfirmPassword);
+	
 		// 패스워드 형식 검사 (최소 8글자, 대소문자, 숫자, 특수문자 최소 하나씩 포함)
 		String passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 		if (!memberRequestDTO.getPassword().matches(passwordRegex)) {
@@ -64,7 +66,7 @@ public class MemberController {
 		}
 		
 		// 비밀번호 불일치
-		if (!memberRequestDTO.getPassword().equals(confirmPassword)) {
+		if (!memberRequestDTO.getPassword().equals(memberRequestDTO.getConfirmPassword())) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
             return "join";
         }
@@ -112,6 +114,12 @@ public class MemberController {
         String email = userDetails.getUsername();
         Member member = memberService.findByEmail(email);
   
+        // Base64 인코딩된 비밀번호를 디코딩
+ 		String decodedPassword = new String(Base64.getDecoder().decode(memberRequestDTO.getPassword()), StandardCharsets.UTF_8);
+ 		memberRequestDTO.setPassword(decodedPassword);
+ 		String decodedConfirmPassword = new String(Base64.getDecoder().decode(memberRequestDTO.getConfirmPassword()), StandardCharsets.UTF_8);
+ 		memberRequestDTO.setConfirmPassword(decodedConfirmPassword);
+ 		
         // 비밀번호 확인 체크
         if (!memberRequestDTO.getPassword().equals(memberRequestDTO.getConfirmPassword())) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
