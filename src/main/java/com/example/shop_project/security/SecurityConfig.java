@@ -30,6 +30,12 @@ public class SecurityConfig {
                         .usernameParameter("email") // 이메일 필드
                         .passwordParameter("password") // 비밀번호 필드
                 )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")               // 로그아웃 처리 URL
+                        .logoutSuccessUrl("/login")         // 로그아웃 성공 후 이동할 URL
+                        .invalidateHttpSession(true)        // 세션 무효화
+                        .deleteCookies("JSESSIONID")        // 쿠키 삭제
+                )
                 .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
