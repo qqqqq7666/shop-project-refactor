@@ -48,6 +48,23 @@ ul li {
     border-bottom: 1px solid #ddd;
 }
 
+.quantity-controls {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-controls button {
+    padding: 5px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.quantity-controls input {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
 button {
     padding: 10px 15px;
     border: none;

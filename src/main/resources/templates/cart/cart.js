@@ -1,4 +1,3 @@
-// 전역 변수
 let cart = [];
 
 // 로컬스토리지에서 데이터 가져오기
@@ -24,21 +23,29 @@ function renderCart() {
 
     cartItems.innerHTML = "";
     let total = 0;
+    let count = 0;
 
     cart.forEach((item, index) => {
         const li = document.createElement("li");
         li.innerHTML = `
             <span>${item.name}</span>
-            <span>${item.price}원 x ${item.quantity}</span>
+            <span>${item.price}원</span>
+            <div class="quantity-controls">
+                <button onclick="updateQuantity(${index}, -1)">-</button>
+                <input type="text" value="${item.quantity}" readonly />
+                <button onclick="updateQuantity(${index}, 1)">+</button>
+            </div>
+            <span>${item.price * item.quantity}원</span>
             <button onclick="removeItem(${index})">삭제</button>
         `;
         cartItems.appendChild(li);
         total += item.price * item.quantity;
+        count += item.quantity;
     });
 
-    itemCount.textContent = cart.length;
-    totalPrice.textContent = total;
-    finalPrice.textContent = total + 3000; // 배송비 포함
+    itemCount.textContent = count;
+    totalPrice.textContent = total.toLocaleString();
+    finalPrice.textContent = (total + 3000).toLocaleString(); // 배송비 포함
 }
 
 // 장바구니에 상품 추가
@@ -58,6 +65,16 @@ function removeItem(index) {
     cart.splice(index, 1);
     saveCart();
     renderCart();
+}
+
+// 수량 업데이트
+function updateQuantity(index, change) {
+    const item = cart[index];
+    if (item) {
+        item.quantity = Math.max(1, item.quantity + change); // 최소 수량은 1
+        saveCart();
+        renderCart();
+    }
 }
 
 // 장바구니 비우기
@@ -81,15 +98,11 @@ function mockAddProductsToCart() {
 
 // 초기화
 function initializeCart() {
-    // 장바구니 비우기 버튼 연결
     document.getElementById("clear-cart").addEventListener("click", clearCart);
-
-    // 더미 상품 추가 버튼 연결
     const testButton = document.getElementById("test-add-products");
     if (testButton) {
         testButton.addEventListener("click", mockAddProductsToCart);
     }
-
     loadCart();
 }
 
