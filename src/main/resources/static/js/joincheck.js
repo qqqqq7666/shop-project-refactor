@@ -10,10 +10,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // 이메일 중복 확인
     document.getElementById('emailCheckBtn').addEventListener('click', function() {
         const email = emailInput.value;
+		const emailErrorElement = document.getElementById('emailError');
+		
+		if (!email) {
+	        emailErrorElement.textContent = '이메일을 입력해주세요.';
+	        emailErrorElement.style.color = 'red';
+	        return;
+		}
+		
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+	    if (!emailRegex.test(email)) {
+	        emailErrorElement.textContent = '올바른 이메일 형식이 아닙니다.';
+	        emailErrorElement.style.color = 'red';
+	        return;
+	    }
+		
         fetch('/api/member/check-email?email=' + email)
         .then(response => response.json())
         .then(data => {
-            const emailErrorElement = document.getElementById('emailError');
             if (data.exists) {
                 emailErrorElement.textContent = '이미 사용중인 이메일입니다.';
                 emailErrorElement.style.color = 'red';
@@ -28,10 +42,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // 닉네임 중복 확인
     document.getElementById('nicknameCheckBtn').addEventListener('click', function() {
         const nickname = nicknameInput.value;
+		const nicknameErrorElement = document.getElementById('nicknameError');
+		
+		if (!nickname) {
+	        nicknameErrorElement.textContent = '닉네임을 입력해주세요.';
+	        nicknameErrorElement.style.color = 'red';
+	        return;
+	    }
+		
         fetch('/api/member/check-nickname?nickname=' + nickname)
         .then(response => response.json())
         .then(data => {
-            const nicknameErrorElement = document.getElementById('nicknameError');
             if (data.exists) {
                 nicknameErrorElement.textContent = '이미 사용중인 닉네임입니다.';
                 nicknameErrorElement.style.color = 'red';
