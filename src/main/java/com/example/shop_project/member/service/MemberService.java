@@ -26,9 +26,9 @@ public class MemberService {
 	    // 비밀번호 암호화
 	    String encryptedPassword = passwordEncoder.encode(memberDTO.getPassword());
 	    
-	    // mapper가 갑자기 안돼서 주석처리..12/12 해결예정
-	    //Member member = memberMapper.toEntity(memberDTO);
-        //member.setPassword(encryptedPassword);
+	    // mapper가 갑자기 안돼서 주석처리..테스트 코드로 테스트 해보기
+//	    Member member = memberMapper.toEntity(memberDTO);
+//        member.setPassword(encryptedPassword);
 	    
 	    Member member = new Member();
         member.setEmail(memberDTO.getEmail());

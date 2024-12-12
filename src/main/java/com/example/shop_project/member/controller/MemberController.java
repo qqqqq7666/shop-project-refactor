@@ -11,6 +11,8 @@ import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class MemberController {
 	@PostMapping("/join")
 	public String saveMember(@Validated @ModelAttribute MemberRequestDTO memberRequestDTO,
 				            @RequestParam("confirmPassword") String confirmPassword,
-				            Model model) {
+				            Model model, BindingResult bindingResult) {
 		// 이메일 형식 검사 (@하나 포함, @뒤에 .하나 포함)
 		String emailRegex = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$";
 		if (!memberRequestDTO.getEmail().matches(emailRegex)) {
@@ -48,6 +50,11 @@ public class MemberController {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
             return "join";
         }
+		
+		if (bindingResult.hasErrors()) {
+	        model.addAttribute("error", "모든 필드를 올바르게 입력해주세요.");
+	        return "join"; // 다시 회원가입 페이지로
+	    }
 		
 		try {
 			memberService.Join(memberRequestDTO);		
