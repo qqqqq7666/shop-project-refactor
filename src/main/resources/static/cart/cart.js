@@ -42,12 +42,13 @@ function renderCart() {
 }
 
 // 장바구니에 상품 추가
-function addItem(name, price) {
-    const existingItem = cart.find(item => item.name === name);
+// id로 상품 식별 및 id도 로컬스토리지에 추가
+function addItem(id, name, price) {
+    const existingItem = cart.find(item => item.id === id);
     if (existingItem) {
         existingItem.quantity++;
     } else {
-        cart.push({ name, price, quantity: 1 });
+        cart.push({id, name, price, quantity: 1 });
     }
     saveCart();
     renderCart();
@@ -76,7 +77,7 @@ const mockProducts = [
 
 // 더미 상품 추가 함수
 function mockAddProductsToCart() {
-    mockProducts.forEach(product => addItem(product.name, product.price));
+    mockProducts.forEach(product => addItem(product.id, product.name, product.price));
 }
 
 // 초기화
