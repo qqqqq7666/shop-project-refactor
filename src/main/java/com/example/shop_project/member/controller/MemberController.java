@@ -1,6 +1,8 @@
 package com.example.shop_project.member.controller;
 import java.security.Principal;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.shop_project.member.dto.MemberRequestDTO;
 import com.example.shop_project.member.entity.Member;
+import com.example.shop_project.member.service.CustomMemberDetailService;
 import com.example.shop_project.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -77,4 +80,32 @@ public class MemberController {
         model.addAttribute("member", member);
 		return "mypage";
 	}
+	
+	@GetMapping("/mypage/edit")
+	public String Login(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+		String email = userDetails.getUsername();
+        Member member = memberService.findByEmail(email);
+        
+        model.addAttribute("member", member);
+        return "editProfile";
+	}
+	
+	@PostMapping("/mypage/edit")
+    public String updateMemberInfo(@AuthenticationPrincipal UserDetails userDetails,
+                                    @ModelAttribute MemberRequestDTO memberRequestDTO,
+                                    Model model) {
+        String email = userDetails.getUsername();
+        Member member = memberService.findByEmail(email);
+  
+        // 비밀번호 확인 체크
+        if (!memberRequestDTO.getPassword().equals(memberRequestDTO.getConfirmPassword())) {
+            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "editMember";
+        }
+
+        // 회원 정보를 업데이트
+        memberService.updateMember(member, memberRequestDTO);
+
+        return "redirect:/mypage";  // 수정된 후 마이페이지로 리다이렉트
+    }
 }

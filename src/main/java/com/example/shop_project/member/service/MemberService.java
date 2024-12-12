@@ -47,6 +47,20 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
     }
 	
+	public void updateMember(Member member, MemberRequestDTO memberRequestDTO) {
+		String encryptedPassword = passwordEncoder.encode(memberRequestDTO.getPassword());
+
+        // 요청 받은 정보로 기존의 회원 정보를 업데이트
+        member.setNickname(memberRequestDTO.getNickname());
+        member.setPhone(memberRequestDTO.getPhone());
+        member.setPassword(encryptedPassword);
+        member.setPostNo(memberRequestDTO.getPostNo());
+        member.setAddress(memberRequestDTO.getAddress());
+        member.setAddressDetail(memberRequestDTO.getAddressDetail());
+
+        memberRepository.save(member);
+    }
+	
 	private void checkEmailAndNicknameExist(MemberRequestDTO memberDTO) {
         Optional<Member> existingMemberByEmail = memberRepository.findByEmail(memberDTO.getEmail());
         if (existingMemberByEmail.isPresent()) {
