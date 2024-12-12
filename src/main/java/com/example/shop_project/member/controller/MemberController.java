@@ -1,6 +1,8 @@
 package com.example.shop_project.member.controller;
 import java.security.Principal;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -9,9 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.shop_project.member.dto.MemberRequestDTO;
 import com.example.shop_project.member.entity.Member;
+import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.member.service.CustomMemberDetailService;
 import com.example.shop_project.member.service.MemberService;
 
@@ -19,11 +23,13 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.security.core.Authentication;
 
 @RequiredArgsConstructor
 @Controller
 public class MemberController {
 	private final MemberService memberService;
+	private final MemberRepository memberRepository; 
 
 	@GetMapping("/join")
 	public String Join() {
@@ -107,5 +113,17 @@ public class MemberController {
         memberService.updateMember(member, memberRequestDTO);
 
         return "redirect:/mypage";  // 수정된 후 마이페이지로 리다이렉트
+    }
+	
+	@PostMapping("/mypage/withdraw")
+    public ResponseEntity<String> withdrawAccount(Authentication authentication) {
+        String username = authentication.getName();
+        Member member = memberRepository.findByEmail(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다"));
+
+        member.setWithdraw(true);
+        memberRepository.save(member);
+
+        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
 }

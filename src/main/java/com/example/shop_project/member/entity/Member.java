@@ -65,6 +65,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column(name = "membership")
     private Membership membership;
+    
+    @Column(name = "withdraw", nullable = false)
+    private Boolean withdraw;
 	
 	@PrePersist
     public void prePersist() {
@@ -78,6 +81,8 @@ public class Member {
         
         if (this.membership == null) 
             this.membership = Membership.BRONZE;
+        
+        withdraw = false;
     }
 	
 	@PreUpdate
