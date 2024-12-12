@@ -1,0 +1,52 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 문의</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="../css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .question-create {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+</head>
+<body>
+<div class="question-create">
+    <h2>문의 작성</h2>
+    <form th:action="@{/inquiries}" method="post">
+        <div class="mb-3">
+            <label class="form-label">상품 ID</label>
+            <input class="form-control" type="number" name="productId" placeholder="상품 ID" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">닉네임</label>
+            <input class="form-control" type="text" name="nickname" placeholder="닉네임" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">제목</label>
+            <input class="form-control" type="text" name="title" placeholder="문의 제목" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">내용</label>
+            <textarea class="form-control" name="content" placeholder="문의 내용을 입력하세요" required></textarea>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary">등록</button>
+            <a class="btn btn-danger ms-3" th:href="@{/inquiries}">취소</a>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>
