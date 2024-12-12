@@ -44,6 +44,6 @@ public class OrderViewController {
 
     @GetMapping("cart")
     public String cart(){
-        return "cart/cart";
+        return "order/cart/cart";
     }
 }

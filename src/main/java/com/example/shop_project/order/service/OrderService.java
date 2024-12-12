@@ -8,6 +8,7 @@ import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.mapper.OrderMapper;
 import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
+import com.example.shop_project.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,8 @@ public class OrderService {
     private OrderDetailRepository orderDetailRepository;
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private ProductRepository productRepository;
 
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
         Order newOrder = orderRepository.save(orderMapper.toEntity(orderRequestDto));
@@ -33,7 +36,7 @@ public class OrderService {
     public void createOrderDetail(Order order, List<OrderDetailDto> dtoList) {
         for(OrderDetailDto dto : dtoList){
             OrderDetail orderDetail = orderMapper.toEntity(dto);
-            orderDetail.setOrder(order);
+            orderDetail.setOrderAndProduct(order, productRepository.findById(dto.getProductId()).orElseThrow());
 
             orderDetailRepository.save(orderDetail);
         }
