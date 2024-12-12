@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Builder
 @Getter
 public class OrderRequestDto {
@@ -26,4 +28,5 @@ public class OrderRequestDto {
     @Size(max = 5, min = 5)
     @Pattern(regexp = "^[0-9]*$")
     private String postNo;
+    private List<OrderDetailDto> detailDtoList;
 }

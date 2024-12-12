@@ -26,17 +26,17 @@ public class OrderService {
 
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
         Order newOrder = orderRepository.save(orderMapper.toEntity(orderRequestDto));
-        createOrderDetail(newOrder);
+        createOrderDetail(newOrder, orderRequestDto.getDetailDtoList());
         return orderMapper.toResponseDto(newOrder);
     }
 
-    public void createOrderDetail(Order order) {
-        OrderDetail orderDetail = OrderDetail.builder()
-                .order(order)
-                .quantity(30L)
-                .price(30000L)
-                .build();
-        orderDetailRepository.save(orderDetail);
+    public void createOrderDetail(Order order, List<OrderDetailDto> dtoList) {
+        for(OrderDetailDto dto : dtoList){
+            OrderDetail orderDetail = orderMapper.toEntity(dto);
+            orderDetail.setOrder(order);
+
+            orderDetailRepository.save(orderDetail);
+        }
     }
 
     public List<OrderDetailDto> getOrderDetailList(Long orderNo) {

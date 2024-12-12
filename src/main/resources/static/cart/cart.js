@@ -43,12 +43,12 @@ function renderCart() {
 
 // 장바구니에 상품 추가
 // id로 상품 식별 및 id도 로컬스토리지에 추가
-function addItem(id, name, price) {
-    const existingItem = cart.find(item => item.id === id);
+function addItem(productId, name, price) {
+    const existingItem = cart.find(item => item.productId === productId);
     if (existingItem) {
         existingItem.quantity++;
     } else {
-        cart.push({id, name, price, quantity: 1 });
+        cart.push({productId, name, price, quantity: 1 });
     }
     saveCart();
     renderCart();
@@ -70,14 +70,14 @@ function clearCart() {
 
 // 더미 상품 데이터
 const mockProducts = [
-    { id: 1, name: "케이블 라운드넥 니트", price: 29000 },
-    { id: 2, name: "씨빅 오리진 숏 푸퍼", price: 89000 },
-    { id: 3, name: "워싱 와이드 데님팬츠", price: 39000 }
+    { productId: 1, name: "케이블 라운드넥 니트", price: 29000 },
+    { productId: 2, name: "씨빅 오리진 숏 푸퍼", price: 89000 },
+    { productId: 3, name: "워싱 와이드 데님팬츠", price: 39000 }
 ];
 
 // 더미 상품 추가 함수
 function mockAddProductsToCart() {
-    mockProducts.forEach(product => addItem(product.id, product.name, product.price));
+    mockProducts.forEach(product => addItem(product.productId, product.name, product.price));
 }
 
 // 초기화

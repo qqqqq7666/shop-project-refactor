@@ -164,27 +164,26 @@
   <main>
     <div class="py-5 text-center">
 <!--      <img class="d-block mx-auto mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">-->
-      <h2>Checkout form</h2>
-      <p class="lead">Below is an example form built entirely with Bootstrap’s form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
+      <h2>결제 화면</h2>
+<!--      <p class="lead">Below is an example form built entirely with Bootstrap’s form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>-->
     </div>
 
     <div class="row g-5">
       <div class="col-md-5 col-lg-4 order-md-last">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-primary">Your cart</span>
-          <span class="badge bg-primary rounded-pill">3</span>
+          <span class="text-primary">결제 품목</span>
+          <span class="badge bg-primary rounded-pill" id="total-count">3</span>
         </h4>
         <ul class="list-group mb-3" id="cart-list">
-          <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
+          <li class="list-group-item d-flex justify-content-between bg-body-tertiary" id="discount" style="display: none !important;">
             <div class="text-success">
-              <h6 class="my-0">Promo code</h6>
-              <small>EXAMPLECODE</small>
+              <h6 class="my-0">50,000원 이상 결제 시 <br>배송비 무료</h6>
             </div>
-            <span class="text-success">−$5</span>
+            <span class="text-success">−3000원</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
             <span>총 결제 금액</span>
-            <strong id="total">20원</strong>
+            <strong id="total"></strong>
           </li>
         </ul>
 
@@ -199,7 +198,7 @@
       <div class="col-md-7 col-lg-8">
         <h4 class="mb-3">배송지</h4>
 
-        <form action="/api/order/create" method="post" class="needs-validation" novalidate>
+        <form action="/api/order/create" method="post" class="needs-validation" id="checkout-from" novalidate>
           <input type="hidden" name="orderStatus" value="NEW">
           <input type="hidden" name="totalPrice" value="20">
           <div class="row g-3">
@@ -246,8 +245,8 @@
             </div>
           </div>
 
-          <div class="col-md-5">
-            <label for="country" class="form-label">카드 선택</label>
+          <div class="col-md-5" id="card">
+            <label for="card" class="form-label">카드 선택</label>
             <select class="form-select" required>
               <option>선택 안함</option>
               <option>KB 국민</option>
@@ -260,10 +259,10 @@
             </select>
           </div>
 
-          <div class="col-md-4">
-            <label for="state" class="form-label">할부 선택</label>
+          <div class="col-md-4" id="installment">
+            <label for="installment" class="form-label">할부 선택</label>
             <select class="form-select" required>
-              <option value="">일시불</option>
+              <option>일시불</option>
               <option>2개월</option>
               <option>3개월</option>
               <option>4개월</option>
@@ -309,7 +308,8 @@
 
           <hr class="my-4">
 
-          <button class="w-100 btn btn-primary btn-lg" type="submit">결제하기</button>
+          <button class="w-100 btn btn-primary btn-lg" type="button" id="checkout-btn">결제하기</button>
+          </div>
         </form>
       </div>
     </div>
