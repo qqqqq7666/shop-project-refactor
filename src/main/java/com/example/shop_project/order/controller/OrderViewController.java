@@ -23,12 +23,14 @@ public class OrderViewController {
     @GetMapping("/{orderNo}")
     public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model){
         model.addAttribute("detailList", orderService.getOrderDetailList(orderNo));
+        model.addAttribute("order", orderService.getOrderByOrderNo(orderNo));
         return "order/order_detail";
     }
 
     @GetMapping
     public String orderList(Model model){
         model.addAttribute("orderList", orderService.getOrderList());
+        model.addAttribute("detailList", orderService.getAllDetails());
         return "order/order_list";
     }
 

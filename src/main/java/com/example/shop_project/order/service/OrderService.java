@@ -42,13 +42,17 @@ public class OrderService {
         }
     }
 
-    public List<OrderDetailDto> getOrderDetailList(Long orderNo) {
+    public List<OrderDetail> getOrderDetailList(Long orderNo) {
         Order foundOrder = orderRepository.findByOrderNo(orderNo).orElseThrow();
         List<OrderDetail> detailList = orderDetailRepository.findAllByOrder(foundOrder);
-        List<OrderDetailDto> detailDtoList = new ArrayList<>();
-        for (OrderDetail orderDetail : detailList)
-            detailDtoList.add(orderMapper.toDto(orderDetail));
-        return detailDtoList;
+//        List<OrderDetailDto> detailDtoList = new ArrayList<>();
+//        for (OrderDetail orderDetail : detailList)
+//            detailDtoList.add(orderMapper.toDto(orderDetail));
+        return detailList;
+    }
+
+    public List<OrderDetail> getAllDetails(){
+        return orderDetailRepository.findAll();
     }
 
     public List<OrderResponseDto> getOrderList() {

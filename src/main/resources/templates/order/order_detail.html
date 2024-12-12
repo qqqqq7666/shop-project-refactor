@@ -5,13 +5,20 @@
     <title>주문 내역</title>
 </head>
 <body>
-<iframe name="ifrm" th:src="|http://localhost:8080/api/order/${orderNo}|"></iframe>
+<h1 th:text="|주문번호: ${order.getOrderNo()}|"></h1>
+
 <table th:each="detail : ${detailList}">
   <tr>
       <td>가격: </td>
     <td th:text="${detail.getPrice()}"></td>
       <td>수량: </td>
       <td th:text="${detail.getQuantity()}"></td>
+      <td>상품명: </td>
+      <td th:text="${detail.getProduct().getProductName()}"></td>
+      <td>: </td>
+      <td th:text="${detail.getProduct().getProductName()}"></td>
+      <td>수량: </td>
+      <td th:text="${detail.getProduct().getProductName()}"></td>
   </tr>
 </table>
 <!--<button onclick="window.location.href = 'update'">수정</button>-->

@@ -4,6 +4,7 @@ import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.Order;
+import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class OrderAPIController {
     }
 
     @GetMapping("/{orderNo}/order-detail")
-    public ResponseEntity<List<OrderDetailDto>> getOrderDetails(@PathVariable Long orderNo){
+    public ResponseEntity<List<OrderDetail>> getOrderDetails(@PathVariable Long orderNo){
         return ResponseEntity.ok(orderService.getOrderDetailList(orderNo));
     }
 
