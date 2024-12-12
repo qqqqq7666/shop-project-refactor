@@ -1,0 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: green;
+    text-align: center;
+}
+
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+textarea {
+    resize: none;
+}
+
+button {
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 103%;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+select {
+    background-color: white; /* 흰색 배경 */
+    color: black; /* 검은 글씨 */
+    border: 1px solid #ccc;
+    cursor: pointer;
+    width: 104%;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: darkgray;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block; /* 메시지가 새 줄에 표시되도록 설정 */
+}
