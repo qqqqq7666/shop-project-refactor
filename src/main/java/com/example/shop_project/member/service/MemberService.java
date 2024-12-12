@@ -1,5 +1,7 @@
 package com.example.shop_project.member.service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +25,11 @@ public class MemberService {
 		// 이메일과 닉네임 중복 검사 (비동기로 중복 검사 하지만 안정성을 위해 추가)
 		checkEmailAndNicknameExist(memberDTO);
 	    
-	    // 비밀번호 암호화
+		// Base64 인코딩된 비밀번호를 디코딩
+		System.out.println("before : " + memberDTO.getPassword());
+		String decodedPassword = new String(Base64.getDecoder().decode(memberDTO.getPassword()), StandardCharsets.UTF_8);
+		System.out.println("after : " + decodedPassword);
+		// 비밀번호 암호화
 	    String encryptedPassword = passwordEncoder.encode(memberDTO.getPassword());
 	    
 	    // mapper가 갑자기 안돼서 주석처리..테스트 코드로 테스트 해보기

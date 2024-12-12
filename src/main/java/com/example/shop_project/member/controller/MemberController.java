@@ -1,9 +1,12 @@
 package com.example.shop_project.member.controller;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
+import java.util.Base64;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +22,8 @@ import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.member.service.CustomMemberDetailService;
 import com.example.shop_project.member.service.MemberService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.validation.BindingResult;
@@ -47,6 +52,10 @@ public class MemberController {
 			return "join";
 		}
 		
+		// Base64 인코딩된 비밀번호를 디코딩
+		String decodedPassword = new String(Base64.getDecoder().decode(memberRequestDTO.getPassword()), StandardCharsets.UTF_8);
+		
+		memberRequestDTO.setPassword(decodedPassword);
 		// 패스워드 형식 검사 (최소 8글자, 대소문자, 숫자, 특수문자 최소 하나씩 포함)
 		String passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 		if (!memberRequestDTO.getPassword().matches(passwordRegex)) {
@@ -116,13 +125,16 @@ public class MemberController {
     }
 	
 	@PostMapping("/mypage/withdraw")
-    public ResponseEntity<String> withdrawAccount(Authentication authentication) {
+    public ResponseEntity<String> withdrawAccount(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         String username = authentication.getName();
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다"));
 
         member.setWithdraw(true);
         memberRepository.save(member);
+        
+        SecurityContextHolder.clearContext(); // Spring Security 인증 정보 삭제
+        request.getSession().invalidate();    // 세션 무효화
 
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
