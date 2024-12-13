@@ -86,19 +86,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 비밀번호 일치 확인
-    confirmPasswordInput.addEventListener('input', function() {
-        const password = passwordInput.value;
-        const confirmPassword = this.value;
-        const passwordConfirmError = document.getElementById('passwordConfirmError');
+	function checkPasswordMatch() {
+	    const password = passwordInput.value;
+	    const confirmPassword = confirmPasswordInput.value;
+	    const passwordConfirmError = document.getElementById('passwordConfirmError');
 
-        if (password !== confirmPassword) {
-            passwordConfirmError.textContent = '비밀번호가 일치하지 않습니다.';
-            passwordConfirmError.style.color = 'red';
-        } else {
-            passwordConfirmError.textContent = '비밀번호가 일치합니다.';
-            passwordConfirmError.style.color = 'blue';
-        }
-    });
+	    if (password && confirmPassword) {
+	        if (password !== confirmPassword) {
+	            passwordConfirmError.textContent = '비밀번호가 일치하지 않습니다.';
+	            passwordConfirmError.style.color = 'red';
+	        } else {
+	            passwordConfirmError.textContent = '비밀번호가 일치합니다.';
+	            passwordConfirmError.style.color = 'blue';
+	        }
+	    } else {
+	        // 둘 중 하나라도 비어있으면 메시지 초기화
+	        passwordConfirmError.textContent = '';
+	    }
+	}
+
+	// 비밀번호 입력 시에도 검증
+	passwordInput.addEventListener('input', checkPasswordMatch);
+
+	// 비밀번호 확인 입력 시에도 검증
+	confirmPasswordInput.addEventListener('input', checkPasswordMatch);
 	
 	// 실시간 입력 마스크
 	phoneInput.addEventListener('input', function() {

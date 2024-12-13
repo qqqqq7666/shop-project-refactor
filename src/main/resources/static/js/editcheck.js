@@ -56,20 +56,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 비밀번호 일치 확인
-    confirmPasswordInput.addEventListener('input', function () {
-        const password = passwordInput.value;
-        const confirmPassword = this.value;
-        const passwordConfirmError = document.getElementById('passwordConfirmError');
+	// 비밀번호 일치 확인
+	function checkPasswordMatch() {
+	    const password = passwordInput.value;
+	    const confirmPassword = confirmPasswordInput.value;
+	    const passwordConfirmError = document.getElementById('passwordConfirmError');
 
-        if (password !== confirmPassword) {
-            passwordConfirmError.textContent = '비밀번호가 일치하지 않습니다.';
-            passwordConfirmError.style.color = 'red';
-        } else {
-            passwordConfirmError.textContent = '비밀번호가 일치합니다.';
-            passwordConfirmError.style.color = 'blue';
-        }
-    });
+	    if (password && confirmPassword) {
+	        if (password !== confirmPassword) {
+	            passwordConfirmError.textContent = '비밀번호가 일치하지 않습니다.';
+	            passwordConfirmError.style.color = 'red';
+	        } else {
+	            passwordConfirmError.textContent = '비밀번호가 일치합니다.';
+	            passwordConfirmError.style.color = 'blue';
+	        }
+	    } else {
+	        // 둘 중 하나라도 비어있으면 메시지 초기화
+	        passwordConfirmError.textContent = '';
+	    }
+	}
+	passwordInput.addEventListener('input', checkPasswordMatch);
+	confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+	
+	// 실시간 입력 마스크
+	phoneInput.addEventListener('input', function() {
+	    let value = phoneInput.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+	    if (value.length > 3 && value.length <= 7) {
+	        value = value.slice(0, 3) + '-' + value.slice(3);
+	    } else if (value.length > 7) {
+	        value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+	    }
+	    phoneInput.value = value;
+	});
 
     // 폼 제출 시 전체 유효성 검사
     form.addEventListener('submit', function (e) {
