@@ -5,6 +5,7 @@ import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.Order;
 import com.example.shop_project.order.entity.OrderDetail;
+import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.mapper.OrderMapper;
 import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
@@ -79,9 +80,17 @@ public class OrderService {
         return orderMapper.toResponseDto(orderRepository.findByOrderNo(orderNo).orElseThrow());
     }
 
+    @Transactional
     public OrderResponseDto updateOrder(Long orderNo, OrderRequestDto request){
         Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
         order.updateOrder(request);
+        return orderMapper.toResponseDto(orderRepository.save(order));
+    }
+
+    @Transactional
+    public OrderResponseDto updateOrderStatus(Long orderNo, OrderStatus orderStatus){
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+            order.updateStatus(orderStatus);
         return orderMapper.toResponseDto(orderRepository.save(order));
     }
 

@@ -48,4 +48,8 @@ public class Order extends OrderBaseEntity{
         addressDetail = orderRequestDto.getAddressDetail();
         postNo = orderRequestDto.getPostNo();
     }
+
+    public void updateStatus(OrderStatus status){
+        orderStatus = status;
+    }
 }

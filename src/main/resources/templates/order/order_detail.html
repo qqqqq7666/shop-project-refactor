@@ -68,9 +68,12 @@
             <p>결제 수단</p>
             <p th:text="|${order.getPayMethod()}|">결제 수단</p>
         </div>
-        <div class= "mt-4 d-flex justify-content-center">
-            <button class="btn delete-button">주문 취소</button>
-        </div>
+        <form class= "mt-4 d-flex justify-content-around" th:action="|/api/order/${orderNo}/update-status|" method="post">
+            <input type="hidden" name="_method" value="patch">
+            <button class="btn delete-button" name="orderStatus" value="CANCEL" type="submit">주문 취소</button>
+            <button class="btn custom-button" name="orderStatus" value="REFUND" type="submit">환불 요청</button>
+            <button class="btn custom-button" name="orderStatus" value="EXCHANGE" type="submit">교환 요청</button>
+        </form>
     </div>
 </div>
 
