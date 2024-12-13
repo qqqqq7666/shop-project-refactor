@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class OrderResponseDto {
@@ -28,4 +30,5 @@ public class OrderResponseDto {
     @Size(max = 5, min = 5)
     @Pattern(regexp = "^[0-9]*$")
     private String postNo;
+    private LocalDateTime createdDate;
 }

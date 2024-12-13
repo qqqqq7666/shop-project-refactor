@@ -1,0 +1,21 @@
+body {
+    background-color: #f8f9fa;
+}
+.content-container {
+    max-width: 720px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+hr {
+    margin: 20px 0;
+}
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+.delete-button:hover {
+    background-color: #c82333;
+}

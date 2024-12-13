@@ -48,4 +48,9 @@ public class OrderViewController {
     public String cart(){
         return "order/cart/cart";
     }
+
+    @GetMapping("error")
+    public String error(){
+        return "order/error";
+    }
 }

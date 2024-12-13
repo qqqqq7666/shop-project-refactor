@@ -13,4 +13,5 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
     List<OrderDetail> findAllByOrder(Order order);
     OrderDetail save(OrderDetail orderDetail);
     Optional<OrderDetail> findById(Long orderDetailId);
+    void deleteByOrder(Order order);
 }

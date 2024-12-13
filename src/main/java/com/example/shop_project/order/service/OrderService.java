@@ -27,6 +27,7 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
         Order newOrder = orderRepository.save(orderMapper.toEntity(orderRequestDto));
         createOrderDetail(newOrder, orderRequestDto.getDetailDtoList());
@@ -74,6 +75,7 @@ public class OrderService {
 
     @Transactional
     public void deleteOrder(Long orderNo) {
+        orderDetailRepository.deleteByOrder(orderRepository.findByOrderNo(orderNo).orElseThrow());
         orderRepository.deleteByOrderNo(orderNo);
     }
 }
