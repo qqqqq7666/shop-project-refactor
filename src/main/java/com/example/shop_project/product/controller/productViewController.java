@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class productViewController {
     @GetMapping("/create")
     public String showCreateProductPage() {
-        return "product/create"; // templates/create.html 파일을 렌더링
+        return "product/create";
+    }
+
+    @GetMapping("/productList")
+    public String getProductListPage() {
+        return "product/productList";
     }
 }

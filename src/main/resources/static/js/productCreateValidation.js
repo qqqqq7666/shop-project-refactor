@@ -39,9 +39,37 @@ document.getElementById('productForm').addEventListener('submit', function (even
         descriptionError.textContent = "";
     }
 
+    // 색상 및 재고 검증
+    const colorInputs = document.querySelectorAll('input[name="colors[]"]');
+    const stockInputs = document.querySelectorAll('input[name="stocks[]"]');
+    let hasColorError = false;
+    let hasStockError = false;
+
+    colorInputs.forEach((input, index) => {
+        const errorElement = input.parentElement.querySelector('.error-message'); // 색상 필드 아래의 에러 메시지
+        if (!input.value) {
+            errorElement.textContent = "색상은 필수 입력 항목입니다.";
+            isValid = false;
+            hasColorError = true;
+        } else {
+            errorElement.textContent = "";
+        }
+    });
+
+    stockInputs.forEach((input, index) => {
+        const errorElement = input.parentElement.querySelector('.error-message'); // 재고 필드 아래의 에러 메시지
+        if (!input.value || input.value <= 0) {
+            errorElement.textContent = "재고는 1 이상이어야 합니다.";
+            isValid = false;
+            hasStockError = true;
+        } else {
+            errorElement.textContent = "";
+        }
+    });
+
     // 폼이 유효하면 서버로 제출
     if (isValid) {
-        alert("폼이 유효합니다! 서버로 전송합니다.");
+        alert('상품이 성공적으로 등록되었습니다!');
         // 실제 폼 제출
         this.submit();
     }
