@@ -104,11 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        passwordConfirmError.textContent = '';
 	    }
 	}
-
-	// 비밀번호 입력 시에도 검증
 	passwordInput.addEventListener('input', checkPasswordMatch);
-
-	// 비밀번호 확인 입력 시에도 검증
 	confirmPasswordInput.addEventListener('input', checkPasswordMatch);
 	
 	// 실시간 입력 마스크

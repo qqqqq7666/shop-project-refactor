@@ -5,6 +5,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.shop_project.member.dto.MemberRequestDTO;
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class MemberService {
 	private final MemberRepository memberRepository;
-	private final BCryptPasswordEncoder passwordEncoder;
+	private final PasswordEncoder  passwordEncoder;
 	//private final MemberMapper memberMapper;
 	
 	public void Join(MemberRequestDTO memberDTO) {
