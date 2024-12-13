@@ -1,5 +1,6 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 let formChecked = false;
+let requirement;
 
 // 유효성 검사
 (() => {
@@ -60,13 +61,18 @@ function renderProduct() {
 }
 
 function checkout() {
-
     if (formChecked && confirm("주문 하시겠습니까?")) {
+        if (requirementSelect.value === "직접입력")
+            requirement = requireTextarea.value;
+        else
+            requirement = requirementSelect.value;
+
+
         const orderRequestDto = {
             postNo: document.querySelector("input[name = 'postNo']").value,
             address: document.querySelector("input[name = 'address']").value,
             addressDetail: document.querySelector("input[name = 'addressDetail']").value,
-            requirement: document.querySelector("input[name = 'requirement']").value,
+            requirement: requirement,
             payMethod: document.querySelector("input[name = 'payMethod']").value,
             orderStatus: "NEW",
             totalPrice: total,
@@ -98,5 +104,13 @@ function checkout() {
 
 document.getElementById("checkout-btn").addEventListener("click", checkout);
 document.getElementById("total-count").innerText = productArr.length;
+const requirementSelect = document.getElementById("requirement");
+const requireTextarea = document.getElementById("message-textarea");
+requirementSelect.addEventListener("change", () => {
+    if (requirementSelect.value === "직접입력")
+        requireTextarea.style.display = "block";
+    else
+        requireTextarea.style.display = "none";
+})
 
 renderProduct();
