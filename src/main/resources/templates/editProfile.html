@@ -9,7 +9,7 @@
 
     <form th:action="@{/mypage/edit}" method="post">
         <label for="nickname">닉네임:</label>
-        <input type="text" id="nickname" name="nickname" th:value="${member.nickname}" required><br>
+        <input type="text" id="nickname" name="nickname" th:value="${member.nickname}" required maxlength="20"><br>
         
         <input type="hidden" id="currentNickname" name="currentNickname" th:value="${member.nickname}">
         
@@ -18,12 +18,12 @@
 		<br>
 		
         <label for="password">새 비밀번호:</label>
-        <input type="password" id="password" name="password"><br>
+        <input type="password" id="password" name="password" maxlength="20"><br>
         <span id="passwordError"></span><br>
 		<br>
 		
         <label for="confirmPassword">새 비밀번호 확인:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword"><br>
+        <input type="password" id="confirmPassword" name="confirmPassword" maxlength="20"><br>
         <span id="passwordConfirmError"></span><br>
 		<br>
 		
