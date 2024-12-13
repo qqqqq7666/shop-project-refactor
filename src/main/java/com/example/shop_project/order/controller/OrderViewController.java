@@ -29,8 +29,7 @@ public class OrderViewController {
 
     @GetMapping
     public String orderList(Model model){
-        model.addAttribute("orderList", orderService.getOrderList());
-        model.addAttribute("detailList", orderService.getAllDetails());
+        model.addAttribute("orderMap", orderService.getOrderAndDetailMap());
         return "order/order_list";
     }
 

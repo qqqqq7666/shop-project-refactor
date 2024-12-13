@@ -9,14 +9,17 @@ import com.example.shop_project.order.mapper.OrderMapper;
 import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.product.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
 
 @Service
+@Slf4j
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
@@ -52,8 +55,17 @@ public class OrderService {
         return detailList;
     }
 
-    public List<OrderDetail> getAllDetails(){
-        return orderDetailRepository.findAll();
+    public Map<OrderResponseDto, List<OrderDetail>> getOrderAndDetailMap(){
+        Map<OrderResponseDto, List<OrderDetail>> res = new LinkedHashMap<>();
+        List<Order> orderList = orderRepository.findAllByOrderByOrderNoDesc();
+        for(Order order : orderList) {
+            res.put(orderMapper.toResponseDto(order), orderDetailRepository.findAllByOrder(order));
+        }
+
+        for(OrderResponseDto o : res.keySet())
+            log.info("맵 키셋: {}", o.getOrderNo());
+
+        return res;
     }
 
     public List<OrderResponseDto> getOrderList() {

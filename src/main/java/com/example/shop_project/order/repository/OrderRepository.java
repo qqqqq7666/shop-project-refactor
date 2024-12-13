@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 //    List<Order> findAllByMemberId(Long memberId);
+    List<Order> findAllByOrderByOrderNoDesc();
     Order save(Order order);
     Optional<Order> findByOrderNo(Long orderNo);
     void deleteByOrderNo(Long orderNo);
