@@ -37,6 +37,16 @@
         </div>
 
         <div class="mb-3">
+            <label class="form-label">문의 유형</label>
+            <select class="form-control" name="type" required>
+                <option value="SIZE">사이즈</option>
+                <option value="SHIPPING">배송</option>
+                <option value="RESTOCK">재입고</option>
+                <option value="DETAILS">상세</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label class="form-label">내용</label>
             <textarea class="form-control" name="content" placeholder="문의 내용을 입력하세요" required></textarea>
         </div>

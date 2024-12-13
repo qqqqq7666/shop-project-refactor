@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class Inquiry {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 문의 고유 ID
@@ -32,4 +31,8 @@ public class Inquiry {
 
     @Column(nullable = false)
     private LocalDate date; // 작성 날짜
+
+    @Enumerated(EnumType.STRING) // Enum 저장 방식: 문자열로 저장
+    @Column(nullable = false, length = 20)
+    private InquiryType type; // 문의 유형 (SIZE, SHIPPING, RESTOCK, DETAILS)
 }

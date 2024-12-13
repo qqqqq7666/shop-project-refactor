@@ -68,6 +68,10 @@
             <span>상품 ID:</span>
             <span th:text="${inquiry.productId}">123</span>
         </div>
+        <div class="info">
+            <span>문의 유형:</span>
+            <span th:text="${inquiry.type.getKoreanName()}">-</span>
+        </div>
 
         <div class="content">
             <h4>문의 내용</h4>

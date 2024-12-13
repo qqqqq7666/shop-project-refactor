@@ -22,6 +22,7 @@ public class InquiryService {
                 .nickname(dto.getNickname())
                 .title(dto.getTitle())
                 .content(dto.getContent())
+                .type(dto.getType()) // 유형 설정
                 .date(LocalDate.now())  // 생성 시 현재 날짜 추가
                 .build();
         return inquiryRepository.save(inquiry);
