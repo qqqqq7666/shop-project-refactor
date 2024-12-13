@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>장바구니</title>
-    <link rel="stylesheet" href="/cart/cart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="cart.css">
 </head>
 <body>
 <div class="cart-layout">
@@ -12,9 +13,9 @@
     <div class="product-list">
         <h1>상품 리스트</h1>
         <ul id="cart-items">
-            <!-- 상품 아이템이 동적으로 추가됩니다 -->
+            <!-- 상품 아이템 동적으로 추가 -->
         </ul>
-        <button id="test-add-products">더미 상품 추가</button>
+        <button id="test-add-products" class="btn btn-primary">더미 상품 추가</button>
     </div>
 
     <!-- 오른쪽 결제 정보 -->
@@ -37,11 +38,10 @@
             <span>총 결제금액</span>
             <span id="final-price">0</span>원
         </div>
-        <button id="checkout">구매하기</button>
-        <button id="clear-cart">장바구니 비우기</button>
+        <button id="checkout" class="btn btn-success">구매하기</button>
+        <button id="clear-cart" class="btn btn-danger">장바구니 비우기</button>
     </div>
 </div>
-<script src="/cart/cart.js"></script>
+<script src="cart.js"></script>
 </body>
 </html>
-
