@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장바구니</title>
+    <link rel="stylesheet" href="/order/cart/cart.css">
+</head>
+<body>
+<div class="cart-layout">
+    <!-- 왼쪽 상품 리스트 -->
+    <div class="product-list">
+        <h1>상품 리스트</h1>
+        <ul id="cart-items">
+            <!-- 상품 아이템이 동적으로 추가됩니다 -->
+        </ul>
+        <button id="test-add-products">더미 상품 추가</button>
+    </div>
+
+    <!-- 오른쪽 결제 정보 -->
+    <div class="cart-summary">
+        <h2>결제정보</h2>
+        <div class="info-row">
+            <span>상품수</span>
+            <span id="item-count">0</span>개
+        </div>
+        <div class="info-row">
+            <span>상품금액</span>
+            <span id="total-price">0</span>원
+        </div>
+        <div class="info-row">
+            <span>배송비</span>
+            <span id="delivery-fee">3000</span>원
+        </div>
+        <hr>
+        <div class="info-row total">
+            <span>총 결제금액</span>
+            <span id="final-price">0</span>원
+        </div>
+        <button id="checkout" onclick="window.location.href = 'checkout'">구매하기</button>
+        <button id="clear-cart">장바구니 비우기</button>
+    </div>
+</div>
+<script src="/order/cart/cart.js"></script>
+</body>
+</html>
+
