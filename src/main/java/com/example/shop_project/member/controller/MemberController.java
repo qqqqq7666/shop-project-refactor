@@ -38,7 +38,7 @@ public class MemberController {
 
 	@GetMapping("/join")
 	public String Join() {
-		return "join";
+		return "member/join";
 	}
 	
 	@PostMapping("/join")
@@ -49,7 +49,7 @@ public class MemberController {
 		String emailRegex = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$";
 		if (!memberRequestDTO.getEmail().matches(emailRegex)) {
 			model.addAttribute("error", "올바른 이메일 형식이 아닙니다.");
-			return "join";
+			return "member/join";
 		}
 		
 		// Base64 인코딩된 비밀번호를 디코딩
@@ -62,18 +62,18 @@ public class MemberController {
 		String passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 		if (!memberRequestDTO.getPassword().matches(passwordRegex)) {
 			model.addAttribute("error", "비밀번호는 최소 8글자이며 대소문자, 숫자, 특수문자를 최소 하나씩 포함해야 합니다.");
-			return "join";
+			return "member/join";
 		}
 		
 		// 비밀번호 불일치
 		if (!memberRequestDTO.getPassword().equals(memberRequestDTO.getConfirmPassword())) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "join";
+            return "member/join";
         }
 		
 		if (bindingResult.hasErrors()) {
 	        model.addAttribute("error", "모든 필드를 올바르게 입력해주세요.");
-	        return "join"; // 다시 회원가입 페이지로
+	        return "member/join"; // 다시 회원가입 페이지로
 	    }
 		
 		try {
@@ -81,13 +81,13 @@ public class MemberController {
 			return "redirect:/login";
 		} catch (IllegalArgumentException e) {
 			model.addAttribute("error", e.getMessage());
-            return "join";
+            return "member/join";
 		}
 	}
 	
 	@GetMapping("/login")
 	public String Login() {
-		return "login";
+		return "member/login";
 	}
 	
 	@GetMapping("/mypage")
@@ -100,7 +100,7 @@ public class MemberController {
 		String email = principal.getName();
         Member member = memberService.findByEmail(email);
         model.addAttribute("member", member);
-		return "mypage";
+		return "member/mypage";
 	}
 	
 	@GetMapping("/mypage/edit")
@@ -109,7 +109,7 @@ public class MemberController {
         Member member = memberService.findByEmail(email);
         
         model.addAttribute("member", member);
-        return "editProfile";
+        return "member/editProfile";
 	}
 	
 	@PostMapping("/mypage/edit")
@@ -128,7 +128,7 @@ public class MemberController {
         // 비밀번호 확인 체크
         if (!memberRequestDTO.getPassword().equals(memberRequestDTO.getConfirmPassword())) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "editMember";
+            return "member/editProfile";
         }
 
         // 회원 정보를 업데이트

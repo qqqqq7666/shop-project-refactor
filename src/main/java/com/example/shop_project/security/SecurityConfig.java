@@ -21,6 +21,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                		.requestMatchers("/admin/**").hasAuthority("ADMIN") // 관리자만 접근 허용
                         .requestMatchers("/**").permitAll()		// 후에 접근 허용 경로 수정 필요
                 )
                 .formLogin(form -> form
