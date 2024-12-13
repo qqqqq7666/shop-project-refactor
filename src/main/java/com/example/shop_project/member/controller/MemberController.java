@@ -92,6 +92,11 @@ public class MemberController {
 	
 	@GetMapping("/mypage")
 	public String Login(Model model, Principal principal) {
+		if (principal == null) {
+			// 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
+			return "redirect:/login";
+		}
+		
 		String email = principal.getName();
         Member member = memberService.findByEmail(email);
         model.addAttribute("member", member);
