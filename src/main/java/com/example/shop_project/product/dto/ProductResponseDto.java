@@ -12,6 +12,9 @@ public class ProductResponseDto {
     private String categoryName;
     private String productName;
     private String description;
+    private int price;
+    private int salesCount;
+    private int viewCount;
     private List<String> imageUrls;
     private List<ProductOptionDto> options;
 

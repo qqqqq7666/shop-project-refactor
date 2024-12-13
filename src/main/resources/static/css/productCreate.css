@@ -61,3 +61,113 @@ button:hover {
     margin-top: 5px;
     display: block; /* 메시지가 새 줄에 표시되도록 설정 */
 }
+
+#imagePreviewList {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+#imagePreviewList li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* .image-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 10px;
+} */
+
+
+
+
+
+.image-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    background: #f9f9f9;
+}
+
+.image-item .drag-handle {
+    cursor: grab;
+    background: #eee;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
+.image-item.drag-over {
+    background: #d3f3fd;
+}
+
+.image-preview {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.image-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+
+
+.tooltip-container {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+
+.info-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-bottom: 4px;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 170%; /* 아이콘 위에 띄우기 위해 */
+    left: 35%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+/* 툴팁 화살표 */
+.tooltip-text::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* 툴팁 아래에 위치 */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

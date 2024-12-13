@@ -7,6 +7,10 @@ import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.entity.*;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +34,7 @@ public class ProductService {
         Product product = Product.builder()
                 .categoryName(productRequestDto.getCategoryName())
                 .productName(productRequestDto.getProductName())
+                .price(productRequestDto.getPrice())
                 .description(productRequestDto.getDescription())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -68,7 +73,10 @@ public class ProductService {
                 .productId(product.getProductId())
                 .categoryName(product.getCategoryName())
                 .productName(product.getProductName())
+                .price(product.getPrice())
                 .description(product.getDescription())
+                .viewCount(product.getViewCount())
+                .salesCount(product.getSalesCount())
                 .imageUrls(product.getImages().stream()
                         .map(ProductImage::getImageUrl)
                         .collect(Collectors.toList()))
@@ -113,13 +121,25 @@ public class ProductService {
             if (option.getSize() == null) {
                 throw new InvalidProductException("사이즈는 선택 필수 항목입니다.");
             }
-            if (option.getColor() == null || option.getColor().isBlank()) {
-                throw new InvalidProductException("색상은 필수 입력 항목입니다.");
-            }
             if (option.getStockQuantity() < 1) {
                 throw new InvalidProductException("재고는 1 이상이어야 합니다.");
             }
         }
     }
 
+    public Page<ProductResponseDto> getProductList(String sortBy, int page, int size, String search) {
+        // Pageable 객체 생성 (정렬과 페이지 크기 포함)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy.equals("sales") ? "salesCount" : "viewCount").descending());
+
+        // Product를 페이징 처리하여 조회
+        Page<Product> productPage;
+        if (search.isEmpty()) {
+            productPage = productRepository.findAll(pageable);
+        } else {
+            productPage = productRepository.findByProductNameContaining(search, pageable);
+        }
+
+        // Product를 ProductResponseDto로 변환
+        return productPage.map(this::mapToResponseDto);
+    }
 }
