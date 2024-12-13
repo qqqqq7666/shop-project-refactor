@@ -15,9 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-
-import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -39,7 +40,7 @@ public class OrderService {
     }
 
     public void createOrderDetail(Order order, List<OrderDetailDto> dtoList) {
-        for(OrderDetailDto dto : dtoList){
+        for (OrderDetailDto dto : dtoList) {
             OrderDetail orderDetail = orderMapper.toEntity(dto);
             orderDetail.setOrderAndProduct(order, productRepository.findById(dto.getProductId()).orElseThrow());
 
@@ -56,14 +57,14 @@ public class OrderService {
         return detailList;
     }
 
-    public Map<OrderResponseDto, List<OrderDetail>> getOrderAndDetailMap(){
+    public Map<OrderResponseDto, List<OrderDetail>> getOrderAndDetailMap() {
         Map<OrderResponseDto, List<OrderDetail>> res = new LinkedHashMap<>();
         List<Order> orderList = orderRepository.findAllByOrderByOrderNoDesc();
-        for(Order order : orderList) {
+        for (Order order : orderList) {
             res.put(orderMapper.toResponseDto(order), orderDetailRepository.findAllByOrder(order));
         }
 
-        for(OrderResponseDto o : res.keySet())
+        for (OrderResponseDto o : res.keySet())
             log.info("맵 키셋: {}", o.getOrderNo());
 
         return res;
@@ -81,16 +82,17 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponseDto updateOrder(Long orderNo, OrderRequestDto request){
+    public OrderResponseDto updateOrder(Long orderNo, OrderRequestDto request) {
         Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
         order.updateOrder(request);
         return orderMapper.toResponseDto(orderRepository.save(order));
     }
 
+    // updateStatus를 따로 구현하는게 맞는지..
     @Transactional
-    public OrderResponseDto updateOrderStatus(Long orderNo, OrderStatus orderStatus){
+    public OrderResponseDto updateOrderStatus(Long orderNo, OrderStatus orderStatus) {
         Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
-            order.updateStatus(orderStatus);
+        order.updateStatus(orderStatus);
         return orderMapper.toResponseDto(orderRepository.save(order));
     }
 
