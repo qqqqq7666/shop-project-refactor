@@ -31,12 +31,12 @@ function renderCart() {
             <span>${item.name}</span>
             <span>${item.price}원</span>
             <div class="quantity-controls">
-                <button onclick="updateQuantity(${index}, -1)">-</button>
+                <button class="btn btn-primary" onclick="updateQuantity(${index}, -1)">-</button>
                 <input type="text" value="${item.quantity}" readonly />
-                <button onclick="updateQuantity(${index}, 1)">+</button>
+                <button class="btn btn-primary" onclick="updateQuantity(${index}, 1)">+</button>
             </div>
             <span>${item.price * item.quantity}원</span>
-            <button onclick="removeItem(${index})">삭제</button>
+            <button class="btn btn-primary" onclick="removeItem(${index})">삭제</button>
         `;
         cartItems.appendChild(li);
         total += item.price * item.quantity;
