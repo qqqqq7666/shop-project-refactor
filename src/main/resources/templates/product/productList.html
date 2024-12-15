@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 리스트 페이지</title>
+    <link rel="stylesheet" href="/css/productList.css">
+</head>
+<body>
+
+<h1>상품 리스트</h1>
+
+<!-- 정렬 옵션 -->
+<div id="sort-options">
+  <label for="sortBy">정렬 기준:</label>
+  <select id="sortBy">
+    <option value="salesCount">판매순</option>
+    <option value="viewCount">조회순</option>
+  </select>
+  <div class="search-bar">
+    <input type="text" placeholder="검색" id="searchInput" />
+    <button>검색</button>
+  </div>
+</div>
+
+<!-- 상품 목록 -->
+<div id="product-list" class="grid-container"></div>
+
+<!-- 페이지네이션 -->
+<div id="pagination">
+  <button id="prevPage">이전</button>
+  <span id="pageInfo">1 / 10</span>
+  <button id="nextPage">다음</button>
+</div>
+
+<script src="/js/productList.js"></script>
+
+</body>
+</html>
