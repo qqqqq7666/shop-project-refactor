@@ -1,5 +1,7 @@
 package com.example.shop_project.order.service;
 
+import com.example.shop_project.member.entity.Member;
+import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.*;
 
 @Service
@@ -28,6 +31,8 @@ public class OrderService {
     private OrderMapper orderMapper;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
@@ -54,9 +59,10 @@ public class OrderService {
         return detailList;
     }
 
-    public Map<OrderResponseDto, List<OrderDetail>> getOrderAndDetailMap() {
+    public Map<OrderResponseDto, List<OrderDetail>> getOrderAndDetailMap(Principal principal) {
         Map<OrderResponseDto, List<OrderDetail>> res = new LinkedHashMap<>();
-        List<Order> orderList = orderRepository.findAllByOrderByOrderNoDesc();
+        Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        List<Order> orderList = orderRepository.findAllByMemberOrderByOrderNoDesc(member);
         for (Order order : orderList) {
             res.put(orderMapper.toResponseDto(order), orderDetailRepository.findAllByOrder(order));
         }

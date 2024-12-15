@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/order")
 public class OrderViewController {
@@ -28,8 +30,8 @@ public class OrderViewController {
     }
 
     @GetMapping
-    public String orderList(Model model){
-        model.addAttribute("orderMap", orderService.getOrderAndDetailMap());
+    public String orderList(Model model, Principal principal){
+        model.addAttribute("orderMap", orderService.getOrderAndDetailMap(principal));
         return "order/order_list";
     }
 

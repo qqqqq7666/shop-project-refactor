@@ -29,7 +29,7 @@ function renderCart() {
         const li = document.createElement("li");
         li.innerHTML = `
             <span>${item.name}</span>
-            <span>${item.price}원 x ${item.quantity}</span>
+            <span>${item.price.toLocaleString()}원 x ${item.quantity}</span>
             <button onclick="removeItem(${index})">삭제</button>
         `;
         cartItems.appendChild(li);
