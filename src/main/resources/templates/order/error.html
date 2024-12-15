@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>에러</title>
+    <title>Title</title>
 </head>
 <body>
-에러 페이지
 
+<h4 th:text="|${status} ${error}|"></h4>
+<h4 th:text="|경로: ${path}|"></h4>
+<p th:text="${message}"></p>
+<br>
+<p th:text="${exception}"></p>
 </body>
 </html>

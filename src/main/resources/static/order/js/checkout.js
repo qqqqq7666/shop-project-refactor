@@ -23,6 +23,11 @@ let requirement;
         }, false)
     })
 
+    if(localStorage.getItem("cart") === "[]"){
+        alert("잘못된 접근입니다.");
+        window.location.href = "/";    // 홈으로 바꿀 예정
+    }
+
 })();
 
 const cartList = document.getElementById("cart-list");

@@ -22,6 +22,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                 		.requestMatchers("/admin/**").hasAuthority("ADMIN") // 관리자만 접근 허용
+                        .requestMatchers("/order/**").authenticated()
                         .requestMatchers("/**").permitAll()		// 후에 접근 허용 경로 수정 필요
                 )
                 .formLogin(form -> form
