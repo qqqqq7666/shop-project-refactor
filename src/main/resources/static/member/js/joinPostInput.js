@@ -9,15 +9,15 @@ function openPostcodePopup() {
             const roadAddress = data.roadAddress; // 도로명 주소
             const jibunAddress = data.jibunAddress; // 지번 주소
 
-            // 도로명 주소를 선택했을 경우
-            if (roadAddress) {
-                addressInput.value = roadAddress; // 도로명 주소를 address 필드에 넣음
-            }
+			if (roadAddress) {
+			    addressInput.value = roadAddress; // 기본적으로 도로명 주소를 사용
+			} else if (jibunAddress) {
+			    addressInput.value = jibunAddress; // 도로명 주소가 없으면 지번 주소 사용
+			} else {
+			    addressInput.value = ''; // 둘 다 없으면 초기화
+			    alert('주소를 찾을 수 없습니다. 다시 시도해주세요.');
+			}
 
-            // 지번 주소를 선택했을 경우
-            if (jibunAddress) {
-                addressInput.value = jibunAddress; // 지번 주소를 address 필드에 넣음
-            }
         }
     }).open();
 }
