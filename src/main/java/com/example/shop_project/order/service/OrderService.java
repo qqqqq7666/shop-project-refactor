@@ -35,7 +35,9 @@ public class OrderService {
     private MemberRepository memberRepository;
 
     @Transactional
-    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, Principal principal) {
+        Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        orderRequestDto.setMember(member);
         Order newOrder = orderRepository.save(orderMapper.toEntity(orderRequestDto));
         createOrderDetail(newOrder, orderRequestDto.getDetailDtoList());
         return orderMapper.toResponseDto(newOrder);

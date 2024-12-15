@@ -8,10 +8,12 @@ import com.example.shop_project.order.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -38,8 +40,8 @@ public class OrderAPIController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto){
-        OrderResponseDto response = orderService.createOrder(orderRequestDto);
+    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto, Principal principal){
+        OrderResponseDto response = orderService.createOrder(orderRequestDto, principal);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
     }

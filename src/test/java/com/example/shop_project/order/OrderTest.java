@@ -71,7 +71,6 @@ public class OrderTest {
                 .requirement("")
                 .totalPrice(30L)
                 .detailDtoList(dtoList)
-                .memberRequestDTO(requestDTO)
                 .build();
 
         final String json = objectMapper.writeValueAsString(request);

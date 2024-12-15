@@ -1,12 +1,14 @@
 package com.example.shop_project.order.dto;
 
 import com.example.shop_project.member.dto.MemberRequestDTO;
+import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.entity.PayMethod;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.security.Principal;
 import java.util.List;
 
 @Builder
@@ -31,6 +33,9 @@ public class OrderRequestDto {
     private String postNo;
     @NotNull
     private List<OrderDetailDto> detailDtoList;
-    @NotNull
-    private MemberRequestDTO memberRequestDTO;
+    private Member member;
+
+    public void setMember (Member member){
+        this.member = member;
+    }
 }
