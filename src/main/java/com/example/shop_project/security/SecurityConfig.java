@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)        // 세션 무효화
                         .deleteCookies("JSESSIONID")        // 쿠키 삭제
                 )
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable);		// 후에 csrf
 
         return http.build();
     }
