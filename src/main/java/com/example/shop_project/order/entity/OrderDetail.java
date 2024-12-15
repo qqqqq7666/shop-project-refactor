@@ -1,5 +1,6 @@
 package com.example.shop_project.order.entity;
 
+import com.example.shop_project.BaseEntity;
 import com.example.shop_project.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 @Getter
-public class OrderDetail extends OrderBaseEntity{
+public class OrderDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderDetailId;

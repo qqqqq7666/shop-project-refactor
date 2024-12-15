@@ -101,6 +101,15 @@
          color: #a0a0a0; /* 텍스트 색상 흐리게 */
          cursor: not-allowed; /* 비활성화 커서 */
       }
+      .modal-body {
+         text-align: center;
+       }
+      .modal-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
     </style>
 
 
@@ -342,6 +351,24 @@
       </div>
     </div>
   </main>
+
+  <!-- Modal -->
+  <div class="modal fade" id="orderCompleteModal" tabindex="-1" aria-labelledby="orderCompleteModalLabel">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center" id="orderCompleteModalLabel">주문 완료</h2>
+        </div>
+        <div class="modal-body">
+          <p align="center">주문이 완료되었습니다!</p>
+        </div>
+        <div class="modal-footer" align="center">
+          <a href="/products/productList" class="btn btn-outline-secondary w-75">쇼핑 계속하기</a>
+          <a href="/order" class="btn btn-primary w-75">주문 내역 보기</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer class="my-5 pt-5 text-body-secondary text-center text-small">
     <p class="mb-1">&copy; 2017–2024 Company Name</p>

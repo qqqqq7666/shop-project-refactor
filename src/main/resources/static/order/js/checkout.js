@@ -23,7 +23,7 @@ let requirement;
         }, false)
     })
 
-    if(localStorage.getItem("cart") === "[]"){
+    if(localStorage.getItem("cart") === "[]" || localStorage.getItem("cart") === null){
         alert("잘못된 접근입니다.");
         window.location.href = "/";    // 홈으로 바꿀 예정
     }
@@ -96,7 +96,8 @@ function checkout() {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 } else {
                     localStorage.removeItem("cart")
-                    window.location.href = "/order";
+                    const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
+                    modal.show();
                     return response.json();
                 }
             })

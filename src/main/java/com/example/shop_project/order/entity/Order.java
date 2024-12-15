@@ -1,5 +1,6 @@
 package com.example.shop_project.order.entity;
 
+import com.example.shop_project.BaseEntity;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import java.util.List;
 @Table(name = "orders")
 @SuperBuilder
 @NoArgsConstructor
-public class Order extends OrderBaseEntity{
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderNo;
