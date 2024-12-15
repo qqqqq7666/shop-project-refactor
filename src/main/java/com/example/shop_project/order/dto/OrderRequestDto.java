@@ -1,5 +1,6 @@
 package com.example.shop_project.order.dto;
 
+import com.example.shop_project.member.dto.MemberRequestDTO;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.entity.PayMethod;
 import jakarta.validation.constraints.*;
@@ -28,5 +29,8 @@ public class OrderRequestDto {
     @Size(max = 5, min = 5)
     @Pattern(regexp = "^[0-9]*$")
     private String postNo;
+    @NotNull
     private List<OrderDetailDto> detailDtoList;
+    @NotNull
+    private MemberRequestDTO memberRequestDTO;
 }

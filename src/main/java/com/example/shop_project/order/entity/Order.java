@@ -1,5 +1,6 @@
 package com.example.shop_project.order.entity;
 
+import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -35,7 +36,10 @@ public class Order extends OrderBaseEntity{
     private String addressDetail;
     @Column(nullable = false, length = 5)
     private String postNo;
-    // member
+
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
 //    @OneToMany(mappedBy = "order")
 //    private List<OrderDetail> orderDetails;

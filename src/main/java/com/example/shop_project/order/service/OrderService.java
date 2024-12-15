@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -42,7 +39,7 @@ public class OrderService {
     public void createOrderDetail(Order order, List<OrderDetailDto> dtoList) {
         for (OrderDetailDto dto : dtoList) {
             OrderDetail orderDetail = orderMapper.toEntity(dto);
-            orderDetail.setOrderAndProduct(order, productRepository.findById(dto.getProductId()).orElseThrow());
+            orderDetail.setOrderAndProduct(order, productRepository.findById(dto.getProductId()).orElseThrow(() -> new NoSuchElementException("상품이 존재하지 않습니다.")));
 
             orderDetailRepository.save(orderDetail);
         }
