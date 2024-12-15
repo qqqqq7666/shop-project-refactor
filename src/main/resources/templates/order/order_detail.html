@@ -19,7 +19,7 @@
         <hr>
         <div>
             <p><h5>이름</h5></p>
-            <p>010-****-1234</p>
+            <p th:text="${member.getPhone()}">010-****-1234</p>
             <p th:text="|(${order.getPostNo()}) ${order.getAddress()} ${order.getAddressDetail()}|"></p>
             <small th:text="|요청사항: ${order.getRequirement()}|"></small>
         </div>

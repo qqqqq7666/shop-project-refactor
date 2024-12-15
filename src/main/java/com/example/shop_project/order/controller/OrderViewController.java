@@ -1,5 +1,6 @@
 package com.example.shop_project.order.controller;
 
+import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ import java.security.Principal;
 public class OrderViewController {
     @Autowired
     OrderService orderService;
+    @Autowired
+    MemberService memberService;
 
     @GetMapping("/create")
     public String createOrder(){
@@ -23,9 +26,10 @@ public class OrderViewController {
     }
 
     @GetMapping("/{orderNo}")
-    public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model){
+    public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model, Principal principal){
         model.addAttribute("detailList", orderService.getOrderDetailList(orderNo));
         model.addAttribute("order", orderService.getOrderByOrderNo(orderNo));
+        model.addAttribute("member", memberService.findByEmail(principal.getName()));
         return "order/order_detail";
     }
 

@@ -45,7 +45,7 @@ function renderProduct() {
         const quantity = productArr[i].quantity;
 
         product.getElementsByClassName("product-name")[0].innerText = productArr[i].name;
-        product.getElementsByClassName("product-price")[0].innerText = `${price * quantity}원`;
+        product.getElementsByClassName("product-price")[0].innerText = `${(price * quantity).toLocaleString()}원`;
         product.getElementsByClassName("product-quantity")[0].innerText = `x${quantity}`;
 
         cartList.prepend(product);
@@ -57,7 +57,7 @@ function renderProduct() {
     } else
         total += 3000;
 
-    document.getElementById("total").innerText = total;
+    document.getElementById("total").innerText = total.toLocaleString();
 }
 
 function checkout() {
