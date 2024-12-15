@@ -1,8 +1,10 @@
 package com.example.shop_project.category.controller;
 
 import com.example.shop_project.category.dto.CategoryReqDto;
+import com.example.shop_project.category.dto.CategoryUpdateReqDto;
 import com.example.shop_project.category.service.CategoryService;
 import com.example.shop_project.category.dto.CategoryResDto;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +34,20 @@ public class CategoryController {
 
     // 카테고리 추가
     @PostMapping("/create")
-    public ResponseEntity<CategoryResDto> createCategory(@ModelAttribute CategoryReqDto categoryReqDto) {
+    public ResponseEntity<CategoryResDto> createCategory(@Valid @ModelAttribute CategoryReqDto categoryReqDto) {
         CategoryResDto categoryResDto = categoryService.createCategory(categoryReqDto);
         return ResponseEntity.ok(categoryResDto);
     }
 
+    // 카테고리 수정
+    @PatchMapping("/update")
+    public ResponseEntity<CategoryResDto> updateCategory(@Valid @RequestBody CategoryUpdateReqDto categoryUpdateReqDto) {
+        CategoryResDto categoryResDto = categoryService.updateCategory(categoryUpdateReqDto);
+
+        if(categoryResDto == null) {
+            return ResponseEntity.status(409).build();
+        } else {
+            return ResponseEntity.ok(categoryResDto);
+        }
+    }
 }

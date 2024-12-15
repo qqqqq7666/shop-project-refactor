@@ -2,6 +2,7 @@ package com.example.shop_project.category.service;
 
 import com.example.shop_project.category.dto.CategoryReqDto;
 import com.example.shop_project.category.dto.CategoryResDto;
+import com.example.shop_project.category.dto.CategoryUpdateReqDto;
 import com.example.shop_project.category.entity.Category;
 import com.example.shop_project.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,27 @@ public class CategoryService {
 
         return toCategoryResDto(mainCategory);
     }
+
+    // 카테고리 수정
+    @Transactional
+    public CategoryResDto updateCategory(CategoryUpdateReqDto categoryUpdateReqDto) {
+        log.info("카테고리 업데이트 요청 - ID: {}, 새로운 이름: {}", categoryUpdateReqDto.getCategoryId(), categoryUpdateReqDto.getCategoryName());
+        Category category = categoryRepository.findByCategoryId(categoryUpdateReqDto.getCategoryId());
+        String updateCategoryName = categoryUpdateReqDto.getCategoryName();
+
+        // 카테고리명 중복되면 변경 X
+        boolean existByCategoryName = categoryRepository.existsByCategoryName(updateCategoryName);
+        if(existByCategoryName) {
+            return null;
+        }
+
+        // 카테고리명 업데이트
+        category.setCategoryName(updateCategoryName);
+        categoryRepository.save(category);
+
+        return toCategoryResDto(category);
+    }
+
 
     // Entity -> CategoryResDto 메서드
     private CategoryResDto toCategoryResDto(Category category) {

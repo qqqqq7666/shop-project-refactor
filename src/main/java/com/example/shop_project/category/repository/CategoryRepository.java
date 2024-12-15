@@ -8,4 +8,6 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByDepth(int depth);
     Category findByCategoryName(String categoryName);
+    Category findByCategoryId(Long categoryId);
+    boolean existsByCategoryName(String categoryName);
 }
