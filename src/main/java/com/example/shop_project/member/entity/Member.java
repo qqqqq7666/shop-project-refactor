@@ -31,6 +31,9 @@ public class Member {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
+	@Column(name = "name", nullable = false)
+	private String name;
+	
 	@Column(name = "phone", nullable = false)
 	private String phone;
 	

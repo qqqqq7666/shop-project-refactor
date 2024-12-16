@@ -36,6 +36,7 @@ public class MemberService {
         member.setEmail(memberDTO.getEmail());
         member.setNickname(memberDTO.getNickname());
         member.setPassword(encryptedPassword);
+        member.setName(memberDTO.getName());
         member.setPhone(memberDTO.getPhone());
         member.setPostNo(memberDTO.getPostNo());
         member.setAddress(memberDTO.getAddress());
