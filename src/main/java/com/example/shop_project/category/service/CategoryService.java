@@ -77,6 +77,39 @@ public class CategoryService {
         return toCategoryResDto(category);
     }
 
+    // 카테고리 삭제
+    @Transactional
+    public boolean deleteCategory(Long categoryId) {
+        log.info("##############service categoryId: {}", categoryId);
+        Category category = categoryRepository.findByCategoryId(categoryId);
+        String categoryName = category.getCategoryName();
+
+        log.info("##############service categoryName: {}", categoryName);
+
+        Category parentCategory = category.getParentCategory();
+        parentCategory.getSubCategories().remove(category); // 연관관계 삭제
+
+        if(category != null) {
+            // productList 비었는지 확인 후 비었으면
+            categoryRepository.delete(category); // 서브 카테고리 삭제
+
+            // 메인 카테고리에 서브 카테고리 없으면 메인 카테고리 삭제
+            if(parentCategory != null) {
+                List<Category> subCategories = parentCategory.getSubCategories();
+                if(subCategories.isEmpty()) {
+                    categoryRepository.delete(parentCategory); // 메인 카테고리 삭제
+                }
+            }
+
+            Category deleteCategory = categoryRepository.findByCategoryId(categoryId);
+            if(deleteCategory != null) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     // Entity -> CategoryResDto 메서드
     private CategoryResDto toCategoryResDto(Category category) {

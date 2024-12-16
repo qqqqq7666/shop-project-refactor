@@ -5,13 +5,16 @@ import com.example.shop_project.category.dto.CategoryUpdateReqDto;
 import com.example.shop_project.category.service.CategoryService;
 import com.example.shop_project.category.dto.CategoryResDto;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
@@ -49,5 +52,24 @@ public class CategoryController {
         } else {
             return ResponseEntity.ok(categoryResDto);
         }
+    }
+
+    // 카테고리 삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteCategory(@RequestBody Map<String, Object> request) {
+        log.info("############### 카테고리 ID: {}", request.get("categoryId"));
+        Long categoryId = Long.valueOf(request.get("categoryId").toString());
+        if (categoryId == null) {
+            log.warn("잘못된 요청 데이터입니다: {}", request);
+            return ResponseEntity.badRequest().build(); // 400 상태 코드 반환
+        }
+
+
+        boolean isDeleted = categoryService.deleteCategory(categoryId);
+
+        if(isDeleted) {
+            return ResponseEntity.status(200).build();
+        }
+        return ResponseEntity.status(404).build();
     }
 }
