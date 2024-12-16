@@ -69,14 +69,8 @@
 				    </select>
 				</td>
                 <td>
-		            <!-- 탈퇴 여부에 따라 버튼 활성화/비활성화 -->
-		            <button type="button"
-		                    th:attr="data-id=${member.id}"
-		                    th:disabled="${member.withdraw}" 
-		                    th:text="${member.withdraw} ? '탈퇴된 회원' : '회원정보 삭제'"
-		                    class="delete-member-btn">
-		            </button>
-		        </td>
+                    <button type="button">회원정보 삭제</button>
+                </td>
             </tr>
         </tbody>
     </table>
