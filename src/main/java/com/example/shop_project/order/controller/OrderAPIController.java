@@ -41,6 +41,7 @@ public class OrderAPIController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto, Principal principal){
+        log.info("deliveryFlag : {}", orderRequestDto.getDeliveryFlag());
         OrderResponseDto response = orderService.createOrder(orderRequestDto, principal);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);

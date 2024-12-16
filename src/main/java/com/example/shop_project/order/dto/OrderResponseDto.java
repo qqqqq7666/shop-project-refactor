@@ -5,6 +5,7 @@ import com.example.shop_project.order.entity.PayMethod;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 

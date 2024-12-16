@@ -45,7 +45,7 @@ public class OrderViewController {
     }
 
     @GetMapping("checkout")
-    public String checkout(){
+    public String checkout(@ModelAttribute Principal principal){
         return "order/checkout";
     }
 

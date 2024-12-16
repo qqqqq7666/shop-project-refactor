@@ -34,8 +34,15 @@ public class OrderRequestDto {
     @NotNull
     private List<OrderDetailDto> detailDtoList;
     private Member member;
+    private Boolean deliveryFlag;
 
     public void setMember (Member member){
         this.member = member;
+    }
+
+    public void setAddress(String address, String addressDetail, String postNo){
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.postNo = postNo;
     }
 }
