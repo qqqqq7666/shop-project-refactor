@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 // 작동 안해서 일단 사용 안함
 @Mapper(componentModel = "spring")
 public interface MemberMapper {
-	MemberResponseDTO toResponseDto(Member member);
+	//MemberResponseDTO toResponseDto(Member member);
 	
-	Member toEntity(MemberRequestDTO memberDto);
+	//Member toEntity(MemberRequestDTO memberDto);
 }

@@ -3,6 +3,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.processing.Pattern;
 
+import com.example.shop_project.BaseEntity;
 import com.example.shop_project.member.Membership;
 import com.example.shop_project.member.Role;
 
@@ -19,7 +20,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Member {
+public class Member extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "member_id")
@@ -75,8 +76,11 @@ public class Member {
 	@PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
+        
         this.createdAt = now;
         this.updatedAt = now;
+        //super.createdDate = now;
+        //super.updatedDate = now;
         
         // 기본값 설정
         if (this.role == null) 
@@ -90,6 +94,7 @@ public class Member {
 	
 	@PreUpdate
     public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
+		//super.updatedDate = LocalDateTime.now();
     }
 }
