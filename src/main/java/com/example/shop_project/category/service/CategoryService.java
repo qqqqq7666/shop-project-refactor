@@ -1,6 +1,6 @@
 package com.example.shop_project.category.service;
 
-import com.example.shop_project.category.dto.CategoryReqDto;
+import com.example.shop_project.category.dto.CategoryCreateReqDto;
 import com.example.shop_project.category.dto.CategoryResDto;
 import com.example.shop_project.category.dto.CategoryUpdateReqDto;
 import com.example.shop_project.category.entity.Category;
@@ -34,12 +34,12 @@ public class CategoryService {
 
     // 카테고리 생성
     @Transactional
-    public CategoryResDto createCategory(CategoryReqDto categoryReqDto) {
-        Category mainCategory = categoryRepository.findByCategoryName(categoryReqDto.getMainCategoryName());
+    public CategoryResDto createCategory(CategoryCreateReqDto categoryCreateReqDto) {
+        Category mainCategory = categoryRepository.findByCategoryName(categoryCreateReqDto.getMainCategoryName());
         // 메인 카테고리 생성
         if(mainCategory == null) {
             mainCategory = new Category();
-            mainCategory.setCategoryName(categoryReqDto.getMainCategoryName());
+            mainCategory.setCategoryName(categoryCreateReqDto.getMainCategoryName());
             mainCategory.setDepth(0);
             categoryRepository.save(mainCategory);
         }
@@ -48,7 +48,7 @@ public class CategoryService {
 
         // 서브 카테고리 생성
         Category newSubCategory = new Category();
-        newSubCategory.setCategoryName(categoryReqDto.getSubCategoryName());
+        newSubCategory.setCategoryName(categoryCreateReqDto.getSubCategoryName());
         newSubCategory.setDepth(mainCategory.getDepth() + 1); // 서브 카테고리의 깊이는 0 + 1
         newSubCategory.setParentCategory(mainCategory);
         mainCategory.getSubCategories().add(newSubCategory); // 부모-자식 동기화
