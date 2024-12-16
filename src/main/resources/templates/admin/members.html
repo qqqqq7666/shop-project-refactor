@@ -54,13 +54,26 @@
                 <td>일반</td>
                 <td th:text="${member.name}"></td>
                 <td th:text="${member.nickname}"></td>
-                <td th:text="${member.role}"></td>
+                <td>
+				    <!-- 권한 드롭다운 -->
+				    <select 
+				        th:id="'role_' + ${member.id}" 
+				        th:name="role" 
+				        th:data-id="${member.id}" 
+				        th:data-previous-value="${member.role}" 
+				        th:onchange="onRoleChange(this)">
+				        <!-- USER 옵션 -->
+				        <option th:value="'USER'" th:selected="${member.role.toString() == 'USER'}">USER</option>
+				        <!-- ADMIN 옵션 -->
+				        <option th:value="'ADMIN'" th:selected="${member.role.toString() == 'ADMIN'}">ADMIN</option>
+				    </select>
+				</td>
                 <td>
                     <button type="button">회원정보 삭제</button>
                 </td>
             </tr>
         </tbody>
     </table>
-
+<script src="/admin/js/adminMembers.js"></script>
 </body>
 </html>
