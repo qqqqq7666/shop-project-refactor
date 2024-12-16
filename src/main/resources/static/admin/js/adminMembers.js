@@ -29,3 +29,31 @@ function onRoleChange(selectElement) {
         selectElement.value = previousRole; // 취소 시 이전 값으로 복원
     }
 }
+
+// 회원 삭제버튼
+document.querySelectorAll(".delete-member-btn").forEach(button => {
+    button.addEventListener("click", function () {
+        const memberId = this.getAttribute("data-id");
+
+        if (confirm("탈퇴 처리하시겠습니까?")) {
+            fetch(`/api/admin/members/withdraw/${memberId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("회원이 탈퇴 처리되었습니다.");
+                        location.reload(); // 삭제된 상태를 반영하기 위해 페이지 새로고침
+                    } else {
+                        alert("회원 탈퇴 처리에 실패했습니다.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("오류가 발생했습니다.");
+                });
+        }
+    });
+});
