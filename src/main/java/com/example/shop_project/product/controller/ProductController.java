@@ -65,15 +65,6 @@ public class ProductController {
 
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ProductResponseDto>> getProductList(
-            @RequestParam(defaultValue = "salesCount") String sortBy,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "") String search
-    ) {
-        Page<ProductResponseDto> productList = productService.getProductList(sortBy, page, size, search);
-        return ResponseEntity.ok(productList);
-    }
+
 
 }

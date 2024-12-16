@@ -127,19 +127,44 @@ public class ProductService {
         }
     }
 
-    public Page<ProductResponseDto> getProductList(String sortBy, int page, int size, String search) {
-        // Pageable 객체 생성 (정렬과 페이지 크기 포함)
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy.equals("sales") ? "salesCount" : "viewCount").descending());
 
-        // Product를 페이징 처리하여 조회
-        Page<Product> productPage;
-        if (search.isEmpty()) {
-            productPage = productRepository.findAll(pageable);
+    public List<ProductResponseDto> getProductListSortedBy(String sortBy) {
+        List<Product> products;
+        if ("viewCount".equalsIgnoreCase(sortBy)) {
+            products = productRepository.findAll(Sort.by(Sort.Direction.DESC, "viewCount"));
         } else {
-            productPage = productRepository.findByProductNameContaining(search, pageable);
+            products = productRepository.findAll(Sort.by(Sort.Direction.DESC, "salesCount"));
         }
 
-        // Product를 ProductResponseDto로 변환
-        return productPage.map(this::mapToResponseDto);
+        // Product -> ProductResponseDto 변환
+        return products.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public Page<ProductResponseDto> getProductList(String search, String sort, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort));
+
+        // 검색 기능 적용
+        Page<Product> products = productRepository.findByProductNameContaining(search, pageable);
+
+        // Product -> ProductResponseDto로 변환
+        return products.map(product -> ProductResponseDto.builder()
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .price(product.getPrice())
+                .viewCount(product.getViewCount())
+                .salesCount(product.getSalesCount())
+                .imageUrls(product.getImages().stream()
+                        .map(ProductImage::getImageUrl)
+                        .toList())
+                .build());
+    }
+
+    public ProductResponseDto getProductDetail(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다. ID: " + productId));
+
+        return mapToResponseDto(product);
     }
 }
