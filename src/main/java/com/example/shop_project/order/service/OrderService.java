@@ -38,9 +38,8 @@ public class OrderService {
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, Principal principal) {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         orderRequestDto.setMember(member);
-        if(orderRequestDto.getDeliveryFlag()){
-            orderRequestDto.setAddress(member.getAddress(), member.getAddressDetail(), member.getPostNo());
-        }
+        if(orderRequestDto.getDeliveryFlag())
+            orderRequestDto.setDelivery(member.getAddress(), member.getAddressDetail(), member.getPostNo(), member.getNickname(), member.getPhone());
         Order newOrder = orderRepository.save(orderMapper.toEntity(orderRequestDto));
         createOrderDetail(newOrder, orderRequestDto.getDetailDtoList());
         return orderMapper.toResponseDto(newOrder);

@@ -1,6 +1,5 @@
 package com.example.shop_project.order.dto;
 
-import com.example.shop_project.member.dto.MemberRequestDTO;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.entity.PayMethod;
@@ -8,7 +7,6 @@ import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.security.Principal;
 import java.util.List;
 
 @Builder
@@ -34,15 +32,22 @@ public class OrderRequestDto {
     @NotNull
     private List<OrderDetailDto> detailDtoList;
     private Member member;
+    @NotNull
     private Boolean deliveryFlag;
+    @NotBlank
+    private String contact;
+    @NotBlank
+    private String addressee;
 
     public void setMember (Member member){
         this.member = member;
     }
 
-    public void setAddress(String address, String addressDetail, String postNo){
+    public void setDelivery(String address, String addressDetail, String postNo, String addressee, String contact){
         this.address = address;
         this.addressDetail = addressDetail;
         this.postNo = postNo;
+        this.addressee = addressee;
+        this.contact = contact;
     }
 }

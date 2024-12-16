@@ -65,10 +65,7 @@ function sample6_execDaumPostcode() {
                     extraAddr = ' (' + extraAddr + ')';
                 }
                 // 조합된 참고항목을 해당 필드에 넣는다.
-                document.getElementById("sample6_extraAddress").value = extraAddr;
 
-            } else {
-                document.getElementById("sample6_extraAddress").value = '';
             }
 
             // 우편번호와 주소 정보를 해당 필드에 넣는다.
@@ -126,16 +123,19 @@ function checkout() {
         let address = document.querySelector("input[name = 'address']").value;
         let postNo = document.querySelector("input[name = 'postNo']").value;
         let addressDetail = document.querySelector("input[name = 'addressDetail']").value;
+        let addressee = document.querySelector("input[name = 'addressee']").value;
+        let contact = document.querySelector("input[name = 'contact']").value;
 
         if(flag === "true"){
-            address = "test";
-            postNo = "12345";
-            addressDetail = "test";
+            address = "default address";
+            postNo = "00000";
+            addressDetail = "default address-detail";
+            addressee = "default addressee";
+            contact = "default contact";
         }
 
-
         const orderRequestDto = {
-            postNo, address, addressDetail,
+            postNo, address, addressDetail, addressee, contact,
             deliveryFlag: flag,
             requirement: requirement,
             payMethod: document.querySelector("select[name = 'payMethod']").value,
@@ -172,18 +172,31 @@ document.getElementById("checkout-btn").addEventListener("click", checkout);
 document.getElementById("total-count").innerText = productArr.length;
 const requirementSelect = document.getElementById("requirement");
 const requireTextarea = document.getElementById("message-textarea");
+const contact = document.querySelector("input[name = 'contact']");
 requirementSelect.addEventListener("change", () => {
     if (requirementSelect.value === "직접입력")
         requireTextarea.style.display = "block";
     else
         requireTextarea.style.display = "none";
-})
+});
 
 deliveryFlag.addEventListener("change", () => {
-    if(deliveryFlag.value === "true")
-        document.getElementById("post-form").style.display = "none";
+    const postForm = document.getElementById("post-form");
+    if(deliveryFlag.value === "true") {
+        postForm.style.display = "none";
+    }
     else
-        document.getElementById("post-form").style.display = "block";
-})
+        postForm.style.display = "block";
+});
+
+contact.addEventListener('input', () => {
+    let value = contact.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+    if (value.length > 3 && value.length <= 7)
+        value = value.slice(0, 3) + '-' + value.slice(3);
+     else if (value.length > 7)
+        value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+
+    contact.value = value;
+});
 
 renderProduct();

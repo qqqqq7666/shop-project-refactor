@@ -37,6 +37,10 @@ public class Order extends BaseEntity {
     private String addressDetail;
     @Column(nullable = false, length = 5)
     private String postNo;
+    @Column(nullable = false)
+    private String contact;
+    @Column(nullable = false)
+    private String addressee;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)

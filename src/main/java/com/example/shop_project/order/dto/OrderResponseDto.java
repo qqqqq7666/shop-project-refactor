@@ -32,4 +32,8 @@ public class OrderResponseDto {
     @Pattern(regexp = "^[0-9]*$")
     private String postNo;
     private LocalDateTime createdDate;
+    @NotBlank
+    private String contact;
+    @NotBlank
+    private String addressee;
 }
