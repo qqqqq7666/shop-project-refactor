@@ -24,12 +24,10 @@ import lombok.RequiredArgsConstructor;
 public class AdminMemberRestController {
 	private final MemberRepository memberRepository;
 	
+	// 회원 권한 변경
 	@PutMapping("/role/{id}")
-	public ResponseEntity<?> updateRole(@PathVariable("id") Long id, @RequestBody  Map<String, String> request) {
+	public ResponseEntity<?> updateRole(@PathVariable("id") Long id, @RequestBody Map<String, String> request) {
 	    Optional<Member> optionalMember = memberRepository.findById(id);
-	    if (optionalMember.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원이 존재하지 않습니다.");
-	    }
 
 	    Member member = optionalMember.get();
 	    Role newRole = Role.valueOf(request.get("role")); 
@@ -38,4 +36,24 @@ public class AdminMemberRestController {
 
 	    return ResponseEntity.ok("권한이 변경되었습니다.");
 	}
+	
+	// 회원 삭제 (withdraw 값 변경)
+    @PutMapping("/withdraw/{id}")
+    public ResponseEntity<?> withdrawMember(@PathVariable("id") Long id) {
+        Optional<Member> optionalMember = memberRepository.findById(id);
+
+        if (optionalMember.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원이 존재하지 않습니다.");
+        }
+
+        Member member = optionalMember.get();
+        if (member.getWithdraw()) {
+            return ResponseEntity.badRequest().body("이미 탈퇴된 회원입니다.");
+        }
+
+        member.setWithdraw(true); 
+        memberRepository.save(member);
+
+        return ResponseEntity.ok("회원이 탈퇴 처리되었습니다.");
+    }
 }
