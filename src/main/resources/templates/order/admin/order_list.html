@@ -18,7 +18,7 @@
     </tr>
     </thead>
     <tbody align="center">
-    <tr th:each="order: ${orderList}">
+    <tr th:each="order: ${orderList}" id="order-info">
         <td th:text="${order.getOrderNo()}">Mark</td>
         <td th:text="${#temporals.format(order.getCreatedDate(), 'yy-MM-dd')}">1</td>
         <td th:text="${order.getMember().getName()}">Mark</td>
@@ -29,5 +29,10 @@
     </tbody>
 </table>
 <script src="/order/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById("order-info").addEventListener("click", () => {
+
+    })
+</script>
 </body>
 </html>
