@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.shop_project.member.dto.MemberRequestDTO;
 import com.example.shop_project.member.entity.Member;
-import com.example.shop_project.member.mapper.MemberMapper;
 import com.example.shop_project.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder  passwordEncoder;
-	//private final MemberMapper memberMapper;
 	
 	public void Join(MemberRequestDTO memberDTO) {
 		// 이메일과 닉네임 중복 검사 (비동기로 중복 검사 하지만 안정성을 위해 추가)
@@ -28,19 +26,16 @@ public class MemberService {
 	    
 	    String encryptedPassword = passwordEncoder.encode(memberDTO.getPassword());
 	    
-	    // mapper가 갑자기 안돼서 주석처리..테스트 코드로 테스트 해보기
-//	    Member member = memberMapper.toEntity(memberDTO);
-//        member.setPassword(encryptedPassword);
-	    
-	    Member member = new Member();
-        member.setEmail(memberDTO.getEmail());
-        member.setNickname(memberDTO.getNickname());
-        member.setPassword(encryptedPassword);
-        member.setName(memberDTO.getName());
-        member.setPhone(memberDTO.getPhone());
-        member.setPostNo(memberDTO.getPostNo());
-        member.setAddress(memberDTO.getAddress());
-        member.setAddressDetail(memberDTO.getAddressDetail());
+	    Member member = Member.builder()
+	            .email(memberDTO.getEmail())
+	            .nickname(memberDTO.getNickname())
+	            .password(encryptedPassword)
+	            .name(memberDTO.getName())
+	            .phone(memberDTO.getPhone())
+	            .postNo(memberDTO.getPostNo())
+	            .address(memberDTO.getAddress())
+	            .addressDetail(memberDTO.getAddressDetail())
+	            .build();
         
         memberRepository.save(member);	
 	}

@@ -17,7 +17,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Data
 public class Member extends BaseEntity {
@@ -79,8 +86,6 @@ public class Member extends BaseEntity {
         
         this.createdAt = now;
         this.updatedAt = now;
-        //super.createdDate = now;
-        //super.updatedDate = now;
         
         // 기본값 설정
         if (this.role == null) 
@@ -95,6 +100,6 @@ public class Member extends BaseEntity {
 	@PreUpdate
     public void preUpdate() {
 		this.updatedAt = LocalDateTime.now();
-		//super.updatedDate = LocalDateTime.now();
     }
+	
 }
