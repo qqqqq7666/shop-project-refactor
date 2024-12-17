@@ -38,8 +38,24 @@ public class CategoryController {
     // 카테고리 추가
     @PostMapping("/create")
     public ResponseEntity<CategoryResDto> createCategory(@Valid @ModelAttribute CategoryCreateReqDto categoryCreateReqDto) {
-        CategoryResDto categoryResDto = categoryService.createCategory(categoryCreateReqDto);
-        return ResponseEntity.ok(categoryResDto);
+        log.debug("카테고리 추가(controller) - 메인 카테고리 추가 여부: {}", categoryCreateReqDto.isCreatingMainCategory());
+        log.debug("카테고리 추가(controller) - 메인 카테고리명: {}", categoryCreateReqDto.getMainCategoryName());
+        log.debug("카테고리 추가(controller) - 서브 카테고리명: {}", categoryCreateReqDto.getSubCategoryName());
+        log.debug("카테고리 추가(controller) -  {}", categoryCreateReqDto);
+
+        CategoryResDto categoryResDto;
+
+        if(categoryCreateReqDto.isCreatingMainCategory()) {
+            categoryResDto = categoryService.createMainCategory(categoryCreateReqDto);
+        } else {
+            categoryResDto = categoryService.createSubCategory(categoryCreateReqDto);
+        }
+
+        if (categoryResDto == null) {
+            return ResponseEntity.status(409).build(); // 카테고리명 중복
+        } else {
+            return ResponseEntity.ok(categoryResDto);
+        }
     }
 
     // 카테고리 수정
@@ -48,7 +64,7 @@ public class CategoryController {
         CategoryResDto categoryResDto = categoryService.updateCategory(categoryUpdateReqDto);
 
         if(categoryResDto == null) {
-            return ResponseEntity.status(409).build();
+            return ResponseEntity.status(409).build(); // 카테고리명 중복
         } else {
             return ResponseEntity.ok(categoryResDto);
         }
@@ -57,13 +73,12 @@ public class CategoryController {
     // 카테고리 삭제
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteCategory(@RequestBody Map<String, Object> request) {
-        log.info("############### 카테고리 ID: {}", request.get("categoryId"));
+        log.debug("카테고리 삭제(controller) - 요청 ID: {}", request.get("categoryId"));
         Long categoryId = Long.valueOf(request.get("categoryId").toString());
         if (categoryId == null) {
             log.warn("잘못된 요청 데이터입니다: {}", request);
             return ResponseEntity.badRequest().build(); // 400 상태 코드 반환
         }
-
 
         boolean isDeleted = categoryService.deleteCategory(categoryId);
 

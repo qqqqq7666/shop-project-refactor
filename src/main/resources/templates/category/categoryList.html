@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>카테고리 목록</title>
     <link rel="stylesheet" type="text/css" href="/category/css/categoryList.css">
-    <script src="/category/js/categoryList.js" defer></script>
+    <script src="/category/js/categoryCreate.js" defer></script>
     <script src="/category/js/categoryUpdate.js" defer></script>
+    <script src="/category/js/categoryDelete.js" defer></script>
 </head>
 <body>
     <h1>Categories</h1>
@@ -22,7 +23,7 @@
             <input type="text" id="sub-category-name" name="subCategoryName" placeholder="서브 카테고리 이름을 입력하세요" required>
             <br>
             <button type="submit">저장</button>
-            <button type="button" onclick="toggleForm('main-category-form'); resetForm('main-category-form')">취소</button>
+            <button type="button" onclick="toggleForm('main-category-form')">취소</button>
         </form>
     </div>
 
@@ -48,7 +49,7 @@
                 <label th:for="|sub-form-category-name-${category.categoryId}|">서브 카테고리 추가</label><br>
                 <input type="text" th:id="|sub-form-category-name-${category.categoryId}|" name="subCategoryName" placeholder="서브 카테고리 이름을 입력하세요" required><br>
                 <button type="submit">저장</button>
-                <button type="button" th:onclick="|toggleForm('sub-category-form-${category.categoryId}'); resetForm('sub-category-form-${category.categoryId}')|">취소</button>
+                <button type="button" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">취소</button>
             </form>
             <!-- 서브 카테고리 추가 버튼 -->
             <button class="add-sub-category-btn" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">+</button>

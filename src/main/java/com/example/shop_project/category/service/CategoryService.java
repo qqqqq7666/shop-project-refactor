@@ -32,19 +32,54 @@ public class CategoryService {
         return categoryResDtos;
     }
 
-    // 카테고리 생성
+    // 메인 카테고리 생성
     @Transactional
-    public CategoryResDto createCategory(CategoryCreateReqDto categoryCreateReqDto) {
-        Category mainCategory = categoryRepository.findByCategoryName(categoryCreateReqDto.getMainCategoryName());
-        // 메인 카테고리 생성
-        if(mainCategory == null) {
-            mainCategory = new Category();
-            mainCategory.setCategoryName(categoryCreateReqDto.getMainCategoryName());
-            mainCategory.setDepth(0);
-            categoryRepository.save(mainCategory);
+    public CategoryResDto createMainCategory(CategoryCreateReqDto categoryCreateReqDto) {
+        log.debug("카테고리 추가(service) - 메인 카테고리 추가 메서드 실행({})", categoryCreateReqDto.isCreatingMainCategory());
+
+        // 메인 카테고리명 중복 검사
+        List<Category> mainCategories = categoryRepository.findByDepth(0); // 메인 카테고리
+
+        for(Category category : mainCategories) {
+            if(category.getCategoryName().equals(categoryCreateReqDto.getMainCategoryName())) {
+                return null;
+            }
         }
 
-        //Long mainCategoryId = mainCategory.getCategoryId();
+        // 메인 카테고리 생성
+        Category newMainCategory = new Category();
+        newMainCategory.setCategoryName(categoryCreateReqDto.getMainCategoryName());
+        newMainCategory.setDepth(0);
+        categoryRepository.save(newMainCategory);
+
+        // 서브 카에고리 생성
+        Category newSubCategory = new Category();
+        newSubCategory.setCategoryName(categoryCreateReqDto.getSubCategoryName());
+        newSubCategory.setDepth(newMainCategory.getDepth() + 1); // 서브 카테고리의 깊이는 0 + 1
+        newSubCategory.setParentCategory(newMainCategory);
+        newMainCategory.getSubCategories().add(newSubCategory); // 부모-자식 동기화
+        categoryRepository.save(newSubCategory);
+
+        CategoryResDto categoryResDto = toCategoryResDto(newMainCategory);
+
+        return categoryResDto;
+    }
+
+    // 서브 카테고리 생성
+    @Transactional
+    public CategoryResDto createSubCategory(CategoryCreateReqDto categoryCreateReqDto) {
+        log.debug("카테고리 추가(service) - 서브 카테고리 추가 메서드 실행({})", categoryCreateReqDto.isCreatingMainCategory());
+
+        Category mainCategory = categoryRepository.findByCategoryName(categoryCreateReqDto.getMainCategoryName());
+
+        // 서브 카테고리 중복 검사
+        List<Category> subCategories = mainCategory.getSubCategories();
+
+        for(Category category : subCategories) {
+            if(category.getCategoryName().equals(categoryCreateReqDto.getSubCategoryName())) {
+                return null;
+            }
+        }
 
         // 서브 카테고리 생성
         Category newSubCategory = new Category();
@@ -54,13 +89,15 @@ public class CategoryService {
         mainCategory.getSubCategories().add(newSubCategory); // 부모-자식 동기화
         categoryRepository.save(newSubCategory);
 
-        return toCategoryResDto(mainCategory);
+        CategoryResDto categoryResDto = toCategoryResDto(mainCategory);
+
+        return categoryResDto;
     }
 
     // 카테고리 수정
     @Transactional
     public CategoryResDto updateCategory(CategoryUpdateReqDto categoryUpdateReqDto) {
-        log.info("카테고리 업데이트 요청 - ID: {}, 새로운 이름: {}", categoryUpdateReqDto.getCategoryId(), categoryUpdateReqDto.getCategoryName());
+        log.debug("카테고리 수정(service) - 요청 ID: {}, 새로운 이름: {}", categoryUpdateReqDto.getCategoryId(), categoryUpdateReqDto.getCategoryName());
         Category category = categoryRepository.findByCategoryId(categoryUpdateReqDto.getCategoryId());
         String updateCategoryName = categoryUpdateReqDto.getCategoryName();
 
@@ -80,21 +117,21 @@ public class CategoryService {
     // 카테고리 삭제
     @Transactional
     public boolean deleteCategory(Long categoryId) {
-        log.info("##############service categoryId: {}", categoryId);
+        log.debug("카테고리 삭제(service) - categoryId: {}", categoryId);
         Category category = categoryRepository.findByCategoryId(categoryId);
         String categoryName = category.getCategoryName();
 
-        log.info("##############service categoryName: {}", categoryName);
+        log.debug("카테고리 삭제(service) - categoryName: {}", categoryName);
 
         Category parentCategory = category.getParentCategory();
         parentCategory.getSubCategories().remove(category); // 연관관계 삭제
 
-        if(category != null) {
+        if(category != null) { // 항상 true
             // productList 비었는지 확인 후 비었으면
             categoryRepository.delete(category); // 서브 카테고리 삭제
 
             // 메인 카테고리에 서브 카테고리 없으면 메인 카테고리 삭제
-            if(parentCategory != null) {
+            if(parentCategory != null) { // 항상 true
                 List<Category> subCategories = parentCategory.getSubCategories();
                 if(subCategories.isEmpty()) {
                     categoryRepository.delete(parentCategory); // 메인 카테고리 삭제
