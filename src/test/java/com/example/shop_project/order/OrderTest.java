@@ -6,7 +6,6 @@ import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.entity.OrderStatus;
-import com.example.shop_project.order.entity.PayMethod;
 import com.example.shop_project.product.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +66,6 @@ public class OrderTest {
                 .address("test")
                 .addressDetail("test")
                 .postNo("12345")
-                .payMethod(PayMethod.CARD)
                 .requirement("")
                 .totalPrice(30L)
                 .detailDtoList(dtoList)

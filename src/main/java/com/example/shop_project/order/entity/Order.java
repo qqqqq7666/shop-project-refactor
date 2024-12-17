@@ -26,8 +26,6 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private OrderStatus orderStatus;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PayMethod payMethod;
     // 직접 입력을 위해 String
     @Column(nullable = false)
     private String requirement;
@@ -52,7 +50,6 @@ public class Order extends BaseEntity {
     public void updateOrder(OrderRequestDto orderRequestDto){
         totalPrice = orderRequestDto.getTotalPrice();
         orderStatus = orderRequestDto.getOrderStatus();
-        payMethod = orderRequestDto.getPayMethod();
         address = orderRequestDto.getAddress();
         addressDetail = orderRequestDto.getAddressDetail();
         postNo = orderRequestDto.getPostNo();

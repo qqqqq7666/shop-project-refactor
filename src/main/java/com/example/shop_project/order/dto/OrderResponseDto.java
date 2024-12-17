@@ -2,11 +2,9 @@ package com.example.shop_project.order.dto;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.entity.OrderStatus;
-import com.example.shop_project.order.entity.PayMethod;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 
@@ -20,8 +18,6 @@ public class OrderResponseDto {
     private Long totalPrice;
     @NotNull
     private OrderStatus orderStatus;
-    @NotNull
-    private PayMethod payMethod;
     @NotNull
     private String requirement;
     @NotBlank

@@ -167,7 +167,7 @@ async function checkout() {
             pay_method: "card",
             merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
             name: `${productArr[0].name} 외 ${productArr.length}개`,
-            amount: 101,
+            amount: total,
             buyer_email: "test@portone.io",
             buyer_name: member.name,
             buyer_tel: member.phone, //필수 파라미터 입니다.
