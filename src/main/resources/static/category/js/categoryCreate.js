@@ -34,13 +34,19 @@ document.body.addEventListener('click', (event) => {
             body: formData
         })
             .then(response => {
+                const activeElement = document.querySelector('.active');
+                const activeElementId = activeElement.id;
+
                 if (response.ok) {
                     return response.json();
                 } else if (response.status === 400) {  // badRequest
-                    throw new Error('유효하지 않은 카테고리입니다(영대소문자, 한글, /만 가능).');
+                    toggleForm(activeElementId);
+                    throw new Error('유효하지 않은 카테고리입니다(15자 이내 영대소문자, 한글, /만 가능).');
                 } else if (response.status === 409) {  // Conflict
+                    toggleForm(activeElementId);
                     throw new Error('카테고리명이 중복되었습니다.');
                 } else {
+                    toggleForm(activeElementId);
                     throw new Error('카테고리 추가에 실패했습니다.');
                 }
             })
@@ -51,7 +57,7 @@ document.body.addEventListener('click', (event) => {
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('카테고리 추가에 실패했습니다.');
+                alert('에러 발생: ' + error.message);
             });
     }
 });
@@ -111,5 +117,17 @@ function addSubCategoryToUI(mainCategoryId, subCategory) {
 function toggleForm(formId) {
     const formContainer = document.getElementById(formId);
     formContainer.classList.toggle('active'); // 폼 활성화/비활성화
+
+    // 카테고리 추가 버튼 처리
+    const parentElement = formContainer.parentElement;
+    const addButton = parentElement.querySelector('.add-btn');
+    if (formContainer.classList.contains('active')) {
+        // 폼이 활성화 상태면 버튼 숨김
+        addButton.style.display = 'none';
+    } else {
+        // 폼이 비활성화 상태면 버튼 복원
+        addButton.style.display = '';
+    }
+
     formContainer.reset(); // 폼 초기화
 }

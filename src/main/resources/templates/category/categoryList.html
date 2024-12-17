@@ -12,7 +12,7 @@
     <h1>Categories</h1>
     <div id="add-main-cagegory">
         <!-- 메인 카테고리 추가 버튼 -->
-        <button onclick="toggleForm('main-category-form')">추가</button>
+        <button class="add-btn" onclick="toggleForm('main-category-form')">추가</button>
         <!-- 메인 카테고리 추가 입력 폼 -->
         <form id="main-category-form" class="form-container">
             <h2>메인 카테고리 추가</h2>
@@ -52,7 +52,7 @@
                 <button type="button" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">취소</button>
             </form>
             <!-- 서브 카테고리 추가 버튼 -->
-            <button class="add-sub-category-btn" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">+</button>
+            <button class="add-sub-category-btn add-btn" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">+</button>
         </div>
     </div>
 

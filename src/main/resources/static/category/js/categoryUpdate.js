@@ -74,13 +74,13 @@ function saveCategory(tagId, categoryId) {
                 return response.json();
             } else if (response.status === 400) {  // badRequest
                 cancelEditCategory(tagId);
-                throw new Error('카테고리 업데이트 실패(영대소문자, 한글, /만 가능).');
+                throw new Error('유효하지 않은 카테고리입니다(15자 이내 영대소문자, 한글, /만 가능).');
             } else if (response.status === 409) {  // Conflict
                 cancelEditCategory(tagId);
                 throw new Error('카테고리명이 중복되었습니다.');
             } else {
                 cancelEditCategory(tagId);
-                throw new Error('카테고리 업데이트 실패');
+                throw new Error('카테고리 업데이트 실패에 실패했습니다.');
             }
         })
         .then(data  => {
