@@ -57,20 +57,27 @@ public class productViewController {
 
     // 상품 관리 페이지(관리자)
     @GetMapping("/manage")
-    public String productList(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
-        List<ProductResponseDto> products = productService.getProductList(keyword != null ? keyword : "");
-        if (products == null) {
-            products = Collections.emptyList();
-        }
-        model.addAttribute("products", products);
+    public String productList(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+                              @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                              @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                              Model model) {
+        Page<ProductResponseDto> productPage = productService.getProductList(keyword, page, size);
+
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("keyword", keyword);
         return "admin/productManage";
     }
 
-    // 상품 수정 페이지
+    // 수정 페이지 요청 처리
     @GetMapping("/edit/{productId}")
-    public String editProductForm(@PathVariable Long productId, Model model) {
-        ProductResponseDto product = productService.getProductById(productId);
+    public String editProductPage(@PathVariable Long productId, Model model) {
+        // 상품 정보를 가져옵니다
+        ProductResponseDto product = productService.getProductDetail(productId);
+
+        // 모델에 상품 데이터를 추가하여 수정 페이지에 전달
         model.addAttribute("product", product);
-        return "admin/editProductForm";
+        return "products/editProduct"; // 수정 페이지 템플릿
     }
 }

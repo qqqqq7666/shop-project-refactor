@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -164,16 +166,25 @@ public class ProductService {
     }
 
     // 상품 목록 불러오기(키워드로 불러오기)
-    public List<ProductResponseDto> getProductList(String keyword) {
-        List<Product> products;
-        if (keyword != null && !keyword.isEmpty()) {
-            products = productRepository.findByProductNameContaining(keyword);
-        } else {
-            products = productRepository.findAll();
-        }
-        return productRepository.findAll().stream()
-                .map(this::mapToResponseDto)
-                .collect(Collectors.toList());
+    public Page<ProductResponseDto> getProductList(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 검색 기능 적용
+        Page<Product> products = productRepository.findByProductNameContaining(keyword, pageable);
+
+        // Product -> ProductResponseDto로 변환
+        return products.map(product -> ProductResponseDto.builder()
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .price(product.getPrice())
+                .viewCount(product.getViewCount())
+                .salesCount(product.getSalesCount())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
+                .imageUrls(product.getImages().stream()
+                        .map(ProductImage::getImageUrl)
+                        .toList())
+                .build());
     }
 
     public ProductResponseDto getProductDetail(Long productId) {
@@ -189,9 +200,87 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
         return mapToResponseDto(product);
     }
+    
 
     // 상품 삭제
     public void deleteProduct(Long productId) {
         productRepository.deleteById(productId);
     }
+
+    // 부분 업데이트 메서드
+    public ProductResponseDto partialUpdateProduct(Long productId, Map<String, Object> updates, List<MultipartFile> images) {
+        // 상품 조회
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
+
+        // 업데이트할 필드 적용
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "productName":
+                    if (value instanceof String) {
+                        product.setProductName((String) value);
+                    }
+                    break;
+                case "categoryName":
+                    if (value instanceof String) {
+                        product.setCategoryName((String) value);
+                    }
+                    break;
+                case "description":
+                    if (value instanceof String) {
+                        product.setDescription((String) value);
+                    }
+                    break;
+                case "price":
+                    if (value instanceof Number) {
+                        product.setPrice(((Number) value).intValue());
+                    }
+                    break;
+                case "options":
+                    if (value instanceof List<?>) {
+                        List<Map<String, Object>> optionList = (List<Map<String, Object>>) value;
+                        product.getOptions().clear();
+                        optionList.forEach(option -> {
+                            String size = (String) option.get("size");
+                            String color = (String) option.get("color");
+                            Integer stockQuantity = (Integer) option.get("stockQuantity");
+
+                            if (size != null && color != null && stockQuantity != null) {
+                                ProductOption newOption = new ProductOption();
+                                newOption.setSize(Size.valueOf(size));
+                                newOption.setColor(color);
+                                newOption.setStockQuantity(stockQuantity);
+                                newOption.setProduct(product);
+                                product.getOptions().add(newOption);
+                            }
+                        });
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid field: " + key);
+            }
+        });
+
+        // 이미지 업데이트 로직
+        if (images != null && !images.isEmpty()) {
+            product.getImages().clear(); // 기존 이미지 제거
+            for (int i = 0; i < images.size(); i++) {
+                String imagePath = imageService.uploadImage("products", images.get(i));
+                ProductImage productImage = new ProductImage();
+                productImage.setImageUrl(imagePath);
+                productImage.setSortOrder(i + 1);
+                productImage.setProduct(product);
+                product.getImages().add(productImage);
+            }
+        }
+
+        product.setUpdatedAt(LocalDateTime.now());
+
+        // 변경된 상품 저장
+        Product updatedProduct = productRepository.save(product);
+
+        // 수정된 상품 정보 반환
+        return mapToResponseDto(updatedProduct);
+    }
+
 }

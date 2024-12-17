@@ -6,6 +6,7 @@ import com.example.shop_project.product.entity.ProductImage;
 import com.example.shop_project.product.repository.productImageRepository;
 import com.example.shop_project.product.service.ImageService;
 import com.example.shop_project.product.service.ProductService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,26 @@ public class ProductController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Product created successfully!");
         return ResponseEntity.ok(response);
+    }
+
+    // 부분 수정 메서드
+    @PatchMapping("/{productId}")
+    public ResponseEntity<?> updateProductPartially(
+            @PathVariable Long productId,
+            @RequestPart(value = "updates") String updatesJson,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+
+        // JSON 문자열을 Map으로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> updates = null;
+        try {
+            updates = objectMapper.readValue(updatesJson, Map.class);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON format for updates");
+        }
+
+        ProductResponseDto updatedProduct = productService.partialUpdateProduct(productId, updates, images);
+        return ResponseEntity.ok(updatedProduct);
     }
 
 
