@@ -64,7 +64,7 @@ public class OrderAPIController {
     }
 
     @PatchMapping("/{orderNo}/update-status")
-    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long orderNo, OrderStatus orderStatus){
+    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long orderNo, @RequestBody OrderStatus orderStatus){
         OrderResponseDto response = orderService.updateOrderStatus(orderNo, orderStatus);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
@@ -72,9 +72,6 @@ public class OrderAPIController {
 
     @GetMapping("/member-info")
     public ResponseEntity<?> getMemberAddress(Principal principal){
-//        if(principal == null){
-//            return ResponseEntity.status(403).body("로그인 만료");
-//        }
         Member member = memberService.findByEmail(principal.getName());
         return ResponseEntity.ok(member);
     }

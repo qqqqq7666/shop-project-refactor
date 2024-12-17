@@ -1,7 +1,6 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 let formChecked = false;
 let requirement;
-let forms;
 
 let deliveryFlag = document.querySelector("select[name = 'deliveryFlag']");
 
@@ -13,7 +12,7 @@ let deliveryFlag = document.querySelector("select[name = 'deliveryFlag']");
     const checkoutButton = document.getElementById("checkout-btn");
 
     checkoutButton.addEventListener("click", event => {
-        forms = document.querySelectorAll('.needs-validation');
+        const forms = document.querySelectorAll('.needs-validation');
         formChecked = true;
         Array.from(forms).forEach(form => {
             if (!form.checkValidity()) {
@@ -27,20 +26,6 @@ let deliveryFlag = document.querySelector("select[name = 'deliveryFlag']");
         })
         console.log("formChecked = " + formChecked);
     })
-
-    // Loop over them and prevent submission
-    // Array.from(forms).forEach(form => {
-    //     form.addEventListener('change', event => {
-    //         if (!form.checkValidity()) {
-    //             event.preventDefault()
-    //             event.stopPropagation()
-    //             formChecked = false;
-    //         } else {
-    //             formChecked = true;
-    //         }
-    //         form.classList.add('was-validated')
-    //     }, false)
-    // })
 
     if (localStorage.getItem("cart") === "[]" || localStorage.getItem("cart") === null) {
         alert("잘못된 접근입니다.");

@@ -28,7 +28,7 @@
                     <p class="card-text text-muted" style="position: absolute; top: 0; right: 0; margin: 10px; font-size: 0.9em;"><a th:href="|order/${order.getKey().getOrderNo()}|">주문 상세</a></p>
                     <h5 class="card-title" th:text="${detail.getProduct().getProductName()}">Product Name</h5>
                     <p class="card-text mb-1" th:text="|Option / ${detail.getQuantity()}개|">Size/Quantity</p>
-                    <p class="card-text" th:text="|${detail.getPrice()}원|">Price: <strong>30,000원</strong></p>
+                    <p class="card-text" th:text="|${detail.getPrice()}원|">Price: <strong>price</strong></p>
                 </div>
             </div>
             <hr>
