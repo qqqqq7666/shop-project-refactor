@@ -37,7 +37,7 @@ public class MemberControllerTest {
 	void testJoinPage() throws Exception {
 	    mockMvc.perform(get("/join"))
 	            .andExpect(status().isOk())
-	            .andExpect(view().name("join"));
+	            .andExpect(view().name("member/join"));
 	}
 	
 	@Test	// 모든 필드를 올바르게 입력하면 성공적으로 /login으로 리다이렉트.
@@ -73,7 +73,7 @@ public class MemberControllerTest {
 	            .param("addressDetail", "상세주소")
 	    )
 	    .andExpect(status().isOk())
-	    .andExpect(view().name("join"))
+	    .andExpect(view().name("member/join"))
 	    .andExpect(model().attribute("error", "올바른 이메일 형식이 아닙니다."));
 	}
 	
@@ -81,7 +81,7 @@ public class MemberControllerTest {
 	void testLoginPage() throws Exception {
 	    mockMvc.perform(get("/login"))
 	            .andExpect(status().isOk())
-	            .andExpect(view().name("login"));
+	            .andExpect(view().name("member/login"));
 	}
 	
 	@Test	// 인증된 사용자(로그인된)는 mypage접근시 200 확인
@@ -89,7 +89,7 @@ public class MemberControllerTest {
 	void testMyPageAuthenticated() throws Exception {
 	    mockMvc.perform(get("/mypage"))
 	            .andExpect(status().isOk())
-	            .andExpect(view().name("mypage"));
+	            .andExpect(view().name("member/mypage"));
 	}
 
 	@Test	// 인증되지 않은 사용자(비로그인)는 login으로 리다이렉트

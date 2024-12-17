@@ -41,6 +41,7 @@
                 <th>가입 날짜</th>
                 <th>이메일</th>
                 <th>가입 유형</th>
+                <th>이름</th>
                 <th>닉네임</th>
                 <th>권한</th>
                 <th>관리</th>
@@ -51,14 +52,34 @@
                 <td th:text="${member.createdAt}"></td>
                 <td th:text="${member.email}"></td>
                 <td>일반</td>
+                <td th:text="${member.name}"></td>
                 <td th:text="${member.nickname}"></td>
-                <td th:text="${member.role}"></td>
                 <td>
-                    <button type="button">회원정보 삭제</button>
-                </td>
+				    <!-- 권한 드롭다운 -->
+				    <select 
+				        th:id="'role_' + ${member.id}" 
+				        th:name="role" 
+				        th:data-id="${member.id}" 
+				        th:data-previous-value="${member.role}" 
+				        th:onchange="onRoleChange(this)">
+				        <!-- USER 옵션 -->
+				        <option th:value="'USER'" th:selected="${member.role.toString() == 'USER'}">USER</option>
+				        <!-- ADMIN 옵션 -->
+				        <option th:value="'ADMIN'" th:selected="${member.role.toString() == 'ADMIN'}">ADMIN</option>
+				    </select>
+				</td>
+                <td>
+		            <!-- 탈퇴 여부에 따라 버튼 활성화/비활성화 -->
+		            <button type="button"
+		                    th:attr="data-id=${member.id}"
+		                    th:disabled="${member.withdraw}" 
+		                    th:text="${member.withdraw} ? '탈퇴된 회원' : '회원정보 삭제'"
+		                    class="delete-member-btn">
+		            </button>
+		        </td>
             </tr>
         </tbody>
     </table>
-
+<script src="/admin/js/adminMembers.js"></script>
 </body>
 </html>

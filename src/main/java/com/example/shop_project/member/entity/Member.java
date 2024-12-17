@@ -3,6 +3,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.processing.Pattern;
 
+import com.example.shop_project.BaseEntity;
 import com.example.shop_project.member.Membership;
 import com.example.shop_project.member.Role;
 
@@ -16,10 +17,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Data
-public class Member {
+public class Member extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "member_id")
@@ -30,6 +38,9 @@ public class Member {
 	
 	@Column(name = "password", nullable = false)
 	private String password;
+	
+	@Column(name = "name", nullable = false)
+	private String name;
 	
 	@Column(name = "phone", nullable = false)
 	private String phone;
@@ -72,6 +83,7 @@ public class Member {
 	@PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
+        
         this.createdAt = now;
         this.updatedAt = now;
         
@@ -87,6 +99,7 @@ public class Member {
 	
 	@PreUpdate
     public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
     }
+	
 }

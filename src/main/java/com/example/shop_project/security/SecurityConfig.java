@@ -5,13 +5,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+	//private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -20,10 +27,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+//        		.sessionManagement(session -> session
+//        				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)		// 서버에서 세션 사용 x 인증 정보는 클라이언트에서 관리
+//        		)
                 .authorizeHttpRequests(auth -> auth
                 		.requestMatchers("/admin/**").hasAuthority("ADMIN") // 관리자만 접근 허용
                         .requestMatchers("/**").permitAll()		// 후에 접근 허용 경로 수정 필요
                 )
+                //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
                 .formLogin(form -> form
                         .loginPage("/login") // 커스텀 로그인 페이지
                         .loginProcessingUrl("/perform_login") // 폼 액션 URL
@@ -38,7 +49,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)        // 세션 무효화
                         .deleteCookies("JSESSIONID")        // 쿠키 삭제
                 )
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable);		// 후에 csrf
 
         return http.build();
     }
