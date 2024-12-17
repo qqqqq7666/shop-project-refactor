@@ -1,12 +1,18 @@
 package com.example.shop_project.member.controller;
+import com.example.shop_project.member.entity.Member;
+import com.example.shop_project.member.repository.MemberRepository;
+import com.example.shop_project.security.SecurityConfig;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -29,12 +35,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
 	@Autowired
     private MockMvc mockMvc;
+	
+	@Mock
+	PasswordEncoder passwordEncoder;
+	
+	@Mock
+    MemberRepository memberRepository;
 	
 	@Test	// 페이지 요청이 정상적으로 200 OK를 반환하고, join 뷰를 렌더링하는지 확인.
 	void 회원가입_페이지접속() throws Exception {
@@ -150,13 +165,42 @@ public class MemberControllerTest {
 	// db에 존재하지 않는 이메일로 로그인 시도시 실패
 	@Test
 	void 로그인_존재하지않는_이메일() throws Exception {
-		
+		 // 존재하지 않는 이메일인지 확인
+	    assertFalse(memberRepository.findByEmail("wrong@example.com").isPresent());
+	    
+		mockMvc.perform(formLogin()
+                .loginProcessingUrl("/perform_login")
+                .user("email", "wrong@example.com")   // 잘못된 이메일
+                .password("WrongPass!"))             // 잘못된 비밀번호
+                .andExpect(status().is3xxRedirection()) // 실패 시에도 리다이렉트
+                .andExpect(redirectedUrl("/login?error=true")); // 실패 시 에러 파라미터 확인
 	}
+	
+//	@BeforeEach
+//    void 비밀번호불일치_테스트전_유저준비() {
+//        // 테스트 데이터 설정: 존재하는 이메일과 암호화된 비밀번호
+//        Member testMember = Member.builder()
+//                .email("test@example.com")
+//                .password(passwordEncoder.encode("CorrectPass1!")) // 올바른 비밀번호
+//                .name("testname")
+//                .nickname("tester")
+//                .phone("010-1234-5678")
+//                .postNo("12345")
+//                .address("서울시 중구")
+//                .addressDetail("상세주소")
+//                .build();
+//
+//        memberRepository.save(testMember);
+//    }
 	
 	// 존재하는 이메일을 입력했지만 비밀번호가 틀리면 로그인 실패
 	@Test
 	void 로그인_비밀번호불일치() throws Exception {
-		
+		mockMvc.perform(post("/perform_login")
+                .param("email", "test@example.com") // 존재하는 이메일
+                .param("password", "WrongPass1!")) // 틀린 비밀번호
+                .andExpect(status().is3xxRedirection()) // 실패 시 리다이렉트
+                .andExpect(redirectedUrl("/login?error=true")); // 실패 시 에러 파라미터 확인
 	}
 	
 	@Test	// 인증된 사용자(로그인된)는 mypage접근시 200 확인
