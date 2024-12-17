@@ -145,8 +145,16 @@ async function checkout() {
             contact = member.phone;
         }
 
+        // 직접 입력 선택 여부 판단
+        if (requirementSelect.value === "직접입력")
+            requirement = requireTextarea.value;
+        else
+            requirement = requirementSelect.value;
+
+        // 주문 정보 객체
         const orderRequestDto = {
-            postNo, address, addressDetail, addressee, contact, member, requirement,
+            postNo, address, addressDetail, addressee, contact, member,
+            requirement,
             payMethod: document.querySelector("select[name = 'payMethod']").value,
             orderStatus: "NEW",
             totalPrice: total,
@@ -158,7 +166,7 @@ async function checkout() {
             channelKey: "channel-key-a085e15a-a36f-4d9c-88c3-de5c8958e389",
             pay_method: "card",
             merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
-            name: "주문명:결제테스트",
+            name: `${productArr[0].name} 외 ${productArr.length}개`,
             amount: 101,
             buyer_email: "test@portone.io",
             buyer_name: member.name,
@@ -183,48 +191,65 @@ async function checkout() {
             },
         };
 
-        IMP.init("imp31477127");
-        IMP.request_pay(testPayInfo
-            ,
-            function (rsp) {
-                // callback 로직
-                //* ...중략... *//
-                if (rsp.success) {
-                    console.log("결제 성공");
-                    if (requirementSelect.value === "직접입력")
-                        requirement = requireTextarea.value;
-                    else
-                        requirement = requirementSelect.value;
+        const paymentDto = {
+            memberName: member.name,
+            payMethod: "CARD",
+            pg: "KG",
+            amount: total,
+            payStatus: "SUCCESS",
+        }
 
-                    console.log(orderRequestDto);
-                    fetch("/api/order/create", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(orderRequestDto),
-                    })
-                        .then((response) => {
-                            if (!response.ok) {
-                                alert("주문에 실패했습니다.");
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            } else {
-                                localStorage.removeItem("cart")
-                                const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
-                                modal.show();
-                                return response.json();
-                            }
-                        })
-                        .then((data) => console.log("Response:", data))
-                        .catch((error) => console.error("Error:", error));
-
-                    console.log(orderRequestDto);
-                } else {
-                    alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
-                    return location.href = "/order/cart";
-                }
+        fetch("/api/order/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-        );
+            body: JSON.stringify(orderRequestDto),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    // 주문 성공시 결제 요청
+                    IMP.init("imp31477127");
+                    IMP.request_pay(testPayInfo,
+                        function (rsp) {
+                            // callback 로직
+                            //* ...중략... *//
+                            if (rsp.success) {
+                                // payment create post 요청
+                                fetch("/api/payment/create", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify(paymentDto),
+                                })
+                                    .then(res => {
+                                        if(res.ok){
+                                            console.log("결제 데이터 저장 성공");
+                                            return res.json();
+                                        }
+                                    })
+                            } else {
+                                alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+                                return location.href = "/order/cart";
+                            }
+                        },
+                    );
+
+
+                    // 주문 저장 이후 로직
+                    localStorage.removeItem("cart")
+                    const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
+                    modal.show();
+                    return response.json();
+
+                } else {
+                    alert("주문에 실패했습니다.");
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            })
+            .then((data) => console.log("Response:", data))
+            .catch((error) => console.error("Error:", error));
     }
 }
 
