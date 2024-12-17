@@ -139,7 +139,6 @@ async function checkout() {
 
         const orderRequestDto = {
             postNo, address, addressDetail, addressee, contact, member,
-            deliveryFlag: flag,
             requirement: requirement,
             payMethod: document.querySelector("select[name = 'payMethod']").value,
             orderStatus: "NEW",

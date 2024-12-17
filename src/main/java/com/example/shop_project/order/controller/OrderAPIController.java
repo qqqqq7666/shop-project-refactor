@@ -7,6 +7,7 @@ import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.service.OrderService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +45,7 @@ public class OrderAPIController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto){
-        log.info("deliveryFlag : {}", orderRequestDto.getDeliveryFlag());
+    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto, HttpSession session){
         log.info("member : {}", orderRequestDto.getMember());
         OrderResponseDto response = orderService.createOrder(orderRequestDto);
 

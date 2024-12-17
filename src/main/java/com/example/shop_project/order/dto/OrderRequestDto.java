@@ -33,8 +33,6 @@ public class OrderRequestDto {
     private List<OrderDetailDto> detailDtoList;
     @NotNull
     private Member member;
-    @NotNull
-    private Boolean deliveryFlag;
     @NotBlank
     private String contact;
     @NotBlank

@@ -41,6 +41,7 @@ public class OrderService {
         return orderMapper.toResponseDto(newOrder);
     }
 
+    @Transactional
     public void createOrderDetail(Order order, List<OrderDetailDto> dtoList) {
         for (OrderDetailDto dto : dtoList) {
             OrderDetail orderDetail = orderMapper.toEntity(dto);
