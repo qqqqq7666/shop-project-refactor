@@ -33,7 +33,7 @@ public class MemberServiceTest {
 	MemberService memberService;
 	
 	@Test
-	void testJoinSuccess() {
+	void 회원가입_성공_확인() {
 		// given (준비)
 		MemberRequestDTO requestDTO = new MemberRequestDTO();
 		requestDTO.setEmail("test@example.com");
@@ -58,8 +58,9 @@ public class MemberServiceTest {
         
 	}
 	
+	// 이메일 중복 확인
 	@Test
-    void testJoinAlreadyExistsEmail() {
+    void 이메일_중복_확인() {
         // given
         MemberRequestDTO requestDTO = new MemberRequestDTO();
         requestDTO.setEmail("exists@example.com");
@@ -73,6 +74,16 @@ public class MemberServiceTest {
 
         // when & then
         assertThrows(IllegalArgumentException.class, () -> memberService.Join(requestDTO));
+    }
+	
+	// 닉네임 중복 확인
+	@Test
+    void 닉네임_중복_확인() {
+        // given
+
+
+        // when & then
+
     }
 	
 }
