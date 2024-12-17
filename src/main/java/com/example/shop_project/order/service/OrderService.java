@@ -73,7 +73,7 @@ public class OrderService {
 
     public List<OrderResponseDto> getOrderList() {
         List<OrderResponseDto> response = new ArrayList<>();
-        for (Order order : orderRepository.findAll())
+        for (Order order : orderRepository.findAllByOrderByOrderNoDesc())
             response.add(orderMapper.toResponseDto(order));
         return response;
     }

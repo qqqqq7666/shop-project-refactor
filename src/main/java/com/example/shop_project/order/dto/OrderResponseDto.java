@@ -1,5 +1,6 @@
 package com.example.shop_project.order.dto;
 
+import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.entity.PayMethod;
 import jakarta.validation.constraints.*;
@@ -36,4 +37,5 @@ public class OrderResponseDto {
     private String contact;
     @NotBlank
     private String addressee;
+    private Member member;
 }

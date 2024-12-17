@@ -142,7 +142,7 @@ async function checkout() {
             address = member.address;
             postNo = member.postNo;
             addressDetail = member.addressDetail;
-            addressee = member.nickname;
+            addressee = member.name;
             contact = member.phone;
         }
 

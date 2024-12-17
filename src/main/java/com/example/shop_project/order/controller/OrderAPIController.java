@@ -27,10 +27,6 @@ public class OrderAPIController {
     @Autowired
     MemberService memberService;
 
-    public ResponseEntity<List<OrderResponseDto>> orderList(){
-        return ResponseEntity.ok(orderService.getOrderList());
-    }
-
     @GetMapping("/{orderNo}")
     public ResponseEntity<OrderResponseDto> getOrder(@PathVariable(name = "orderNo") Long orderNo){
         OrderResponseDto response = orderService.getOrderByOrderNo(orderNo);

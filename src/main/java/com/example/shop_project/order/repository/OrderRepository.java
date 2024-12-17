@@ -15,4 +15,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Order save(Order order);
     Optional<Order> findByOrderNo(Long orderNo);
     void deleteByOrderNo(Long orderNo);
+    List<Order> findAllByOrderByOrderNoDesc();
 }
