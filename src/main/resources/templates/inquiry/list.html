@@ -48,7 +48,7 @@
     <h2>상품 문의 목록</h2>
 
     <div class="write-button">
-        <a th:href="@{/inquiries/create}" class="btn btn-primary">문의 작성</a>
+        <a th:href="@{/products/{productId}/inquiries/create(productId=${productId})}" class="btn btn-primary">문의 작성</a>
     </div>
 
     <div id="question-list">
@@ -57,7 +57,7 @@
             <p class="info">작성자: <span th:text="${inquiry.nickname}">닉네임</span> | 작성일: <span th:text="${inquiry.date}">YYYY-MM-DD</span></p>
             <p class="info">문의 유형: <span th:text="${inquiry.type.getKoreanName()}">문의 유형</span></p>
             <p th:text="${inquiry.content}">문의 내용</p>
-            <a th:href="@{/inquiries/{id}(id=${inquiry.id})}" class="btn btn-secondary btn-sm">상세 보기</a>
+            <a th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${productId}, inquiryId=${inquiry.id})}" class="btn btn-secondary btn-sm">상세 보기</a>
         </div>
     </div>
 </div>
