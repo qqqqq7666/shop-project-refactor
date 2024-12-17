@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -44,7 +45,7 @@ public class productViewController {
         return "products/productList";
     }
 
-    @GetMapping("/products/detail/{productId}")
+    @GetMapping("/detail/{productId}")
     public String getProductDetail(@PathVariable Long productId, Model model) {
         // 상품 정보를 조회
         ProductResponseDto product = productService.getProductDetail(productId);
@@ -52,5 +53,24 @@ public class productViewController {
         // 모델에 상품 데이터 추가
         model.addAttribute("product", product);
         return "products/productDetail";
+    }
+
+    // 상품 관리 페이지(관리자)
+    @GetMapping("/manage")
+    public String productList(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
+        List<ProductResponseDto> products = productService.getProductList(keyword != null ? keyword : "");
+        if (products == null) {
+            products = Collections.emptyList();
+        }
+        model.addAttribute("products", products);
+        return "admin/productManage";
+    }
+
+    // 상품 수정 페이지
+    @GetMapping("/edit/{productId}")
+    public String editProductForm(@PathVariable Long productId, Model model) {
+        ProductResponseDto product = productService.getProductById(productId);
+        model.addAttribute("product", product);
+        return "admin/editProductForm";
     }
 }

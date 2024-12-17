@@ -62,7 +62,14 @@ public class ProductController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Product created successfully!");
         return ResponseEntity.ok(response);
+    }
 
+
+    // 상품 삭제 API
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long productId) {
+        productService.deleteProduct(productId);
+        return ResponseEntity.ok().body("Product deleted successfully");
     }
 
 

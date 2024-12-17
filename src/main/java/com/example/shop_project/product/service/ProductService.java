@@ -77,6 +77,8 @@ public class ProductService {
                 .description(product.getDescription())
                 .viewCount(product.getViewCount())
                 .salesCount(product.getSalesCount())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
                 .imageUrls(product.getImages().stream()
                         .map(ProductImage::getImageUrl)
                         .collect(Collectors.toList()))
@@ -161,10 +163,35 @@ public class ProductService {
                 .build());
     }
 
+    // 상품 목록 불러오기(키워드로 불러오기)
+    public List<ProductResponseDto> getProductList(String keyword) {
+        List<Product> products;
+        if (keyword != null && !keyword.isEmpty()) {
+            products = productRepository.findByProductNameContaining(keyword);
+        } else {
+            products = productRepository.findAll();
+        }
+        return productRepository.findAll().stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+
     public ProductResponseDto getProductDetail(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다. ID: " + productId));
 
         return mapToResponseDto(product);
+    }
+
+    // 상품 상세 정보 불러오기
+    public ProductResponseDto getProductById(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        return mapToResponseDto(product);
+    }
+
+    // 상품 삭제
+    public void deleteProduct(Long productId) {
+        productRepository.deleteById(productId);
     }
 }

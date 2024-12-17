@@ -163,7 +163,9 @@ document.getElementById('productForm').addEventListener('submit', function (even
             return response.json();
         })
         .then(data => {
-            console.log(data);
+            console.log("상품 등록 성공:", data);
+            alert('상품이 성공적으로 등록되었습니다!');
+            window.location.href = '/products/productList'; // 상품 리스트 페이지로 이동
         })
         .catch(errors => {
             // 필드별 에러 메시지 표시
