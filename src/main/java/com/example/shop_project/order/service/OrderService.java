@@ -102,4 +102,8 @@ public class OrderService {
         orderDetailRepository.deleteByOrder(orderRepository.findByOrderNo(orderNo).orElseThrow());
         orderRepository.deleteByOrderNo(orderNo);
     }
+
+    public Order getRecentOrder(){
+        return orderRepository.findFirstByOrderByOrderNoDesc().orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다."));
+    }
 }

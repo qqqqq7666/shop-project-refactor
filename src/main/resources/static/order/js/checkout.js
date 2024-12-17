@@ -1,8 +1,18 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 let formChecked = false;
 let requirement;
-
 let deliveryFlag = document.querySelector("select[name = 'deliveryFlag']");
+
+const channelKeyArray = [
+    "channel-key-a085e15a-a36f-4d9c-88c3-de5c8958e389", // KG
+    "channel-key-c94b2cb4-f67f-41de-b88b-5b2f281a9a1e", // 카카오
+    "channel-key-5543f681-87e6-4bc7-9fc9-e93aaf0159ca"  // 토스
+];
+const payMethodArray = [
+    "KG",
+    "KAKAO",
+    "TOSS"
+];
 
 // 유효성 검사
 (() => {
@@ -114,6 +124,48 @@ function renderProduct() {
     document.getElementById("total").innerText = total.toLocaleString();
 }
 
+function requestPay(payInfo, paymentDto){
+    IMP.init("imp31477127");
+    IMP.request_pay(payInfo,
+        async function (rsp) {
+            // callback 로직
+            if (rsp.success) {
+                // payment create post 요청
+                fetch("/api/payment/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(paymentDto),
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            console.log("결제 데이터 저장 성공");
+                            return res.json();
+                        }
+                    })
+            } else {
+                const orderNoJson = await fetch("/api/order/recent-order-no");
+                const orderNo = await orderNoJson.json();
+                const orderStatus = "FAIL";
+                fetch(`/api/order/${orderNo.toString()}/update-status`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(orderStatus),
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+                            return location.href = "/order/cart";
+                        }
+                    })
+            }
+        },
+    );
+}
+
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
 
@@ -127,7 +179,11 @@ async function checkout() {
             window.location.href = "/";
             return;
         }
-        let channelKey;
+
+        const payMethodVal = document.querySelector("select[name = 'payMethod']").value;
+
+        const channelKey = channelKeyArray[parseInt(payMethodVal)];
+        const payMethod = payMethodArray[parseInt(payMethodVal)];
 
         // 주문 정보
         let flag = document.querySelector("select[name = 'deliveryFlag']").value;
@@ -155,46 +211,44 @@ async function checkout() {
         const orderRequestDto = {
             postNo, address, addressDetail, addressee, contact, member,
             requirement,
-            payMethod: document.querySelector("select[name = 'payMethod']").value,
             orderStatus: "NEW",
             totalPrice: total,
             detailDtoList: productArr,
         }
 
         // 결제 정보
-        const testPayInfo = {
-            channelKey: "channel-key-a085e15a-a36f-4d9c-88c3-de5c8958e389",
+        const payInfo = {
+            channelKey,
             pay_method: "card",
             merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
             name: `${productArr[0].name} 외 ${productArr.length}개`,
-            amount: total,
+            amount: 101,
             buyer_email: "test@portone.io",
             buyer_name: member.name,
             buyer_tel: member.phone, //필수 파라미터 입니다.
             buyer_addr: member.address,
             buyer_postcode: member.postNo,
             m_redirect_url: "{모바일에서 결제 완료 후 리디렉션 될 URL}",
-            escrow: true, //에스크로 결제인 경우 설정
-            vbank_due: "YYYYMMDD",
-            bypass: {
-                // PC 경우
-                acceptmethod: "noeasypay", // 간편결제 버튼을 통합결제창에서 제외(PC)
-                // acceptmethod: "cardpoint", // 카드포인트 사용시 설정(PC)
-                // 모바일 경우
-                P_RESERVED: "noeasypay=Y", // 간편결제 버튼을 통합결제창에서 제외(모바일)
-                // P_RESERVED: "cp_yn=Y", // 카드포인트 사용시 설정(모바일)
-                // P_RESERVED: "twotrs_bank=Y&iosapp=Y&app_scheme=your_app_scheme://", // iOS에서 계좌이체시 결제가 이뤄지던 앱으로 돌아가기
-            },
-            period: {
-                from: "20200101", //YYYYMMDD
-                to: "20201231", //YYYYMMDD
-            },
+            // escrow: true, //에스크로 결제인 경우 설정
+            // vbank_due: "YYYYMMDD",
+            // bypass: {
+            //     // PC 경우
+            //     acceptmethod: "noeasypay", // 간편결제 버튼을 통합결제창에서 제외(PC)
+            //     // acceptmethod: "cardpoint", // 카드포인트 사용시 설정(PC)
+            //     // 모바일 경우
+            //     P_RESERVED: "noeasypay=Y", // 간편결제 버튼을 통합결제창에서 제외(모바일)
+            //     // P_RESERVED: "cp_yn=Y", // 카드포인트 사용시 설정(모바일)
+            //     // P_RESERVED: "twotrs_bank=Y&iosapp=Y&app_scheme=your_app_scheme://", // iOS에서 계좌이체시 결제가 이뤄지던 앱으로 돌아가기
+            // },
+            // period: {
+            //     from: "20240101", //YYYYMMDD
+            //     to: "20301231", //YYYYMMDD
+            // },
         };
 
         const paymentDto = {
             memberName: member.name,
-            payMethod: "CARD",
-            pg: "KG",
+            payMethod,
             amount: total,
             payStatus: "SUCCESS",
         }
@@ -206,36 +260,10 @@ async function checkout() {
             },
             body: JSON.stringify(orderRequestDto),
         })
-            .then((response) => {
+            .then(async (response) => {
                 if (response.ok) {
                     // 주문 성공시 결제 요청
-                    IMP.init("imp31477127");
-                    IMP.request_pay(testPayInfo,
-                        function (rsp) {
-                            // callback 로직
-                            //* ...중략... *//
-                            if (rsp.success) {
-                                // payment create post 요청
-                                fetch("/api/payment/create", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify(paymentDto),
-                                })
-                                    .then(res => {
-                                        if(res.ok){
-                                            console.log("결제 데이터 저장 성공");
-                                            return res.json();
-                                        }
-                                    })
-                            } else {
-                                alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
-                                return location.href = "/order/cart";
-                            }
-                        },
-                    );
-
+                    requestPay(payInfo, paymentDto);
 
                     // 주문 저장 이후 로직
                     localStorage.removeItem("cart")

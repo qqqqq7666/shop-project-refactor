@@ -7,9 +7,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.ColumnDefault;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -25,7 +22,6 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus orderStatus;
-    @Enumerated(EnumType.STRING)
     // 직접 입력을 위해 String
     @Column(nullable = false)
     private String requirement;

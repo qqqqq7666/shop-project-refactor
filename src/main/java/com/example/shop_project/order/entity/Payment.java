@@ -19,8 +19,6 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private Long amount;
     @Column(nullable = false)
-    private PG pg;
-    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private PayMethod payMethod;
     @Column(nullable = false)

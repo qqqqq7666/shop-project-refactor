@@ -299,79 +299,18 @@
                         <div class="form-label">
                             <label>
                                 <select name="payMethod" class="form-select">
-                                    <option id="credit" type="radio" value="CARD"
-                                            class="form-check-input">카드결제
+                                    <option id="kg" type="radio" value="0"
+                                            class="form-check-input">일반 카드 결제
                                     </option>
-                                    <option id="debit" type="radio" value="CASH"
-                                            class="form-check-input">계좌이체
+                                    <option id="kakao" type="radio" value="1"
+                                            class="form-check-input">카카오 페이
+                                    </option>
+                                    <option id="toss" type="radio" value="2"
+                                            class="form-check-input">토스 페이
                                     </option>
                                 </select>
                             </label>
                         </div>
-
-                        <form id="card-form" class="needs-validation" novalidate>
-                            <div class="col-md-5" id="card">
-                                <label for="card" class="form-label">카드 선택</label>
-                                <select class="form-select" required>
-                                    <option>선택 안함</option>
-                                    <option>KB 국민</option>
-                                    <option>현대</option>
-                                    <option>신한</option>
-                                    <option>비씨</option>
-                                    <option>삼성</option>
-                                    <option>롯데</option>
-                                    <option>NH</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-4" id="installment">
-                                <label for="installment" class="form-label">할부 선택</label>
-                                <select class="form-select" required>
-                                    <option>일시불</option>
-                                    <option>2개월</option>
-                                    <option>3개월</option>
-                                    <option>4개월</option>
-                                    <option>5개월</option>
-                                    <option>6개월</option>
-                                </select>
-                            </div>
-
-                            <div class="row gy-3">
-                                <div class="col-md-6">
-                                    <label for="cc-name" class="form-label">이름</label>
-                                    <input type="text" class="form-control" id="cc-name" placeholder="" required>
-                                    <small class="text-body-secondary">Full name as displayed on card</small>
-                                    <div class="invalid-feedback">
-                                        이름을 입력해주세요
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="cc-number" class="form-label">카드 번호</label>
-                                    <input type="text" class="form-control" id="cc-number" placeholder="" required>
-                                    <div class="invalid-feedback">
-                                        카드번호를 입력해주세요
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label for="cc-expiration" class="form-label">유효기간</label>
-                                    <input type="text" class="form-control" id="cc-expiration" placeholder=""
-                                           required>
-                                    <div class="invalid-feedback">
-                                        유효기간을 입력해주세요
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label for="cc-cvv" class="form-label">CVV</label>
-                                    <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-                                    <div class="invalid-feedback">
-                                        카드 뒷면의 CVV 코드를 입력해주세요
-                                    </div>
-                                </div>
-                            </div>
-                            </d>
 
                             <hr class="my-4">
 

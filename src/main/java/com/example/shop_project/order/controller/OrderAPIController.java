@@ -61,6 +61,7 @@ public class OrderAPIController {
 
     @PatchMapping("/{orderNo}/update-status")
     public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long orderNo, @RequestBody OrderStatus orderStatus){
+        log.info("orderStatus = {}", orderStatus.toString());
         OrderResponseDto response = orderService.updateOrderStatus(orderNo, orderStatus);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
@@ -70,5 +71,11 @@ public class OrderAPIController {
     public ResponseEntity<?> getMemberAddress(Principal principal){
         Member member = memberService.findByEmail(principal.getName());
         return ResponseEntity.ok(member);
+    }
+
+    @GetMapping("/recent-order-no")
+    public ResponseEntity<Long> getRecentOrderNo(){
+        Long orderNo = orderService.getRecentOrder().getOrderNo();
+        return ResponseEntity.ok(orderNo);
     }
 }
