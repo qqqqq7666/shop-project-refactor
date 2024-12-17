@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(assignableTypes = {OrderViewController.class, OrderAPIController.class})
+@RestControllerAdvice(assignableTypes = OrderAPIController.class)
 @Slf4j
 public class OrderExceptionHandler{
     @ExceptionHandler(NullPointerException.class)

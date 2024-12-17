@@ -2,18 +2,17 @@ package com.example.shop_project.order.controller;
 
 import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
 @Controller
 @RequestMapping("/order")
+@Slf4j
 public class OrderViewController {
     @Autowired
     OrderService orderService;
@@ -46,6 +45,7 @@ public class OrderViewController {
 
     @GetMapping("checkout")
     public String checkout(@ModelAttribute Principal principal){
+//        log.info("cookie: {}", jSession);
         return "order/checkout";
     }
 

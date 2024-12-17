@@ -1,6 +1,7 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 let formChecked = false;
 let requirement;
+let forms;
 
 let deliveryFlag = document.querySelector("select[name = 'deliveryFlag']");
 
@@ -9,23 +10,39 @@ let deliveryFlag = document.querySelector("select[name = 'deliveryFlag']");
     'use strict'
 
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    const forms = document.querySelectorAll('.needs-validation');
+    const checkoutButton = document.getElementById("checkout-btn");
 
-    // Loop over them and prevent submission
-    Array.from(forms).forEach(form => {
-        form.addEventListener('change', event => {
+    checkoutButton.addEventListener("click", event => {
+        forms = document.querySelectorAll('.needs-validation');
+        formChecked = true;
+        Array.from(forms).forEach(form => {
             if (!form.checkValidity()) {
                 event.preventDefault()
                 event.stopPropagation()
-                formChecked = false;
-            } else {
-                formChecked = true;
             }
-            form.classList.add('was-validated')
-        }, false)
+            formChecked &&= form.checkValidity();
+            console.log("form.checkValidity() = " + form.checkValidity());
+
+            form.classList.add('was-validated');
+        })
+        console.log("formChecked = " + formChecked);
     })
 
-    if(localStorage.getItem("cart") === "[]" || localStorage.getItem("cart") === null){
+    // Loop over them and prevent submission
+    // Array.from(forms).forEach(form => {
+    //     form.addEventListener('change', event => {
+    //         if (!form.checkValidity()) {
+    //             event.preventDefault()
+    //             event.stopPropagation()
+    //             formChecked = false;
+    //         } else {
+    //             formChecked = true;
+    //         }
+    //         form.classList.add('was-validated')
+    //     }, false)
+    // })
+
+    if (localStorage.getItem("cart") === "[]" || localStorage.getItem("cart") === null) {
         alert("잘못된 접근입니다.");
         window.location.href = "/";    // 홈으로 바꿀 예정
     }
@@ -124,7 +141,7 @@ async function checkout() {
         try {
             const response = await fetch("/api/order/member-info")
             member = await response.json();
-        } catch (error){
+        } catch (error) {
             alert("로그인이 만료되었습니다.");
             window.location.href = "/";
         }
@@ -193,18 +210,21 @@ requirementSelect.addEventListener("change", () => {
 
 deliveryFlag.addEventListener("change", () => {
     const postForm = document.getElementById("post-form");
-    if(deliveryFlag.value === "true") {
-        postForm.style.display = "none";
+    const view = document.getElementById("post-form-view");
+    if (deliveryFlag.value === "true") {
+        view.style.display = "none";
+        postForm.classList.remove("needs-validation", "was-validated");
+    } else {
+        view.style.display = "block";
+        postForm.classList.add("needs-validation", "was-validated");
     }
-    else
-        postForm.style.display = "block";
 });
 
 contact.addEventListener('input', () => {
     let value = contact.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
     if (value.length > 3 && value.length <= 7)
         value = value.slice(0, 3) + '-' + value.slice(3);
-     else if (value.length > 7)
+    else if (value.length > 7)
         value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
 
     contact.value = value;

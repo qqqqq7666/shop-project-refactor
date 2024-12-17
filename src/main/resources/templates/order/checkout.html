@@ -235,8 +235,9 @@
                             </select>
                         </label>
                     </div>
-                    <div id="post-form" style="display: none" class="row g-3">
-                        <form class="needs-validation">
+
+                    <div id="post-form-view" style="display: none">
+                        <form id="post-form" class="row g-3" novalidate>
                             <div>
                                 <div class="row gy-3">
                                     <div class="col-md-3">
@@ -275,7 +276,6 @@
                             주소를 입력해주세요
                         </div>
                     </div>
-
 
                     <div>
                         요청사항(선택) <select id="requirement" name="requirement">
