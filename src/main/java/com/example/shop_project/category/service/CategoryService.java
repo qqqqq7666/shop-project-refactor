@@ -39,11 +39,8 @@ public class CategoryService {
 
         // 메인 카테고리명 중복 검사
         List<Category> mainCategories = categoryRepository.findByDepth(0); // 메인 카테고리
-
-        for(Category category : mainCategories) {
-            if(category.getCategoryName().equals(categoryCreateReqDto.getMainCategoryName())) {
-                return null;
-            }
+        if(isCategoryNameDuplicate(categoryCreateReqDto.getMainCategoryName(), mainCategories)){
+            return null;
         }
 
         // 메인 카테고리 생성
@@ -74,11 +71,8 @@ public class CategoryService {
 
         // 서브 카테고리 중복 검사
         List<Category> subCategories = mainCategory.getSubCategories();
-
-        for(Category category : subCategories) {
-            if(category.getCategoryName().equals(categoryCreateReqDto.getSubCategoryName())) {
-                return null;
-            }
+        if(isCategoryNameDuplicate(categoryCreateReqDto.getSubCategoryName(), subCategories)){
+            return null;
         }
 
         // 서브 카테고리 생성
@@ -101,10 +95,13 @@ public class CategoryService {
         Category category = categoryRepository.findByCategoryId(categoryUpdateReqDto.getCategoryId());
         String updateCategoryName = categoryUpdateReqDto.getCategoryName();
 
-        // 카테고리명 중복되면 변경 X
-        boolean existByCategoryName = categoryRepository.existsByCategoryName(updateCategoryName);
-        if(existByCategoryName) {
-            return null;
+        // 카테고리명 중복 검사
+        if(category.getDepth() == 0){ // 메인 카테고리 수정인 경우
+            List<Category> categories = categoryRepository.findByDepth(0);
+            if (isCategoryNameDuplicate(updateCategoryName, categories)) {return null;}
+        } else { // 서브 카테고리 수정인 경우
+            List<Category> categories = category.getParentCategory().getSubCategories();
+            if (isCategoryNameDuplicate(updateCategoryName, categories)) {return null;}
         }
 
         // 카테고리명 업데이트
@@ -147,6 +144,11 @@ public class CategoryService {
         return false;
     }
 
+    // 카테고리명 중복 검사 메서드
+    private boolean isCategoryNameDuplicate(String categoryName, List<Category> categories) {
+        return categories.stream()
+                .anyMatch(category -> category.getCategoryName().equals(categoryName));
+    }
 
     // Entity -> CategoryResDto 메서드
     private CategoryResDto toCategoryResDto(Category category) {
