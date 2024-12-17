@@ -49,12 +49,8 @@ public class CategoryService {
         newMainCategory.setDepth(0);
         categoryRepository.save(newMainCategory);
 
-        // 서브 카에고리 생성
-        Category newSubCategory = new Category();
-        newSubCategory.setCategoryName(categoryCreateReqDto.getSubCategoryName());
-        newSubCategory.setDepth(newMainCategory.getDepth() + 1); // 서브 카테고리의 깊이는 0 + 1
-        newSubCategory.setParentCategory(newMainCategory);
-        newMainCategory.getSubCategories().add(newSubCategory); // 부모-자식 동기화
+        // 서브 카테고리 생성
+        Category newSubCategory = addSubCategory(categoryCreateReqDto.getSubCategoryName(), newMainCategory);
         categoryRepository.save(newSubCategory);
 
         CategoryResDto categoryResDto = toCategoryResDto(newMainCategory);
@@ -76,11 +72,7 @@ public class CategoryService {
         }
 
         // 서브 카테고리 생성
-        Category newSubCategory = new Category();
-        newSubCategory.setCategoryName(categoryCreateReqDto.getSubCategoryName());
-        newSubCategory.setDepth(mainCategory.getDepth() + 1); // 서브 카테고리의 깊이는 0 + 1
-        newSubCategory.setParentCategory(mainCategory);
-        mainCategory.getSubCategories().add(newSubCategory); // 부모-자식 동기화
+        Category newSubCategory = addSubCategory(categoryCreateReqDto.getSubCategoryName(), mainCategory);
         categoryRepository.save(newSubCategory);
 
         CategoryResDto categoryResDto = toCategoryResDto(mainCategory);
@@ -142,6 +134,16 @@ public class CategoryService {
             return true;
         }
         return false;
+    }
+
+    // 서브 카테고리 생성 메서드
+    private Category addSubCategory(String newCategoryName, Category parentCategory){
+        Category newCategory = new Category();
+        newCategory.setCategoryName(newCategoryName);
+        newCategory.setDepth(parentCategory.getDepth() + 1); // 서브 카테고리의 깊이는 0 + 1
+        newCategory.setParentCategory(parentCategory);
+        parentCategory.getSubCategories().add(newCategory); // 부모-자식 동기화
+        return newCategory;
     }
 
     // 카테고리명 중복 검사 메서드

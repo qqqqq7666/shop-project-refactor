@@ -38,10 +38,7 @@ public class CategoryController {
     // 카테고리 추가
     @PostMapping("/create")
     public ResponseEntity<CategoryResDto> createCategory(@Valid @ModelAttribute CategoryCreateReqDto categoryCreateReqDto) {
-        log.debug("카테고리 추가(controller) - 메인 카테고리 추가 여부: {}", categoryCreateReqDto.isCreatingMainCategory());
-        log.debug("카테고리 추가(controller) - 메인 카테고리명: {}", categoryCreateReqDto.getMainCategoryName());
-        log.debug("카테고리 추가(controller) - 서브 카테고리명: {}", categoryCreateReqDto.getSubCategoryName());
-        log.debug("카테고리 추가(controller) -  {}", categoryCreateReqDto);
+        log.debug("카테고리 추가(controller) - {}", categoryCreateReqDto);
 
         CategoryResDto categoryResDto;
 
