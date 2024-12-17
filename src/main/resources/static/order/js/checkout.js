@@ -119,8 +119,15 @@ async function checkout() {
         else
             requirement = requirementSelect.value;
 
-        const response = await fetch("/api/order/member-info");
-        const member = await response.json();
+        let member;
+
+        try {
+            const response = await fetch("/api/order/member-info")
+            member = await response.json();
+        } catch (error){
+            alert("로그인이 만료되었습니다.");
+            window.location.href = "/";
+        }
 
         let flag = document.querySelector("select[name = 'deliveryFlag']").value;
         let address = document.querySelector("input[name = 'address']").value;

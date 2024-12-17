@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,8 +44,7 @@ public class OrderAPIController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto, HttpSession session){
-        log.info("member : {}", orderRequestDto.getMember());
+    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto){
         OrderResponseDto response = orderService.createOrder(orderRequestDto);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
@@ -73,7 +71,10 @@ public class OrderAPIController {
     }
 
     @GetMapping("/member-info")
-    public ResponseEntity<Member> getMemberAddress(Principal principal){
+    public ResponseEntity<?> getMemberAddress(Principal principal){
+//        if(principal == null){
+//            return ResponseEntity.status(403).body("로그인 만료");
+//        }
         Member member = memberService.findByEmail(principal.getName());
         return ResponseEntity.ok(member);
     }
