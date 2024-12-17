@@ -112,12 +112,15 @@ function renderProduct() {
     document.getElementById("total").innerText = total.toLocaleString();
 }
 
-function checkout() {
+async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
         if (requirementSelect.value === "직접입력")
             requirement = requireTextarea.value;
         else
             requirement = requirementSelect.value;
+
+        const response = await fetch("/api/order/member-info");
+        const member = await response.json();
 
         let flag = document.querySelector("select[name = 'deliveryFlag']").value;
         let address = document.querySelector("input[name = 'address']").value;
@@ -126,16 +129,16 @@ function checkout() {
         let addressee = document.querySelector("input[name = 'addressee']").value;
         let contact = document.querySelector("input[name = 'contact']").value;
 
-        if(flag === "true"){
-            address = "default address";
-            postNo = "00000";
-            addressDetail = "default address-detail";
-            addressee = "default addressee";
-            contact = "default contact";
+        if (flag === "true") {
+            address = member.address;
+            postNo = member.postNo;
+            addressDetail = member.addressDetail;
+            addressee = member.nickname;
+            contact = member.phone;
         }
 
         const orderRequestDto = {
-            postNo, address, addressDetail, addressee, contact,
+            postNo, address, addressDetail, addressee, contact, member,
             deliveryFlag: flag,
             requirement: requirement,
             payMethod: document.querySelector("select[name = 'payMethod']").value,
@@ -143,6 +146,8 @@ function checkout() {
             totalPrice: total,
             detailDtoList: productArr,
         }
+
+        console.log(orderRequestDto);
         fetch("/api/order/create", {
             method: "POST",
             headers: {

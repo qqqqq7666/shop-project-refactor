@@ -30,7 +30,7 @@ public class OrderDetail extends BaseEntity {
 
     // product
 
-    public void setOrderAndProduct (Order order, Product product){
+    public void assignOrderToCreate(Order order, Product product){
         this.order = order;
         this.product = product;
     }

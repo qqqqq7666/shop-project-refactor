@@ -35,11 +35,7 @@ public class OrderService {
     private MemberRepository memberRepository;
 
     @Transactional
-    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, Principal principal) {
-        Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-        orderRequestDto.setMember(member);
-        if(orderRequestDto.getDeliveryFlag())
-            orderRequestDto.setDelivery(member.getAddress(), member.getAddressDetail(), member.getPostNo(), member.getNickname(), member.getPhone());
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
         Order newOrder = orderRepository.save(orderMapper.toEntity(orderRequestDto));
         createOrderDetail(newOrder, orderRequestDto.getDetailDtoList());
         return orderMapper.toResponseDto(newOrder);
@@ -48,7 +44,7 @@ public class OrderService {
     public void createOrderDetail(Order order, List<OrderDetailDto> dtoList) {
         for (OrderDetailDto dto : dtoList) {
             OrderDetail orderDetail = orderMapper.toEntity(dto);
-            orderDetail.setOrderAndProduct(order, productRepository.findById(dto.getProductId()).orElseThrow(() -> new NoSuchElementException("상품이 존재하지 않습니다.")));
+            orderDetail.assignOrderToCreate(order, productRepository.findById(dto.getProductId()).orElseThrow(() -> new NoSuchElementException("상품이 존재하지 않습니다.")));
 
             orderDetailRepository.save(orderDetail);
         }
@@ -57,9 +53,6 @@ public class OrderService {
     public List<OrderDetail> getOrderDetailList(Long orderNo) {
         Order foundOrder = orderRepository.findByOrderNo(orderNo).orElseThrow();
         List<OrderDetail> detailList = orderDetailRepository.findAllByOrder(foundOrder);
-//        List<OrderDetailDto> detailDtoList = new ArrayList<>();
-//        for (OrderDetail orderDetail : detailList)
-//            detailDtoList.add(orderMapper.toDto(orderDetail));
         return detailList;
     }
 

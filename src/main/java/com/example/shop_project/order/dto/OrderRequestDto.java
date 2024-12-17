@@ -31,6 +31,7 @@ public class OrderRequestDto {
     private String postNo;
     @NotNull
     private List<OrderDetailDto> detailDtoList;
+    @NotNull
     private Member member;
     @NotNull
     private Boolean deliveryFlag;
@@ -38,16 +39,4 @@ public class OrderRequestDto {
     private String contact;
     @NotBlank
     private String addressee;
-
-    public void setMember (Member member){
-        this.member = member;
-    }
-
-    public void setDelivery(String address, String addressDetail, String postNo, String addressee, String contact){
-        this.address = address;
-        this.addressDetail = addressDetail;
-        this.postNo = postNo;
-        this.addressee = addressee;
-        this.contact = contact;
-    }
 }

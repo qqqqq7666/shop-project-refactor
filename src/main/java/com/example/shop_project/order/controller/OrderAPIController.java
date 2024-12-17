@@ -1,5 +1,7 @@
 package com.example.shop_project.order.controller;
 
+import com.example.shop_project.member.entity.Member;
+import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.OrderDetail;
@@ -22,6 +24,8 @@ import java.util.List;
 public class OrderAPIController {
     @Autowired
     OrderService orderService;
+    @Autowired
+    MemberService memberService;
 
     public ResponseEntity<List<OrderResponseDto>> orderList(){
         return ResponseEntity.ok(orderService.getOrderList());
@@ -40,9 +44,10 @@ public class OrderAPIController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto, Principal principal){
+    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto){
         log.info("deliveryFlag : {}", orderRequestDto.getDeliveryFlag());
-        OrderResponseDto response = orderService.createOrder(orderRequestDto, principal);
+        log.info("member : {}", orderRequestDto.getMember());
+        OrderResponseDto response = orderService.createOrder(orderRequestDto);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
     }
@@ -65,5 +70,11 @@ public class OrderAPIController {
         OrderResponseDto response = orderService.updateOrderStatus(orderNo, orderStatus);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
+    }
+
+    @GetMapping("/member-info")
+    public ResponseEntity<Member> getMemberAddress(Principal principal){
+        Member member = memberService.findByEmail(principal.getName());
+        return ResponseEntity.ok(member);
     }
 }

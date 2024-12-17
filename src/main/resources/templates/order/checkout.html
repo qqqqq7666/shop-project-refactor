@@ -240,10 +240,12 @@
                             <div>
                                 <div class="row gy-3">
                                     <div class="col-md-3">
-                                        <input type="text" name="addressee" class="form-control" placeholder="수령인" required pattern="[가-힣|a-z|A-Z]{11}">
+                                        <input type="text" name="addressee" class="form-control" placeholder="수령인"
+                                               required pattern="[가-힣|a-z|A-Z]{11}">
                                     </div>
                                     <div class="col-md-5">
-                                        <input type="text" name="contact" class="form-control" placeholder="연락처" required minlength="11">
+                                        <input type="text" name="contact" class="form-control" placeholder="연락처"
+                                               required minlength="11">
                                     </div>
                                 </div>
                                 <div class="row gy-3">
@@ -252,25 +254,26 @@
                                                required class="readonly col-3 form-control">
                                     </div>
                                     <div class="col-md-6">
-                                    <input type="button" class="btn" onclick="sample6_execDaumPostcode()" value="우편번호 찾기">
+                                        <input type="button" class="btn" onclick="sample6_execDaumPostcode()"
+                                               value="우편번호 찾기">
                                     </div>
                                 </div>
                             </div>
                             <input type="text" id="sample6_address" placeholder="주소" name="address"
                                    class="readonly col-8 form-control" required>
                             <span id="guide" style="color:#999;display:none"></span>
-<!--                            <div class="col-md-3">-->
-<!--                            <input type="text" id="sample6_extraAddress" placeholder="참고항목" class="form-control readonly">-->
-<!--                            </div>-->
+                            <!--                            <div class="col-md-3">-->
+                            <!--                            <input type="text" id="sample6_extraAddress" placeholder="참고항목" class="form-control readonly">-->
+                            <!--                            </div>-->
                         </form>
-                            <div class="col-md-5">
+                        <div class="col-md-5">
                             <input type="text" id="sample6_detailAddress" placeholder="상세주소" name="addressDetail"
                                    class="form-control">
-                            </div>
+                        </div>
 
-                            <div class="invalid-feedback">
-                                주소를 입력해주세요
-                            </div>
+                        <div class="invalid-feedback">
+                            주소를 입력해주세요
+                        </div>
                     </div>
 
 
@@ -380,8 +383,8 @@
                 </d>
             </div>
         </div>
+    </main>
 </div>
-</main>
 
 <!-- Modal -->
 <div class="modal fade" id="orderCompleteModal" tabindex="-1" aria-labelledby="orderCompleteModalLabel"
@@ -401,20 +404,22 @@
         </div>
     </div>
 </div>
-
-<footer class="my-5 pt-5 text-body-secondary text-center text-small">
-    <p class="mb-1">&copy; 2017–2024 Company Name</p>
-    <ul class="list-inline">
-        <li class="list-inline-item"><a href="#">Privacy</a></li>
-        <li class="list-inline-item"><a href="#">Terms</a></li>
-        <li class="list-inline-item"><a href="#">Support</a></li>
-    </ul>
-</footer>
+<div>
+    <footer class="my-5 pt-5 text-body-secondary text-center text-small">
+        <p class="mb-1">&copy; 2017–2024 Company Name</p>
+        <ul class="list-inline">
+            <li class="list-inline-item"><a href="#">Privacy</a></li>
+            <li class="list-inline-item"><a href="#">Terms</a></li>
+            <li class="list-inline-item"><a href="#">Support</a></li>
+        </ul>
+    </footer>
 </div>
 <script src="/order/js/bootstrap.bundle.min.js"></script>
 <script src="/order/js/checkout.js"></script>
-</body>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script>
-</script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+</body>
 </html>
