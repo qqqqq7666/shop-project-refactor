@@ -78,12 +78,20 @@ public class MemberServiceTest {
 	
 	// 닉네임 중복 확인
 	@Test
-    void 닉네임_중복_확인() {
-        // given
+	void 닉네임_중복_확인() {
+	    // given
+	    MemberRequestDTO requestDTO = new MemberRequestDTO();
+	    requestDTO.setEmail("test@example.com");
+	    requestDTO.setNickname("duplicateNickname");
+	    requestDTO.setPassword("ValidPass1!");
+	    requestDTO.setConfirmPassword("ValidPass1!");
 
+	    Member existingMember = new Member();
+	    existingMember.setNickname("duplicateNickname");
+	    when(memberRepository.findByNickname("duplicateNickname")).thenReturn(Optional.of(existingMember));
 
-        // when & then
-
-    }
+	    // when & then
+	    assertThrows(IllegalArgumentException.class, () -> memberService.Join(requestDTO));
+	}
 	
 }

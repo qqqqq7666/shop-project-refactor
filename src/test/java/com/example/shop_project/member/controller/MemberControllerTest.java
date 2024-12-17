@@ -3,6 +3,8 @@ import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.security.SecurityConfig;
 
+import jakarta.transaction.Transactional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,9 +13,13 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get; // GET 요청
@@ -37,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest
@@ -176,22 +183,24 @@ public class MemberControllerTest {
                 .andExpect(redirectedUrl("/login?error=true")); // 실패 시 에러 파라미터 확인
 	}
 	
-//	@BeforeEach
-//    void 비밀번호불일치_테스트전_유저준비() {
-//        // 테스트 데이터 설정: 존재하는 이메일과 암호화된 비밀번호
-//        Member testMember = Member.builder()
-//                .email("test@example.com")
-//                .password(passwordEncoder.encode("CorrectPass1!")) // 올바른 비밀번호
-//                .name("testname")
-//                .nickname("tester")
-//                .phone("010-1234-5678")
-//                .postNo("12345")
-//                .address("서울시 중구")
-//                .addressDetail("상세주소")
-//                .build();
-//
-//        memberRepository.save(testMember);
-//    }
+	private Member testMember;
+	@BeforeEach
+    void 테스트전_기본회원데이터() {
+        // 테스트 데이터 설정: 존재하는 이메일과 암호화된 비밀번호
+		testMember = Member.builder()
+                .email("test@example.com")
+                .password(passwordEncoder.encode("CorrectPass1!")) // 올바른 비밀번호
+                .name("testname")
+                .nickname("tester")
+                .phone("010-1234-5678")
+                .postNo("12345")
+                .address("서울시 중구")
+                .addressDetail("상세주소")
+                .withdraw(false)
+                .build();
+
+		memberRepository.save(testMember);
+    }
 	
 	// 존재하는 이메일을 입력했지만 비밀번호가 틀리면 로그인 실패
 	@Test
@@ -226,5 +235,23 @@ public class MemberControllerTest {
 	            .andExpect(status().isOk())
 	            .andExpect(content().string(containsString("회원 탈퇴가 완료되었습니다.")));
 	}
+	
+
+	@Test
+	@WithMockUser(username = "test@example.com", roles = {"USER"})
+    void 회원탈퇴_성공_테스트() throws Exception {
+		// 1. 탈퇴 API 호출
+	    mockMvc.perform(post("/mypage/withdraw")
+	            .contentType(MediaType.APPLICATION_JSON))
+	            .andExpect(status().isOk())
+	            .andExpect(content().string("회원 탈퇴가 완료되었습니다.")); // 응답 확인
+
+	    // 2. 데이터베이스에서 withdraw 필드 확인
+	    Member updatedMember = memberRepository.findByEmail("test@example.com")
+	            .orElseThrow(() -> new AssertionError("회원이 존재하지 않습니다."));
+	    
+	    // 검증
+	    assertTrue(updatedMember.getWithdraw(), "탈퇴 처리 후 withdraw 필드는 true여야 합니다.");
+    }
 	
 }
