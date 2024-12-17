@@ -127,19 +127,44 @@ async function checkout() {
             window.location.href = "/";
             return;
         }
+        let channelKey;
+
+        // 주문 정보
+        let flag = document.querySelector("select[name = 'deliveryFlag']").value;
+        let address = document.querySelector("input[name = 'address']").value;
+        let postNo = document.querySelector("input[name = 'postNo']").value;
+        let addressDetail = document.querySelector("input[name = 'addressDetail']").value;
+        let addressee = document.querySelector("input[name = 'addressee']").value;
+        let contact = document.querySelector("input[name = 'contact']").value;
+
+        if (flag === "true") {
+            address = member.address;
+            postNo = member.postNo;
+            addressDetail = member.addressDetail;
+            addressee = member.name;
+            contact = member.phone;
+        }
+
+        const orderRequestDto = {
+            postNo, address, addressDetail, addressee, contact, member, requirement,
+            payMethod: document.querySelector("select[name = 'payMethod']").value,
+            orderStatus: "NEW",
+            totalPrice: total,
+            detailDtoList: productArr,
+        }
 
         // 결제 정보
         const testPayInfo = {
             channelKey: "channel-key-a085e15a-a36f-4d9c-88c3-de5c8958e389",
             pay_method: "card",
-            merchant_uid: "order_no_0005", //상점에서 생성한 고유 주문번호
+            merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
             name: "주문명:결제테스트",
             amount: 101,
             buyer_email: "test@portone.io",
-            buyer_name: "구매자이름",
-            buyer_tel: "010-1234-5678", //필수 파라미터 입니다.
-            buyer_addr: "서울특별시 강남구 삼성동",
-            buyer_postcode: "123-456",
+            buyer_name: member.name,
+            buyer_tel: member.phone, //필수 파라미터 입니다.
+            buyer_addr: member.address,
+            buyer_postcode: member.postNo,
             m_redirect_url: "{모바일에서 결제 완료 후 리디렉션 될 URL}",
             escrow: true, //에스크로 결제인 경우 설정
             vbank_due: "YYYYMMDD",
@@ -171,31 +196,6 @@ async function checkout() {
                     else
                         requirement = requirementSelect.value;
 
-
-                    let flag = document.querySelector("select[name = 'deliveryFlag']").value;
-                    let address = document.querySelector("input[name = 'address']").value;
-                    let postNo = document.querySelector("input[name = 'postNo']").value;
-                    let addressDetail = document.querySelector("input[name = 'addressDetail']").value;
-                    let addressee = document.querySelector("input[name = 'addressee']").value;
-                    let contact = document.querySelector("input[name = 'contact']").value;
-
-                    if (flag === "true") {
-                        address = member.address;
-                        postNo = member.postNo;
-                        addressDetail = member.addressDetail;
-                        addressee = member.name;
-                        contact = member.phone;
-                    }
-
-                    const orderRequestDto = {
-                        postNo, address, addressDetail, addressee, contact, member,
-                        requirement: requirement,
-                        payMethod: document.querySelector("select[name = 'payMethod']").value,
-                        orderStatus: "NEW",
-                        totalPrice: total,
-                        detailDtoList: productArr,
-                    }
-
                     console.log(orderRequestDto);
                     fetch("/api/order/create", {
                         method: "POST",
@@ -220,8 +220,8 @@ async function checkout() {
 
                     console.log(orderRequestDto);
                 } else {
-                    alert("결제 실패");
-                    location.href = "/order/cart"
+                    alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+                    return location.href = "/order/cart";
                 }
             },
         );

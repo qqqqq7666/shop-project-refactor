@@ -4,6 +4,7 @@ import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
+import com.example.shop_project.order.dto.PaymentDto;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.service.OrderService;
@@ -30,7 +31,6 @@ public class OrderAPIController {
     @GetMapping("/{orderNo}")
     public ResponseEntity<OrderResponseDto> getOrder(@PathVariable(name = "orderNo") Long orderNo){
         OrderResponseDto response = orderService.getOrderByOrderNo(orderNo);
-        log.warn("postNo : {}", response.getPostNo());
         return ResponseEntity.ok(response);
     }
 
@@ -40,7 +40,7 @@ public class OrderAPIController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto){
+    public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto, @RequestBody PaymentDto paymentDto){
         OrderResponseDto response = orderService.createOrder(orderRequestDto);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
