@@ -37,9 +37,19 @@ public class productViewController {
                                   Model model) {
         Page<ProductResponseDto> productPage = productService.getProductList(search, sort, page, size);
 
+        // 페이지네이션 블록 설정
+        int blockSize = 5; // 페이지 블록 크기 설정
+        int totalPages = productPage.getTotalPages();
+
+        int currentBlock = page / blockSize; // 현재 블록 계산
+        int startPage = currentBlock * blockSize + 1; // 시작 페이지 계산
+        int endPage = Math.min(startPage + blockSize - 1, totalPages); // 끝 페이지 계산
+
         model.addAttribute("productPage", productPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         model.addAttribute("search", search);
         model.addAttribute("sort", sort);
         return "products/productList";
@@ -58,14 +68,25 @@ public class productViewController {
     // 상품 관리 페이지(관리자)
     @GetMapping("/manage")
     public String productList(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+                              @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort,
                               @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                               @RequestParam(value = "size", required = false, defaultValue = "8") int size,
                               Model model) {
-        Page<ProductResponseDto> productPage = productService.getProductList(keyword, page, size);
+        Page<ProductResponseDto> productPage = productService.getProductList(keyword, sort, page, size);
+
+        // 페이지네이션 블록 설정
+        int blockSize = 5; // 페이지 블록 크기 설정
+        int totalPages = productPage.getTotalPages();
+
+        int currentBlock = page / blockSize; // 현재 블록 계산
+        int startPage = currentBlock * blockSize + 1; // 시작 페이지 계산
+        int endPage = Math.min(startPage + blockSize - 1, totalPages); // 끝 페이지 계산
 
         model.addAttribute("productPage", productPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         model.addAttribute("keyword", keyword);
         return "admin/productManage";
     }

@@ -159,6 +159,8 @@ public class ProductService {
                 .price(product.getPrice())
                 .viewCount(product.getViewCount())
                 .salesCount(product.getSalesCount())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
                 .imageUrls(product.getImages().stream()
                         .map(ProductImage::getImageUrl)
                         .toList())
