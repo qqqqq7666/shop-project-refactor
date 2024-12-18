@@ -72,10 +72,15 @@
             <h3>TOTAL: <span th:text="'₩' + ${#numbers.formatInteger(product.price, 3, 'COMMA')}"></span></h3>
             <div>
                 <button>Buy now</button>
-                <button>Add to cart</button>
+                <button id="add-product-btn"
+                        th:onclick="addItem([[${product.getProductId()}]], [[${product.getProductName()}]], [[${product.getPrice()}]], 1); alert('장바구니에 상품이 담겼습니다.');"
+                >Add to cart</button>
+                <button onclick="location.href = '/order/cart'">장바구니</button>
+                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/inquiries'|">상품 문의 목록</button>
             </div>
         </div>
     </div>
 </div>
 </body>
+<script src="/order/js/productDetail.js"></script>
 </html>

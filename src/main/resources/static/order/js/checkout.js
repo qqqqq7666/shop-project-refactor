@@ -160,8 +160,9 @@ function requestPay(payInfo, paymentDto){
                 })
                     .then(res => {
                         if (res.ok) {
-                            alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
-                            return location.href = "/order/cart";
+                            setTimeout(() => alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`), 100);
+                            setTimeout(() => location.href = "/order/cart", 1000);
+                            return res;
                         }
                     })
             }

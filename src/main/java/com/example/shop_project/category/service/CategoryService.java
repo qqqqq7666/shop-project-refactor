@@ -149,7 +149,7 @@ public class CategoryService {
     // 카테고리명 중복 검사 메서드
     private boolean isCategoryNameDuplicate(String categoryName, List<Category> categories) {
         return categories.stream()
-                .anyMatch(category -> category.getCategoryName().equals(categoryName));
+                .anyMatch(category -> category.getCategoryName().equalsIgnoreCase(categoryName));
     }
 
     // Entity -> CategoryResDto 메서드
