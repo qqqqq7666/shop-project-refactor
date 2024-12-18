@@ -5,6 +5,7 @@ import com.example.shop_project.inquiry.entity.Inquiry;
 import com.example.shop_project.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +42,9 @@ public class InquiryController {
     public String createInquiry(
             @PathVariable Long productId,
             @Valid @ModelAttribute InquiryRequestDto dto) {
-        inquiryService.createInquiry(productId, dto);
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        inquiryService.createInquiry(productId, dto, userEmail);
         return "redirect:/products/" + productId + "/inquiries";
     }
 
@@ -50,12 +53,11 @@ public class InquiryController {
     public String getInquiryById(@PathVariable Long productId, @PathVariable Long inquiryId, Model model) {
         Inquiry inquiry = inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId);
 
-//        if (inquiry == null) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inquiry not found");
-//        }
+        String nickname = inquiry.getMember().getNickname();
 
         model.addAttribute("inquiry", inquiry);
         model.addAttribute("productId", productId);
+        model.addAttribute("nickname", nickname);
 
         return "inquiry/detail";
     }
