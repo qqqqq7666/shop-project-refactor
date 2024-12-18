@@ -65,6 +65,8 @@ public class OrderService {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         List<Order> orderList = orderRepository.findAllByMemberOrderByOrderNoDesc(member);
         for (Order order : orderList) {
+            if(order.getOrderStatus() == OrderStatus.FAIL)
+                continue;
             res.put(orderMapper.toResponseDto(order), orderDetailRepository.findAllByOrder(order));
         }
 
