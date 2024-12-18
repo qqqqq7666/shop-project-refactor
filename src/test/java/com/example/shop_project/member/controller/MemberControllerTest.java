@@ -215,6 +215,15 @@ public class MemberControllerTest {
 	    .andExpect(model().attribute("error", "비밀번호가 일치하지 않습니다."));  // 에러 메시지 확인
 	}
 	
+	@Test
+    void 회원가입_비밀번호_인코딩_저장_확인() {
+		String rawPassword = "ValidPass1!";
+        assertTrue(passwordEncoder.matches(rawPassword, testMember.getPassword()), 
+                "저장된 비밀번호는 원래 비밀번호와 매칭되어야 합니다.");
+
+        System.out.println("저장된 비밀번호: " + testMember.getPassword());
+    }
+	
 	@Test	 // 로그인 페이지 요청이 200 OK와 login 뷰를 반환하는지 확인.
 	void 로그인_페이지접속() throws Exception {
 	    mockMvc.perform(get("/login"))
