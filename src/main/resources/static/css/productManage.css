@@ -1,35 +1,14 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: white;
-}
-
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* 상단 바 정렬과 검색 */
-.top-bar {
+.search-box {
     display: flex;
     justify-content: end;
     align-items: center;
-    margin-bottom: 20px;
-}
-
-.sort-dropdown {
-    display: flex;
-    align-items: center;
-    margin-right: 5px;
-}
-
-.sort-dropdown select {
-    margin-left: 10px;
-    margin-right: 5px;
-    padding: 5px 10px;
-    font-size: 14px;
+    margin-bottom: 10px;
 }
 
 .search-box input {
@@ -52,42 +31,46 @@ body {
     background-color: #333;
 }
 
-/* 상품 리스트 스타일 */
-.product-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-}
 
-.product-card {
-    background-color: white;
-    border: 1px solid white;
-    border-radius: 5px;
-    padding: 15px;
+h1 {
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
-    object-fit: cover; /* 이미지 비율 유지 */
+    margin-bottom: 20px;
 }
 
-.product-card img {
+table {
     width: 100%;
-    height: 250px;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #333;
+    color: white;
+}
+
+img {
     object-fit: cover;
 }
 
-.product-card .title {
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 15px;
-    margin: 1px 0;
-    color: #333;
+button {
+    padding: 5px 10px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
-.product-card .price {
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    color: #555;
-    margin-top: 0px;
+.actions {
+    text-align: right;
 }
+
 
 /* 페이지네이션 */
 .pagination {
