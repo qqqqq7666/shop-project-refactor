@@ -1,7 +1,0 @@
-.form-container {
-    display: none; /* 폼은 초기에는 숨겨짐 */
-    margin-bottom: 20px;
-}
-.form-container.active {
-    display: block; /* 활성화 시 표시 */
-}
