@@ -242,7 +242,10 @@
                                 <div class="row gy-3">
                                     <div class="col-md-3">
                                         <input type="text" name="addressee" class="form-control" placeholder="수령인"
-                                               required pattern="[가-힣|a-z|A-Z]">
+                                               required pattern=^[가-힣a-zA-Z]+$>
+<!--                                        <div class="invalid-feedback">-->
+<!--                                            이름은 문자만 입력할 수 있습니다.-->
+<!--                                        </div>-->
                                     </div>
                                     <div class="col-md-5">
                                         <input type="text" name="contact" class="form-control" placeholder="연락처"
@@ -356,5 +359,6 @@
 <script src="/order/js/bootstrap.bundle.min.js"></script>
 <script src="/order/js/checkout.js"></script>
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </body>
 </html>

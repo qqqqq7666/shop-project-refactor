@@ -141,6 +141,9 @@ function requestPay(payInfo, paymentDto){
                     .then(res => {
                         if (res.ok) {
                             console.log("결제 데이터 저장 성공");
+                            localStorage.removeItem("cart")
+                            const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
+                            modal.show();
                             return res.json();
                         }
                     })
@@ -212,7 +215,7 @@ async function checkout() {
             postNo, address, addressDetail, addressee, contact, member,
             requirement,
             orderStatus: "NEW",
-            totalPrice: total,
+            totalPrice: total + 3000,
             detailDtoList: productArr,
         }
 
@@ -222,7 +225,7 @@ async function checkout() {
             pay_method: "card",
             merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
             name: `${productArr[0].name} 외 ${productArr.length}개`,
-            amount: 101,
+            amount: total,
             buyer_email: "test@portone.io",
             buyer_name: member.name,
             buyer_tel: member.phone, //필수 파라미터 입니다.
@@ -263,13 +266,11 @@ async function checkout() {
             .then(async (response) => {
                 if (response.ok) {
                     // 주문 성공시 결제 요청
-                    requestPay(payInfo, paymentDto);
+                    requestPay(payInfo, paymentDto)
+
+                    return response.json();
 
                     // 주문 저장 이후 로직
-                    localStorage.removeItem("cart")
-                    const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
-                    modal.show();
-                    return response.json();
 
                 } else {
                     alert("주문에 실패했습니다.");

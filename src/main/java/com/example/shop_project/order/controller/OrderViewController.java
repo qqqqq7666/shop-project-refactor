@@ -1,7 +1,9 @@
 package com.example.shop_project.order.controller;
 
 import com.example.shop_project.member.service.MemberService;
+import com.example.shop_project.order.mapper.OrderMapper;
 import com.example.shop_project.order.service.OrderService;
+import com.example.shop_project.order.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,10 @@ public class OrderViewController {
     OrderService orderService;
     @Autowired
     MemberService memberService;
+    @Autowired
+    PaymentService paymentService;
+    @Autowired
+    OrderMapper orderMapper;
 
     @GetMapping("/create")
     public String createOrder(){
@@ -29,6 +35,7 @@ public class OrderViewController {
         model.addAttribute("detailList", orderService.getOrderDetailList(orderNo));
         model.addAttribute("order", orderService.getOrderByOrderNo(orderNo));
         model.addAttribute("member", memberService.findByEmail(principal.getName()));
+        model.addAttribute("payment", paymentService.getPaymentByOrderNo(orderNo));
         return "order/order_detail";
     }
 
