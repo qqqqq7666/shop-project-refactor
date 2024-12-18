@@ -215,7 +215,7 @@ async function checkout() {
             postNo, address, addressDetail, addressee, contact, member,
             requirement,
             orderStatus: "NEW",
-            totalPrice: total + 3000,
+            totalPrice: total,
             detailDtoList: productArr,
         }
 

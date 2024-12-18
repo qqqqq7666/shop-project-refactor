@@ -107,5 +107,4 @@ public class MemberControllerTest {
 	            .andExpect(status().isOk())
 	            .andExpect(content().string(containsString("회원 탈퇴가 완료되었습니다.")));
 	}
-	
 }

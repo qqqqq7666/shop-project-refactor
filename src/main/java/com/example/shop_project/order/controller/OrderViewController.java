@@ -30,6 +30,7 @@ public class OrderViewController {
         return "order/order_create";
     }
 
+    // TODO order의 멤버와 principal로 찾은 맴버를 비교해서 다르면 exception 발생
     @GetMapping("/{orderNo}")
     public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model, Principal principal){
         model.addAttribute("detailList", orderService.getOrderDetailList(orderNo));

@@ -11,6 +11,7 @@ import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.mapper.OrderMapper;
 import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
+import com.example.shop_project.order.repository.PaymentRepository;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class OrderService {
     private ProductRepository productRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
@@ -99,7 +102,9 @@ public class OrderService {
 
     @Transactional
     public void deleteOrder(Long orderNo) {
-        orderDetailRepository.deleteByOrder(orderRepository.findByOrderNo(orderNo).orElseThrow());
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        orderDetailRepository.deleteByOrder(order);
+        paymentRepository.deleteByOrder(order);
         orderRepository.deleteByOrderNo(orderNo);
     }
 
