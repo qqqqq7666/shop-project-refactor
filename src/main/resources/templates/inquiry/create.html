@@ -22,16 +22,6 @@
     <h2>문의 작성</h2>
     <form th:action="@{/products/{productId}/inquiries(productId=${productId})}" method="post">
         <div class="mb-3">
-            <label class="form-label">상품 ID</label>
-            <input class="form-control" type="number" name="productId" placeholder="상품 ID" required>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">닉네임</label>
-            <input class="form-control" type="text" name="nickname" placeholder="닉네임" required>
-        </div>
-
-        <div class="mb-3">
             <label class="form-label">제목</label>
             <input class="form-control" type="text" name="title" placeholder="문의 제목" required>
         </div>

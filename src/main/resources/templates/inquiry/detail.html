@@ -37,16 +37,13 @@
 
         <div class="info">
             <span>작성자:</span>
-            <span th:text="${inquiry.nickname}">닉네임</span>
+            <span th:text="${nickname}">닉네임</span>
         </div>
         <div class="info">
             <span>작성 날짜:</span>
             <span th:text="${inquiry.date}">YYYY-MM-DD</span>
         </div>
-<!--        <div class="info">-->
-<!--            <span>상품 ID:</span>-->
-<!--            <span th:text="${inquiry.productId}">123</span>-->
-<!--        </div>-->
+
         <div class="info">
             <span>문의 유형:</span>
             <span th:text="${inquiry.type.getKoreanName()}">-</span>
@@ -91,9 +88,7 @@
             });
         </script>
 
-
         <a th:href="@{/products/{productId}/inquiries(productId=${productId})}" class="btn btn-secondary back-button" >문의 목록으로 돌아가기</a>
-
 
     </div>
 </div>
