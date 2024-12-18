@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+//import com.example.shop_project.jwt.JwtAuthenticationFilter;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -27,9 +29,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-        		.sessionManagement(session -> session
-        				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)		// 서버에서 세션 사용 x 인증 정보는 클라이언트에서 관리
-        		)
+//        		.sessionManagement(session -> session
+//        				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)		// 서버에서 세션 사용 x 인증 정보는 클라이언트에서 관리
+//        		)
                 .authorizeHttpRequests(auth -> auth
                 		.requestMatchers("/admin/**").hasAuthority("ADMIN") // 관리자만 접근 허용
                         .requestMatchers("/**").permitAll()		// 후에 접근 허용 경로 수정 필요
