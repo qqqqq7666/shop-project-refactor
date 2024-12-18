@@ -1,0 +1,125 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+}
+
+.product-detail-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 1px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    position: relative;
+    width: 500px; /* 원하는 고정 너비 */
+    height: 500px; /* 원하는 고정 높이 */
+    margin: 0 auto; /* 가운데 정렬 */
+    overflow: hidden; /* 넘치는 부분 숨기기 */
+    text-align: center;
+}
+
+.product-image img {
+    width: 100%; /* 부모 요소의 너비에 맞춤 */
+    height: 100%; /* 부모 요소의 높이에 맞춤 */
+    object-fit: cover; /* 비율 유지, 넘치는 부분 잘라냄 */
+    display: block;
+}
+
+.nav-buttons {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.nav-buttons button {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.nav-left {
+    left: 10px;
+}
+
+.nav-right {
+    right: 10px;
+}
+
+.nav-buttons button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.sort-dropdown-color {
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+
+.sort-dropdown-color select {
+    margin-left: 26px;
+    margin-right: 50px;
+    padding: 5px 10px;
+    font-size: 14px;
+    width: 300px; /* 원하는 고정 너비 */
+    height: 27px; /* 원하는 고정 높이 */
+}
+
+.sort-dropdown-size {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+
+.sort-dropdown-size select {
+    margin-left: 10px;
+    margin-right: 50px;
+    padding: 5px 10px;
+    font-size: 14px;
+    width: 300px; /* 원하는 고정 너비 */
+    height: 27px; /* 원하는 고정 높이 */
+}
+
+
+.product-info {
+    flex: 1;
+    padding: 20px;
+    margin-left: 200px;
+}
+
+.product-info h1 {
+    margin-top: 0;
+    font-size: 24px;
+}
+
+.product-info p {
+    margin-top: 20px;
+}
+
+.product-purchase {
+    margin-top: 50px;
+}
+
+
+.product-purchase button {
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}

@@ -18,8 +18,8 @@
         </div>
         <hr>
         <div>
-            <p><h5>이름</h5></p>
-            <p>010-****-1234</p>
+            <p><h5 th:text="${order.getAddressee()}">이름</h5></p>
+            <p th:text="${order.getContact()}">010-****-1234</p>
             <p th:text="|(${order.getPostNo()}) ${order.getAddress()} ${order.getAddressDetail()}|"></p>
             <small th:text="|요청사항: ${order.getRequirement()}|"></small>
         </div>
@@ -49,34 +49,31 @@
             <p th:text="|${order.getTotalPrice()}원|">총 상품 금액</p>
         </div>
         <div class="d-flex justify-content-between">
-            <p>할인 금액</p>
-            <p>할인 금액</p>
-        </div>
-        <div class="d-flex justify-content-between">
             <p>포인트 적립</p>
             <p>n포인트</p>
         </div>
         <div class="d-flex justify-content-between">
             <p>배송비</p>
-            <p>3000원</p>
+            <p th:if="${order.getTotalPrice() >= 50000}">무료</p>
+            <p th:if="${order.getTotalPrice() < 50000}">3000원</p>
         </div>
         <div class="d-flex justify-content-between">
             <p style="font-size: 20px">결제 금액</p>
-            <p th:text="|${order.getTotalPrice()}원|">총 결제 금액</p>
+            <p th:text="|${payment.getAmount()}원|">총 결제 금액</p>
         </div>
+        <!-- TODO 상품 상세 제대로 표시하기 -->
         <div class="d-flex justify-content-between">
             <p>결제 수단</p>
-            <p th:text="|${order.getPayMethod()}|">결제 수단</p>
+            <p th:text="${payment.getPayMethod()}">결제 수단</p>
         </div>
-        <form class= "mt-4 d-flex justify-content-around" th:action="|/api/order/${orderNo}/update-status|" method="post">
-            <input type="hidden" name="_method" value="patch">
-            <button class="btn delete-button" name="orderStatus" value="CANCEL" type="submit">주문 취소</button>
+        <div class= "mt-4 d-flex justify-content-around">
+            <button class="btn delete-button" name="orderStatus" value="CANCEL" onclick="">주문 취소</button>
             <button class="btn custom-button" name="orderStatus" value="REFUND" type="submit">환불 요청</button>
             <button class="btn custom-button" name="orderStatus" value="EXCHANGE" type="submit">교환 요청</button>
-        </form>
+        </div>
     </div>
 </div>
-
+<script src="/order/js/orderDetail.js"></script>
 <script src="/order/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@ import com.example.shop_project.inquiry.entity.Inquiry;
 import com.example.shop_project.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,47 +15,58 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
-@RequestMapping("/inquiries")
+@RequestMapping("/products/{productId}/inquiries")
 @RequiredArgsConstructor
 public class InquiryController {
 
     private final InquiryService inquiryService;
 
-    // [1] HTML 페이지 렌더링 (문의 작성 폼 + 목록 표시)
+    // 특정 상품의 문의 목록 페이지 렌더링
     @GetMapping
-    public String showInquiries(Model model) {
-        List<Inquiry> inquiries = inquiryService.getAllInquiries();
-        model.addAttribute("inquiries", inquiries); // 목록 데이터를 모델에 추가
-        return "inquiry/list";  // inquiry.html 반환
+    public String showInquiriesByProduct(@PathVariable Long productId, Model model) {
+        List<Inquiry> inquiries = inquiryService.getInquiriesByProductId(productId);
+        model.addAttribute("inquiries", inquiries);
+        model.addAttribute("productId", productId);
+        return "inquiry/list";
     }
 
-    // [2] 문의 생성 (폼에서 전송된 데이터 처리)
-
-    // 문의 작성 페이지
+    // 특정 상품의 문의 작성 페이지
     @GetMapping("/create")
-    public String showCreatePage() {
-        return "inquiry/create"; // create.html 반환
+    public String showCreatePage(@PathVariable Long productId, Model model) {
+        model.addAttribute("productId", productId);
+        return "inquiry/create";
     }
 
+    // 특정 상품의 문의 생성 처리
     @PostMapping
-    public String createInquiry(@Valid @ModelAttribute InquiryRequestDto dto) {
-        System.out.println("Received InquiryRequestDto: " + dto);
-        Inquiry savedInquiry = inquiryService.createInquiry(dto);
-        return "redirect:/inquiries";
+    public String createInquiry(
+            @PathVariable Long productId,
+            @Valid @ModelAttribute InquiryRequestDto dto) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        inquiryService.createInquiry(productId, dto, userEmail);
+        return "redirect:/products/" + productId + "/inquiries";
     }
 
-    // [3] 개별 문의 조회 (REST API)
-    @GetMapping("/{id}")
-    public String getInquiryById(@PathVariable Long id, Model model) {
-        Inquiry inquiry = inquiryService.getInquiryById(id);
+    // 특정 상품의 특정 문의 조회
+    @GetMapping("/{inquiryId}")
+    public String getInquiryById(@PathVariable Long productId, @PathVariable Long inquiryId, Model model) {
+        Inquiry inquiry = inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId);
+
+        String nickname = inquiry.getMember().getNickname();
+
         model.addAttribute("inquiry", inquiry);
+        model.addAttribute("productId", productId);
+        model.addAttribute("nickname", nickname);
+
         return "inquiry/detail";
     }
 
-    // [4] 문의 삭제 (REST API)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInquiry(@PathVariable Long id) {
-        inquiryService.deleteInquiry(id);
-        return ResponseEntity.noContent().build(); // 204 No Content 반환
+    // 특정 상품의 특정 문의 삭제
+    @DeleteMapping("/{inquiryId}")
+    public ResponseEntity<Void> deleteInquiry(@PathVariable Long productId, @PathVariable Long inquiryId) {
+        System.out.println("productId: " + productId + ", inquiryId: " + inquiryId);
+        inquiryService.deleteInquiry(inquiryId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -39,6 +39,19 @@ document.getElementById('productForm').addEventListener('submit', function (even
         descriptionError.textContent = "";
     }
 
+    // 가격 검증
+    const price = document.getElementById('price');
+    const priceError = document.getElementById('priceError');
+    if (!price.value) {
+        priceError.textContent = "가격은 필수 입력 항목입니다.";
+        isValid = false;
+    } else if (price.value.length < 0) {
+        priceError.textContent = "가격은 0원 이상이어야 합니다.";
+        isValid = false;
+    } else {
+        priceError.textContent = "";
+    }
+
     // 색상 및 재고 검증
     const colorInputs = document.querySelectorAll('input[name="colors[]"]');
     const stockInputs = document.querySelectorAll('input[name="stocks[]"]');

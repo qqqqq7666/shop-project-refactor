@@ -29,7 +29,7 @@ function renderCart() {
         const li = document.createElement("li");
         li.innerHTML = `
             <span>${item.name}</span>
-            <span>${item.price}원 x ${item.quantity}</span>
+            <span>${item.price.toLocaleString()}원 x ${item.quantity}</span>
             <button onclick="removeItem(${index})">삭제</button>
         `;
         cartItems.appendChild(li);
@@ -96,3 +96,9 @@ function initializeCart() {
 
 // DOM이 준비되면 초기화
 document.addEventListener("DOMContentLoaded", initializeCart);
+document.getElementById("checkout").addEventListener("click", () => {
+    if(localStorage.getItem("cart") === "[]")
+        alert("장바구니가 비어있습니다.");
+    else
+        window.location.href = "/order/checkout";
+})

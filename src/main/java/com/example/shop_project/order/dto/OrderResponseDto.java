@@ -1,7 +1,7 @@
 package com.example.shop_project.order.dto;
 
+import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.entity.OrderStatus;
-import com.example.shop_project.order.entity.PayMethod;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +19,6 @@ public class OrderResponseDto {
     @NotNull
     private OrderStatus orderStatus;
     @NotNull
-    private PayMethod payMethod;
-    @NotNull
     private String requirement;
     @NotBlank
     private String address;
@@ -31,4 +29,9 @@ public class OrderResponseDto {
     @Pattern(regexp = "^[0-9]*$")
     private String postNo;
     private LocalDateTime createdDate;
+    @NotBlank
+    private String contact;
+    @NotBlank
+    private String addressee;
+    private Member member;
 }

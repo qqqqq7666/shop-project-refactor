@@ -1,5 +1,7 @@
 package com.example.shop_project.inquiry.entity;
 
+import com.example.shop_project.member.entity.Member;
+import com.example.shop_project.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,11 +19,13 @@ public class Inquiry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 문의 고유 ID
 
-    @Column(nullable = false)
-    private Long productId; // 상품 ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
-    @Column(nullable = false, length = 50)
-    private String nickname; // 작성자 닉네임
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(nullable = false, length = 100)
     private String title; // 문의 제목
@@ -32,7 +36,7 @@ public class Inquiry {
     @Column(nullable = false)
     private LocalDate date; // 작성 날짜
 
-    @Enumerated(EnumType.STRING) // Enum 저장 방식: 문자열로 저장
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private InquiryType type; // 문의 유형 (SIZE, SHIPPING, RESTOCK, DETAILS)
 }

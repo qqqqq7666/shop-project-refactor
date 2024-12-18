@@ -1,7 +1,7 @@
 package com.example.shop_project.order.dto;
 
+import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.entity.OrderStatus;
-import com.example.shop_project.order.entity.PayMethod;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,8 +17,6 @@ public class OrderRequestDto {
     @NotNull
     private OrderStatus orderStatus;
     @NotNull
-    private PayMethod payMethod;
-    @NotNull
     private String requirement;
     @NotBlank
     private String address;
@@ -28,5 +26,12 @@ public class OrderRequestDto {
     @Size(max = 5, min = 5)
     @Pattern(regexp = "^[0-9]*$")
     private String postNo;
+    @NotNull
     private List<OrderDetailDto> detailDtoList;
+    @NotNull
+    private Member member;
+    @NotBlank
+    private String contact;
+    @NotBlank
+    private String addressee;
 }

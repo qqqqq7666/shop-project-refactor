@@ -25,7 +25,7 @@
   <div id="sizeColorStockContainer">
     <label>*사이즈별 색상 및 재고</label>
     <div class="size-color-stock-group">
-      <select name="sizes[]" required title="사이즈를 선택하세요">
+      <select name="sizes[]" title="사이즈를 선택하세요">
         <option value="">사이즈 선택</option>
         <option value="S">S</option>
         <option value="M">M</option>
@@ -58,12 +58,16 @@
       <img src="/images/imageInfo.png" alt="info" class="info-icon">
       <span class="tooltip-text">순서 1의 사진의 대표 사진으로 등록됩니다.</span>
     </div>
-    <input type="file" id="images" name="images" multiple>
+    <input type="file" id="images" name="images" multiple style="display: none;">
+    <!-- 사용자 정의 파일 선택 버튼 -->
+    <button type="button" id="customFileButton">이미지 파일 선택</button>
+    <span id="fileCountMessage">선택된 파일: 0개</span>
     <ul id="imagePreviewList"></ul>
   </div>
 
-  <div>
-    <button type="submit">상품 등록</button>
+  <div class="button-container">
+    <button type="submit" class="submit-button">등록</button>
+    <button type="button" class="cancel-button" onclick="history.back()">취소</button>
   </div>
 </form>
 <script src="/js/productCreate.js"></script>
