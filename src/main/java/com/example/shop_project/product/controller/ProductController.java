@@ -48,6 +48,12 @@ public class ProductController {
         log.debug("### images : {}", images);
         log.debug("### bindingResult : {}", bindingResult);
 
+        for (MultipartFile file : images) {
+            log.debug("파일 이름: " + file.getOriginalFilename());
+            log.debug("파일 크기: " + file.getSize());
+            log.debug("파일 타입: " + file.getContentType());
+        }
+
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();

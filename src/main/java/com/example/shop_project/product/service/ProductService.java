@@ -207,7 +207,7 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    // 부분 업데이트 메서드
+    // 부분 업데이트
     public ProductResponseDto partialUpdateProduct(Long productId, Map<String, Object> updates, List<MultipartFile> images) {
         // 상품 조회
         Product product = productRepository.findById(productId)

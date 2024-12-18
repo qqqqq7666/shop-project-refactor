@@ -26,18 +26,38 @@ document.getElementById('addSizeColorStock').addEventListener('click', function 
     });
 });
 
+
+
 const imageInput = document.getElementById("images");
 const imagePreviewList = document.getElementById("imagePreviewList");
 let images = []; // 이미지 정보 저장 (file과 order)
 
+const customFileButton = document.getElementById("customFileButton");
+const fileCountMessage = document.getElementById("fileCountMessage");
+
+customFileButton.addEventListener("click", () => {
+    imageInput.click(); // 실제 파일 선택 필드 클릭
+});
+
 imageInput.addEventListener("change", () => {
-    images = Array.from(imageInput.files).map((file, index) => ({
-        file,
-        order: index + 1, // 초기 순서는 업로드된 순서
-    }));
+    const newFiles = Array.from(imageInput.files);
+
+    // 현재 이미지 개수 + 새로 추가된 파일 개수 확인
+    if (images.length + newFiles.length > 5) {
+        alert("*** 이미지는 최대 5개까지 저장 가능합니다 ***");
+        imageInput.value = ""; // 입력값 초기화
+        return;
+    }
+
+    // 새 파일을 기존 배열에 추가
+    newFiles.forEach((file) => {
+        images.push({ file, order: images.length + 1 }); // 새로운 파일 추가
+    });
 
     console.log("선택된 파일 목록:", images); // 파일 데이터 출력
     renderImagePreviews();
+    fileCountMessage.textContent = `선택된 파일: ${images.length}개`; // 파일 개수 표시
+    imageInput.value = ""; // 같은 파일 재선택 가능하도록 초기화
 });
 
 function renderImagePreviews() {
@@ -53,6 +73,7 @@ function renderImagePreviews() {
         <button class="drag-handle" draggable="true">☰</button>
         <img src="${URL.createObjectURL(image.file)}" class="image-preview">
         <span>순서: ${index + 1}</span>
+        <button class="delete-button" type="button" onclick="removeImage(${index})">x</button>
       </div>
     `;
 
@@ -84,6 +105,7 @@ function renderImagePreviews() {
             const dragEndIndex = parseInt(li.getAttribute("data-index"), 10);
             swapImages(dragStartIndex, dragEndIndex);
             renderImagePreviews();
+            console.log("최종 이미지 순서:", images);
         });
 
         imagePreviewList.appendChild(li);
@@ -95,14 +117,24 @@ function swapImages(fromIndex, toIndex) {
     const temp = images[fromIndex];
     images[fromIndex] = images[toIndex];
     images[toIndex] = temp;
+
+    images.forEach((image, index) => {
+        image.order = index + 1; // 인덱스 기반으로 order를 재설정
+    });
 }
+
+// 이미지 삭제 함수
+function removeImage(index) {
+    images.splice(index, 1); // 해당 인덱스 이미지 삭제
+    images.forEach((image, i) => (image.order = i + 1)); // order 재정렬
+    renderImagePreviews();
+}
+
 
 
 // 폼 제출 처리
 document.getElementById('productForm').addEventListener('submit', function (event) {
     event.preventDefault();
-
-    const images = document.getElementById('images').files;
 
     // 이미지 개수 제한 검사
     if (images.length > 5) {
@@ -145,9 +177,9 @@ document.getElementById('productForm').addEventListener('submit', function (even
     );
 
     // 이미지 파일 추가
-    for (let i = 0; i < images.length; i++) {
-        formData.append('images', images[i]);
-    }
+    images.forEach(image => {
+        formData.append('images', image.file);
+    });
 
     // REST API 호출
     fetch('/api/products', {
@@ -165,7 +197,7 @@ document.getElementById('productForm').addEventListener('submit', function (even
         .then(data => {
             console.log("상품 등록 성공:", data);
             alert('상품이 성공적으로 등록되었습니다!');
-            window.location.href = '/products/productList'; // 상품 리스트 페이지로 이동
+            window.location.href = '/products/manage'; // 상품 리스트 페이지로 이동
         })
         .catch(errors => {
             // 필드별 에러 메시지 표시
