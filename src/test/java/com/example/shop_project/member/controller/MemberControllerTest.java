@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -44,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest
@@ -52,11 +55,61 @@ public class MemberControllerTest {
 	@Autowired
     private MockMvc mockMvc;
 	
-	@Mock
-	PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Mock
     MemberRepository memberRepository;
+	
+	private Member testMember;
+	
+	// MemberRepository 에 의존성 주입 후 테스트할때 필요함
+//	@BeforeEach
+//    void 테스트전_기본회원데이터() {
+//		Optional<Member> existingMember = memberRepository.findByEmail("test@example.com");
+//
+//	    if (existingMember.isPresent()) {
+//	        // 기존 데이터가 존재하면 그것을 사용
+//	        testMember = existingMember.get();
+//	        System.out.println("기존 회원 데이터 사용: " + testMember);
+//	    } else {
+//	        // 기존 데이터가 없으면 새로 생성
+//	        testMember = Member.builder()
+//	                .email("test@example.com")
+//	                .password(passwordEncoder.encode("ValidPass1!")) // 올바른 비밀번호
+//	                .name("testname")
+//	                .nickname("tester")
+//	                .phone("010-1234-5678")
+//	                .postNo("12345")
+//	                .address("서울시 중구")
+//	                .addressDetail("상세주소")
+//	                .withdraw(false)
+//	                .build();
+//
+//	        memberRepository.save(testMember);
+//	        System.out.println("새 회원 데이터 저장 완료: " + testMember);
+//	    }
+//    }
+	
+	// MemberRepository 가 mock일때 필요함
+	@BeforeEach
+    void 테스트전_기본회원데이터() {
+        testMember = Member.builder()
+                .email("test@example.com")
+                .password(passwordEncoder.encode("ValidPass1!")) // 올바른 비밀번호
+                .name("testname")
+                .nickname("tester")
+                .phone("010-1234-5678")
+                .postNo("12345")
+                .address("서울시 중구")
+                .addressDetail("상세주소")
+                .withdraw(false)
+                .build();
+
+        memberRepository.save(testMember);
+        System.out.println("새 회원 데이터 저장 완료: " + testMember);
+	    
+    }
 	
 	@Test	// 페이지 요청이 정상적으로 200 OK를 반환하고, join 뷰를 렌더링하는지 확인.
 	void 회원가입_페이지접속() throws Exception {
@@ -183,25 +236,6 @@ public class MemberControllerTest {
                 .andExpect(redirectedUrl("/login?error=true")); // 실패 시 에러 파라미터 확인
 	}
 	
-	private Member testMember;
-	@BeforeEach
-    void 테스트전_기본회원데이터() {
-        // 테스트 데이터 설정: 존재하는 이메일과 암호화된 비밀번호
-		testMember = Member.builder()
-                .email("test@example.com")
-                .password(passwordEncoder.encode("CorrectPass1!")) // 올바른 비밀번호
-                .name("testname")
-                .nickname("tester")
-                .phone("010-1234-5678")
-                .postNo("12345")
-                .address("서울시 중구")
-                .addressDetail("상세주소")
-                .withdraw(false)
-                .build();
-
-		memberRepository.save(testMember);
-    }
-	
 	// 존재하는 이메일을 입력했지만 비밀번호가 틀리면 로그인 실패
 	@Test
 	void 로그인_비밀번호불일치() throws Exception {
@@ -211,6 +245,19 @@ public class MemberControllerTest {
                 .andExpect(status().is3xxRedirection()) // 실패 시 리다이렉트
                 .andExpect(redirectedUrl("/login?error=true")); // 실패 시 에러 파라미터 확인
 	}
+	
+	@Test	// 오류
+    void 로그인_성공_쿠키확인() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(post("/perform_login")
+                .param("email", testMember.getEmail())
+                .param("password", "ValidPass1!"))
+                .andReturn()
+                .getResponse();
+        
+        String sessionCookie = response.getCookie("JSESSIONID").getValue();
+        assertNotNull(sessionCookie, "JSESSIONID 쿠키가 생성되지 않았습니다.");
+        assertTrue(sessionCookie.length() > 0, "JSESSIONID 값이 비어 있습니다.");
+    }
 	
 	@Test	// 인증된 사용자(로그인된)는 mypage접근시 200 확인
 	@WithMockUser(username = "test@example.com", roles = {"USER"})
