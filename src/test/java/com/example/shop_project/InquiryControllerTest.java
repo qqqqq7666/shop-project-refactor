@@ -4,6 +4,7 @@ import com.example.shop_project.inquiry.controller.InquiryController;
 import com.example.shop_project.inquiry.entity.Inquiry;
 import com.example.shop_project.inquiry.entity.InquiryRequestDto;
 import com.example.shop_project.inquiry.service.InquiryService;
+import com.example.shop_project.member.entity.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -97,7 +98,17 @@ class InquiryControllerTest {
         // given
         Long productId = 1L;
         Long inquiryId = 10L;
+
+        Member mockMember = new Member();
+        mockMember.setNickname("testUser");
+
         Inquiry mockInquiry = new Inquiry();
+        mockInquiry.setId(inquiryId);
+        mockInquiry.setTitle("Test Title");
+        mockInquiry.setContent("Test Content");
+        mockInquiry.setMember(mockMember); // 작성자 정보 추가
+
+        // Mock 서비스 메서드
         when(inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId)).thenReturn(mockInquiry);
 
         // when
