@@ -120,14 +120,14 @@ public class MemberControllerTest {
 	
 	@Test	// 모든 필드를 올바르게 입력하면 성공적으로 /login으로 리다이렉트.
 	void 회원가입_모든필드_입력확인() throws Exception {
-		String base64Encoded = Base64.getEncoder().encodeToString("ValidPass1!".getBytes(StandardCharsets.UTF_8));
-
+		String base64EncodedPassword = Base64.getEncoder().encodeToString("ValidPass1!".getBytes(StandardCharsets.UTF_8));
+		
 	    mockMvc.perform(post("/join")
 	            .param("email", "test@example.com")
 	            .param("nickname", "tester")
 	            .param("name", "testname")
-	            .param("password", base64Encoded) // 실제 특수문자 인코딩 필요할 수도 있음
-	            .param("confirmPassword", base64Encoded)
+	            .param("password", base64EncodedPassword) // 실제 특수문자 인코딩 필요할 수도 있음
+	            .param("confirmPassword", base64EncodedPassword)
 	            .param("phone", "010-1234-5678")
 	            .param("postNo", "12345")
 	            .param("address", "서울시 중구")
@@ -142,14 +142,12 @@ public class MemberControllerTest {
 	@ValueSource(strings = {"email", "@example.com", "email@.com", "email@example.c", 
             "#email@example.com", "#@!@example.com", "email@example!@!.com"})			// 실패 케이스 목록
 	void 회원가입_이메일_유효성검사(String invalidEmail) throws Exception {
-		String base64Encoded = Base64.getEncoder().encodeToString("ValidPass1!".getBytes(StandardCharsets.UTF_8));
-		
 	    mockMvc.perform(post("/join")
 	            .param("email", invalidEmail)				// 실패 케이스 
 	            .param("nickname", "tester")
 	            .param("name", "testname")
-	            .param("password", base64Encoded)
-	            .param("confirmPassword", base64Encoded)
+	            .param("password", "ValidPass1!")
+	            .param("confirmPassword", "ValidPass1!")
 	            .param("phone", "010-1234-5678")
 	            .param("postNo", "12345")
 	            .param("address", "서울시 중구")
