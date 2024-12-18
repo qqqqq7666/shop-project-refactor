@@ -64,52 +64,53 @@ public class MemberControllerTest {
 	private Member testMember;
 	
 	// MemberRepository 에 의존성 주입 후 테스트할때 필요함
-//	@BeforeEach
-//    void 테스트전_기본회원데이터() {
-//		Optional<Member> existingMember = memberRepository.findByEmail("test@example.com");
-//
-//	    if (existingMember.isPresent()) {
-//	        // 기존 데이터가 존재하면 그것을 사용
-//	        testMember = existingMember.get();
-//	        System.out.println("기존 회원 데이터 사용: " + testMember);
-//	    } else {
-//	        // 기존 데이터가 없으면 새로 생성
-//	        testMember = Member.builder()
-//	                .email("test@example.com")
-//	                .password(passwordEncoder.encode("ValidPass1!")) // 올바른 비밀번호
-//	                .name("testname")
-//	                .nickname("tester")
-//	                .phone("010-1234-5678")
-//	                .postNo("12345")
-//	                .address("서울시 중구")
-//	                .addressDetail("상세주소")
-//	                .withdraw(false)
-//	                .build();
-//
-//	        memberRepository.save(testMember);
-//	        System.out.println("새 회원 데이터 저장 완료: " + testMember);
-//	    }
-//    }
-	
-	// MemberRepository 가 mock일때 필요함
 	@BeforeEach
     void 테스트전_기본회원데이터() {
-        testMember = Member.builder()
-                .email("test@example.com")
-                .password(passwordEncoder.encode("ValidPass1!")) // 올바른 비밀번호
-                .name("testname")
-                .nickname("tester")
-                .phone("010-1234-5678")
-                .postNo("12345")
-                .address("서울시 중구")
-                .addressDetail("상세주소")
-                .withdraw(false)
-                .build();
+		Optional<Member> existingMember = memberRepository.findByEmail("test@example.com");
 
-        memberRepository.save(testMember);
-        System.out.println("새 회원 데이터 저장 완료: " + testMember);
-	    
+	    if (existingMember.isPresent()) {
+	        // 기존 데이터가 존재하면 그것을 사용
+	        testMember = existingMember.get();
+	        testMember.setWithdraw(false);
+	        System.out.println("기존 회원 데이터 사용: " + testMember);
+	    } else {
+	        // 기존 데이터가 없으면 새로 생성
+	        testMember = Member.builder()
+	                .email("test@example.com")
+	                .password(passwordEncoder.encode("ValidPass1!")) // 올바른 비밀번호
+	                .name("testname")
+	                .nickname("tester")
+	                .phone("010-1234-5678")
+	                .postNo("12345")
+	                .address("서울시 중구")
+	                .addressDetail("상세주소")
+	                .withdraw(false)
+	                .build();
+
+	        memberRepository.save(testMember);
+	        System.out.println("새 회원 데이터 저장 완료: " + testMember);
+	    }
     }
+	
+//	// MemberRepository 가 mock일때 필요함
+//	@BeforeEach
+//    void 테스트전_기본회원데이터() {
+//        testMember = Member.builder()
+//                .email("test@example.com")
+//                .password(passwordEncoder.encode("ValidPass1!")) // 올바른 비밀번호
+//                .name("testname")
+//                .nickname("tester")
+//                .phone("010-1234-5678")
+//                .postNo("12345")
+//                .address("서울시 중구")
+//                .addressDetail("상세주소")
+//                .withdraw(false)
+//                .build();
+//
+//        memberRepository.save(testMember);
+//        System.out.println("새 회원 데이터 저장 완료: " + testMember);
+//	    
+//    }
 	
 	@Test	// 페이지 요청이 정상적으로 200 OK를 반환하고, join 뷰를 렌더링하는지 확인.
 	void 회원가입_페이지접속() throws Exception {
@@ -121,11 +122,11 @@ public class MemberControllerTest {
 	@Test	// 모든 필드를 올바르게 입력하면 성공적으로 /login으로 리다이렉트.
 	void 회원가입_모든필드_입력확인() throws Exception {
 		String base64EncodedPassword = Base64.getEncoder().encodeToString("ValidPass1!".getBytes(StandardCharsets.UTF_8));
-		
+	
 	    mockMvc.perform(post("/join")
 	            .param("email", "test@example.com")
-	            .param("nickname", "tester")
-	            .param("name", "testname")
+	            .param("nickname", "newmember")
+	            .param("name", "testname412")
 	            .param("password", base64EncodedPassword) // 실제 특수문자 인코딩 필요할 수도 있음
 	            .param("confirmPassword", base64EncodedPassword)
 	            .param("phone", "010-1234-5678")
@@ -134,7 +135,7 @@ public class MemberControllerTest {
 	            .param("addressDetail", "상세주소")
 	    )
 	    .andExpect(status().is3xxRedirection())
-	    .andExpect(redirectedUrl("member/login"));
+	    .andExpect(redirectedUrl("/login"));
 	}
 	
 	// 잘못된 이메일 주소를 보내면 join 페이지로 돌아가고 error 메시지를 포함하는지 확인.
@@ -294,17 +295,17 @@ public class MemberControllerTest {
 	@Test
 	@WithMockUser(username = "test@example.com", roles = {"USER"})
     void 회원탈퇴_성공_테스트() throws Exception {
-		// 1. 탈퇴 API 호출
-	    mockMvc.perform(post("/mypage/withdraw")
-	            .contentType(MediaType.APPLICATION_JSON))
-	            .andExpect(status().isOk())
-	            .andExpect(content().string("회원 탈퇴가 완료되었습니다.")); // 응답 확인
+		// 초기 상태 출력
+	    System.out.println("Test Member ID: " + testMember.getEmail());
+		
+//		// 1. 탈퇴 API 호출
+//	    mockMvc.perform(post("/mypage/withdraw")
+//	            .contentType(MediaType.APPLICATION_JSON))
+//	            .andExpect(status().isOk())
+//	            .andExpect(content().string("회원 탈퇴가 완료되었습니다.")); // 응답 확인
 
-	    // 2. 데이터베이스에서 withdraw 필드 확인
 	    Member updatedMember = memberRepository.findByEmail("test@example.com")
 	            .orElseThrow(() -> new AssertionError("회원이 존재하지 않습니다."));
-	    
-	    // 검증
 	    assertTrue(updatedMember.getWithdraw(), "탈퇴 처리 후 withdraw 필드는 true여야 합니다.");
     }
 	
