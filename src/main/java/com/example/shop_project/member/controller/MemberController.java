@@ -43,7 +43,6 @@ public class MemberController {
 	
 	@PostMapping("/join")
 	public String saveMember(@Validated @ModelAttribute MemberRequestDTO memberRequestDTO,
-				            //@RequestParam("confirmPassword") String confirmPassword,
 				            Model model, BindingResult bindingResult) {
 		// 이메일 형식 검사 (@하나 포함, @뒤에 .하나 포함)
 		String emailRegex = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$";
