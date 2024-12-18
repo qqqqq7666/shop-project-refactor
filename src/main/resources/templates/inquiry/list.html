@@ -54,7 +54,7 @@
     <div id="question-list">
         <div th:each="inquiry : ${inquiries}" class="inquiry-container">
             <h4 th:text="${inquiry.title}">문의 제목</h4>
-            <p class="info">작성자: <span th:text="${inquiry.nickname}">닉네임</span> | 작성일: <span th:text="${inquiry.date}">YYYY-MM-DD</span></p>
+            <p class="info">작성자: <span th:text="${inquiry.member.nickname}">닉네임</span> | 작성일: <span th:text="${inquiry.date}">YYYY-MM-DD</span></p>
             <p class="info">문의 유형: <span th:text="${inquiry.type.getKoreanName()}">문의 유형</span></p>
             <p th:text="${inquiry.content}">문의 내용</p>
             <a th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${productId}, inquiryId=${inquiry.id})}" class="btn btn-secondary btn-sm">상세 보기</a>

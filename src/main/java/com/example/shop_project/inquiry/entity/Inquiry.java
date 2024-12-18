@@ -1,5 +1,6 @@
 package com.example.shop_project.inquiry.entity;
 
+import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,8 +23,9 @@ public class Inquiry {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(nullable = false, length = 50)
-    private String nickname; // 작성자 닉네임
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(nullable = false, length = 100)
     private String title; // 문의 제목

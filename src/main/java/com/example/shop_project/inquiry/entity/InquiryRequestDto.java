@@ -12,9 +12,6 @@ import lombok.*;
 public class InquiryRequestDto {
     private Long productId; // 상품 ID
 
-    @NotBlank(message = "닉네임은 필수 입력 항목입니다.")
-    private String nickname; // 작성자 닉네임
-
     @NotBlank(message = "제목은 필수 입력 항목입니다.")
     private String title; // 문의 제목
 

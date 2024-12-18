@@ -1,140 +1,148 @@
 package com.example.shop_project;
 
+import com.example.shop_project.inquiry.controller.InquiryController;
 import com.example.shop_project.inquiry.entity.Inquiry;
 import com.example.shop_project.inquiry.entity.InquiryRequestDto;
-import com.example.shop_project.inquiry.entity.InquiryType;
-import com.example.shop_project.inquiry.repository.InquiryRepository;
 import com.example.shop_project.inquiry.service.InquiryService;
-import com.example.shop_project.product.entity.Product;
-import com.example.shop_project.product.repository.ProductRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.shop_project.member.entity.Member;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@Transactional
 class InquiryControllerTest {
 
-    @Autowired
+    @Mock
     private InquiryService inquiryService;
 
-    @Autowired
-    private InquiryRepository inquiryRepository;
+    @Mock
+    private Model model;
 
-    @Autowired
-    private ProductRepository productRepository;
+    @InjectMocks
+    private InquiryController inquiryController;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
-    @DisplayName("문의 생성")
-    void createInquiry() {
+    @DisplayName("문의 목록 조회")
+    void showInquiriesByProduct() {
         // given
-        Product product = Product.builder()
-                .categoryName("의류")
-                .productName("테스트 상품")
-                .description("테스트 상품 설명")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .price(10000)
-                .build();
-        Product savedProduct = productRepository.save(product);
-
-        InquiryRequestDto requestDto = InquiryRequestDto.builder()
-                .nickname("nickname1")
-                .title("title1")
-                .content("content1")
-                .type(InquiryType.SIZE)
-                .build();
+        Long productId = 1L;
+        List<Inquiry> mockInquiries = new ArrayList<>();
+        mockInquiries.add(new Inquiry());
+        when(inquiryService.getInquiriesByProductId(productId)).thenReturn(mockInquiries);
 
         // when
-        Inquiry savedInquiry = inquiryService.createInquiry(savedProduct.getProductId(), requestDto);
+        String viewName = inquiryController.showInquiriesByProduct(productId, model);
 
         // then
-        Inquiry foundInquiry = inquiryRepository.findById(savedInquiry.getId())
-                .orElseThrow(() -> new EntityNotFoundException("문의가 존재하지 않습니다."));
+        assertEquals("inquiry/list", viewName);
+        verify(model, times(1)).addAttribute("inquiries", mockInquiries);
+        verify(model, times(1)).addAttribute("productId", productId);
+    }
 
-        assertEquals(savedInquiry.getId(), foundInquiry.getId());
-        assertEquals(savedInquiry.getProduct().getProductId(), foundInquiry.getProduct().getProductId());
-        assertEquals(savedInquiry.getNickname(), foundInquiry.getNickname());
-        assertEquals(savedInquiry.getTitle(), foundInquiry.getTitle());
-        assertEquals(savedInquiry.getContent(), foundInquiry.getContent());
+    @Test
+    @DisplayName("문의 작성 페이지 이동")
+    void showCreatePage() {
+        // given
+        Long productId = 1L;
+
+        // when
+        String viewName = inquiryController.showCreatePage(productId, model);
+
+        // then
+        assertEquals("inquiry/create", viewName);
+        verify(model, times(1)).addAttribute("productId", productId);
+    }
+
+    @Test
+    @DisplayName("문의 생성 처리")
+    void createInquiry() {
+        // given
+        Long productId = 1L;
+        InquiryRequestDto dto = new InquiryRequestDto();
+        String userEmail = "test@example.com";
+
+        mockSecurityContext(userEmail);
+
+        when(inquiryService.createInquiry(productId, dto, userEmail)).thenReturn(null);
+
+        // when
+        String viewName = inquiryController.createInquiry(productId, dto);
+
+        // then
+        assertEquals("redirect:/products/" + productId + "/inquiries", viewName);
+        verify(inquiryService, times(1)).createInquiry(productId, dto, userEmail);
     }
 
     @Test
     @DisplayName("문의 조회")
     void getInquiryById() {
         // given
-        Product product = Product.builder()
-                .categoryName("의류")
-                .productName("테스트 상품")
-                .description("테스트 상품 설명")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .price(10000)
-                .build();
-        Product savedProduct = productRepository.save(product);
+        Long productId = 1L;
+        Long inquiryId = 10L;
 
-        Inquiry inquiry = Inquiry.builder()
-                .product(savedProduct)
-                .nickname("nickname1")
-                .title("title1")
-                .content("content1")
-                .date(LocalDate.now())
-                .type(InquiryType.SIZE)
-                .build();
-        Inquiry savedInquiry = inquiryRepository.save(inquiry);
+        Member mockMember = new Member();
+        mockMember.setNickname("testUser");
+
+        Inquiry mockInquiry = new Inquiry();
+        mockInquiry.setId(inquiryId);
+        mockInquiry.setTitle("Test Title");
+        mockInquiry.setContent("Test Content");
+        mockInquiry.setMember(mockMember); // 작성자 정보 추가
+
+        // Mock 서비스 메서드
+        when(inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId)).thenReturn(mockInquiry);
 
         // when
-        Inquiry foundInquiry = inquiryService.getInquiryById(savedInquiry.getId());
+        String viewName = inquiryController.getInquiryById(productId, inquiryId, model);
 
         // then
-        assertNotNull(foundInquiry);
-        assertEquals(savedInquiry.getId(), foundInquiry.getId());
-        assertEquals(savedInquiry.getProduct().getProductId(), foundInquiry.getProduct().getProductId());
-        assertEquals(savedInquiry.getNickname(), foundInquiry.getNickname());
-        assertEquals(savedInquiry.getTitle(), foundInquiry.getTitle());
-        assertEquals(savedInquiry.getContent(), foundInquiry.getContent());
-        assertEquals(savedInquiry.getDate(), foundInquiry.getDate());
+        assertEquals("inquiry/detail", viewName);
+        verify(model, times(1)).addAttribute("inquiry", mockInquiry);
+        verify(model, times(1)).addAttribute("productId", productId);
     }
 
     @Test
     @DisplayName("문의 삭제")
     void deleteInquiry() {
         // given
-        Product product = Product.builder()
-                .categoryName("의류")
-                .productName("테스트 상품")
-                .description("테스트 상품 설명")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .price(10000)
-                .build();
-        Product savedProduct = productRepository.save(product);
-
-        Inquiry inquiry = Inquiry.builder()
-                .product(savedProduct)
-                .nickname("nickname1")
-                .title("title1")
-                .content("content1")
-                .date(LocalDate.now())
-                .type(InquiryType.SIZE)
-                .build();
-        Inquiry savedInquiry = inquiryRepository.save(inquiry);
+        Long productId = 1L;
+        Long inquiryId = 10L;
 
         // when
-        inquiryService.deleteInquiry(savedInquiry.getId());
+        ResponseEntity<Void> response = inquiryController.deleteInquiry(productId, inquiryId);
 
         // then
-        assertThrows(EntityNotFoundException.class, () -> {
-            inquiryRepository.findById(savedInquiry.getId())
-                    .orElseThrow(() -> new EntityNotFoundException("문의가 존재하지 않습니다."));
-        });
+        assertEquals(204, response.getStatusCodeValue());
+        verify(inquiryService, times(1)).deleteInquiry(inquiryId);
+    }
+
+    // SecurityContextHolder Mock 설정
+    private void mockSecurityContext(String userEmail) {
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getName()).thenReturn(userEmail);
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+
+        SecurityContextHolder.setContext(securityContext);
     }
 }
