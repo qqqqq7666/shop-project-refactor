@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>관리자 페이지</title>
+    <style>
+        /* 임시로 간단한 스타일 */
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        nav {
+            margin-bottom: 20px;
+        }
+        nav a {
+            margin-right: 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #007bff;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>관리자 페이지</h1>
+        <nav>
+            <a th:href="@{/admin/orders}">주문 관리</a>
+            <a th:href="@{/admin/members}">회원 관리</a>
+            <a th:href="@{/admin/categories}">카테고리 수정</a>
+            <a th:href="@{/admin/products}">상품 등록</a>
+        </nav>
+    </div>
+</body>
+</html>
