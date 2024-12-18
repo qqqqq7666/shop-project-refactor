@@ -1,6 +1,4 @@
 package com.example.shop_project.order.controller;
-
-import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.PaymentDto;
 import com.example.shop_project.order.entity.Payment;
 import com.example.shop_project.order.service.PaymentService;

@@ -1,7 +1,6 @@
 package com.example.shop_project.order.controller;
 
 import com.example.shop_project.member.service.MemberService;
-import com.example.shop_project.order.mapper.OrderMapper;
 import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.order.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +21,6 @@ public class OrderViewController {
     MemberService memberService;
     @Autowired
     PaymentService paymentService;
-    @Autowired
-    OrderMapper orderMapper;
 
     @GetMapping("/create")
     public String createOrder(){
