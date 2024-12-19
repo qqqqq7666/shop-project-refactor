@@ -72,13 +72,13 @@ function saveCategory(tagId, categoryId) {
         .then(response => {
             if (response.ok) {
                 return response.json();
-            } else if (response.status === 400) {  // badRequest
+            } else if (response.status === 400) {  // BadRequest
                 cancelEditCategory(tagId);
                 throw new Error('유효하지 않은 카테고리입니다(15자 이내 영대소문자, 한글, /만 가능).');
             } else if (response.status === 409) {  // Conflict
                 cancelEditCategory(tagId);
-                throw new Error('카테고리명이 중복되었습니다.');
-            } else {
+                return response.json().then(errorMessage => {throw errorMessage});
+            } else { // 그 외 에러 처리
                 cancelEditCategory(tagId);
                 throw new Error('카테고리 업데이트 실패에 실패했습니다.');
             }

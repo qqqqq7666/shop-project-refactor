@@ -4,6 +4,8 @@ import com.example.shop_project.category.dto.CategoryCreateReqDto;
 import com.example.shop_project.category.dto.CategoryResDto;
 import com.example.shop_project.category.dto.CategoryUpdateReqDto;
 import com.example.shop_project.category.entity.Category;
+import com.example.shop_project.category.exception.CategoryCustomException;
+import com.example.shop_project.category.exception.CategoryErrorCode;
 import com.example.shop_project.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +42,7 @@ public class CategoryService {
         // 메인 카테고리명 중복 검사
         List<Category> mainCategories = categoryRepository.findByDepth(0); // 메인 카테고리
         if(isCategoryNameDuplicate(categoryCreateReqDto.getMainCategoryName(), mainCategories)){
-            return null;
+            throw new CategoryCustomException(CategoryErrorCode.DUPLICATE_RESOURCE); // 중복 시 Conflict
         }
 
         // 메인 카테고리 생성
@@ -68,7 +70,7 @@ public class CategoryService {
         // 서브 카테고리 중복 검사
         List<Category> subCategories = mainCategory.getSubCategories();
         if(isCategoryNameDuplicate(categoryCreateReqDto.getSubCategoryName(), subCategories)){
-            return null;
+            throw new CategoryCustomException(CategoryErrorCode.DUPLICATE_RESOURCE); // 중복 시 Conflict
         }
 
         // 서브 카테고리 생성
@@ -96,7 +98,7 @@ public class CategoryService {
 
         // 카테고리명 중복 검사
         if(isCategoryNameDuplicate(updateCategoryName, categories)) {
-            return null;
+            throw new CategoryCustomException(CategoryErrorCode.DUPLICATE_RESOURCE); // 중복 시 Conflict
         }
 
         // 카테고리명 업데이트
@@ -125,11 +127,6 @@ public class CategoryService {
         List<Category> subCategories = parentCategory.getSubCategories();
         if(subCategories.isEmpty()) {
             categoryRepository.delete(parentCategory); // 메인 카테고리 삭제
-        }
-
-        Category deleteCategory = categoryRepository.findByCategoryId(categoryId);
-        if(deleteCategory != null) {
-            return false;
         }
         return true;
     }

@@ -39,13 +39,13 @@ document.body.addEventListener('click', (event) => {
 
                 if (response.ok) {
                     return response.json();
-                } else if (response.status === 400) {  // badRequest
+                } else if (response.status === 400) {  // BadRequest
                     toggleForm(activeElementId);
                     throw new Error('유효하지 않은 카테고리입니다(15자 이내 영대소문자, 한글, /만 가능).');
                 } else if (response.status === 409) {  // Conflict
                     toggleForm(activeElementId);
-                    throw new Error('카테고리명이 중복되었습니다.');
-                } else {
+                    return response.json().then(errorMessage => {throw errorMessage});
+                } else { // 그 외 에러 처리
                     toggleForm(activeElementId);
                     throw new Error('카테고리 추가에 실패했습니다.');
                 }
