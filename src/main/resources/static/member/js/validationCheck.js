@@ -2,7 +2,7 @@
 export function validatePassword(password) {
     const regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!regex.test(password)) {
-        return '비밀번호는 최소 8자, 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.';
+        return '비밀번호는 최소 8글자이며 대소문자, 숫자, 특수문자(@$!%*?&)를 최소 하나씩 포함해야 합니다';
     }
     return '';
 }

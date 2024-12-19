@@ -34,6 +34,7 @@ public class SecurityConfig {
 //        		)
                 .authorizeHttpRequests(auth -> auth
                 		.requestMatchers("/admin/**").hasAuthority("ADMIN") // 관리자만 접근 허용
+                		.requestMatchers("/mypage/**").authenticated() // 인증 필요
                         .requestMatchers("/**").permitAll()		// 후에 접근 허용 경로 수정 필요
                 )
                 //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가

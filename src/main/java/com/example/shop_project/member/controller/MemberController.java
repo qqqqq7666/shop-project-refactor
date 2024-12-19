@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.Base64;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,13 +52,6 @@ public class MemberController {
 
 		memberService.Join(memberRequestDTO);		
 		return "redirect:/";
-//		try {
-//			memberService.Join(memberRequestDTO);		
-//			return "redirect:/";
-//		} catch (IllegalArgumentException e) {
-//			model.addAttribute("error", e.getMessage());
-//            return "member/join";
-//		}
 	}
 	
 	@GetMapping("/login")
@@ -79,32 +73,35 @@ public class MemberController {
 	}
 	
 	@GetMapping("/mypage/edit")
-	public String Login(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-		String email = userDetails.getUsername();
-        Member member = memberService.findByEmail(email);
-        
-        model.addAttribute("member", member);
-        return "member/editProfile";
+	public String Login(Principal principal, Model model) {
+	    if (principal == null) {
+	        return "redirect:/login";
+	    }
+
+	    String email = principal.getName(); // 이메일 가져오기
+	    Member member = memberService.findByEmail(email);
+	    model.addAttribute("member", member);
+	    return "member/editProfile";
 	}
 	
 	@PostMapping("/mypage/edit")
-    public String updateMemberInfo(@AuthenticationPrincipal UserDetails userDetails,
-                                    @ModelAttribute MemberRequestDTO memberRequestDTO,
-                                    Model model) {
-        String email = userDetails.getUsername();
-        Member member = memberService.findByEmail(email);
+	public String updateMemberInfo(Principal principal,
+	                                @ModelAttribute MemberRequestDTO memberRequestDTO,
+	                                Model model) {
+	    String email = principal.getName();
+	    Member member = memberService.findByEmail(email);
 
-        // 회원 정보를 업데이트
-        memberService.updateMember(member, memberRequestDTO);
+	    // 회원 정보를 업데이트
+	    memberService.updateMember(member, memberRequestDTO);
 
-        return "redirect:/mypage";  // 수정된 후 마이페이지로 리다이렉트
-    }
+	    return "redirect:/mypage";  // 수정된 후 마이페이지로 리다이렉트
+	}
+
 	
-	@PostMapping("/mypage/withdraw")
+	@PostMapping(value = "/mypage/withdraw", produces = MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8")
     public ResponseEntity<String> withdrawAccount(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         String username = authentication.getName();
-        Member member = memberRepository.findByEmail(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다"));
+        Member member = memberRepository.findByEmail(username).orElseThrow();
 
         member.setWithdraw(true);
         memberRepository.save(member);
