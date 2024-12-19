@@ -1,0 +1,224 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: green;
+    text-align: center;
+}
+
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+textarea {
+    resize: none;
+}
+
+button {
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 103%;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+select {
+    background-color: white; /* 흰색 배경 */
+    color: black; /* 검은 글씨 */
+    border: 1px solid #ccc;
+    cursor: pointer;
+    width: 104%;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: darkgray;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block; /* 메시지가 새 줄에 표시되도록 설정 */
+}
+
+#imagePreviewList {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+    width: 103%;
+}
+
+#imagePreviewList li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* .image-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 10px;
+} */
+
+
+.delete-button {
+    width: 16px; /* 버튼의 가로 크기 */
+    height: 16px; /* 버튼의 세로 크기 */
+    display: flex;
+    justify-content: center; /* 내용 가로 중앙 정렬 */
+    align-items: center; /* 내용 세로 중앙 정렬 */
+    background-color: #ccc; /* 버튼 배경 색상 */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 300px;
+    text-align: center; /* 텍스트 가로 중앙 정렬 */
+    line-height: 16px; /* 버튼 높이와 동일하게 설정해 세로 중앙 정렬 */
+}
+
+
+.image-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 양 끝으로 요소 정렬 */
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    background: #f9f9f9;
+}
+
+.image-item .drag-handle {
+    width: 50px; /* 버튼의 가로 크기 */
+    height: 30px; /* 버튼의 세로 크기 */
+    cursor: grab;
+    background: #ccc;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
+.image-item.drag-over {
+    background: #d3f3fd;
+}
+
+.image-preview {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.image-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.image-container span {
+    display: inline-block; /* 텍스트를 가로 정렬 */
+    margin: 0; /* 불필요한 여백 제거 */
+    font-size: 14px;
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+
+
+
+
+.tooltip-container {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+
+.info-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-bottom: 4px;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 170%; /* 아이콘 위에 띄우기 위해 */
+    left: 35%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+/* 툴팁 화살표 */
+.tooltip-text::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* 툴팁 아래에 위치 */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* 버튼을 가운데 정렬 */
+    gap: 10px; /* 버튼 사이의 간격 */
+    margin-top: 20px; /* 위쪽 여백 */
+    align-items: center; /* 세로축 중앙 정렬 (선택 사항) */
+}
+
+.cancel-button, .submit-button {
+    width: 75px; /* 버튼 너비 */
+    padding: 10px 0; /* 버튼 패딩 */
+    font-size: 14px; /* 폰트 크기 */
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.cancel-button {
+    background-color: #f5f5f5; /* 연한 회색 배경 */
+    color: #333; /* 어두운 텍스트 */
+}
+
+.submit-button {
+    background-color: black; /* 검은색 배경 */
+    color: white; /* 흰색 텍스트 */
+}

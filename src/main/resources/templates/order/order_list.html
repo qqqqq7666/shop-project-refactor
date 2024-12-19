@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 내역</title>
+    <link rel="stylesheet" href="/order/style/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5 d-flex flex-column align-items-center">
+    <h2 class="mb-4">주문내역</h2>
+
+    <!-- Card Example -->
+    <div class="card mb-3 w-100" style="max-width: 540px;" id="product-card"
+         th:each="order : ${orderMap}">
+        <div>
+            <h4 th:text="${#temporals.format(order.getKey().getCreatedDate(), 'yy.MM.dd')}"></h4>
+        </div>
+        <div class="row g-0" th:each="detail : ${order.getValue()}">
+            <!-- Image Section -->
+            <div class="col-md-4">
+                <img src="https://via.placeholder.com/150" class="img-fluid rounded-start" alt="Product Image">
+            </div>
+
+            <!-- Text Section -->
+            <div class="col-md-8">
+                <div class="card-body">
+                    <p class="card-text text-muted" style="position: absolute; top: 0; right: 0; margin: 10px; font-size: 0.9em;"><a th:href="|order/${order.getKey().getOrderNo()}|">주문 상세</a></p>
+                    <h5 class="card-title" th:text="${detail.getProduct().getProductName()}">Product Name</h5>
+                    <p class="card-text mb-1" th:text="|Option / ${detail.getQuantity()}개|">Size/Quantity</p>
+                    <p class="card-text" th:text="|${detail.getPrice()}원|">Price: <strong>price</strong></p>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+</div>
+
+<script src="/order/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

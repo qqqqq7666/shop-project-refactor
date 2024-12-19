@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>문의 목록</title>
+    <link href="/order/style/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .question-board {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .inquiry-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+
+        .inquiry-container h4 {
+            margin-bottom: 10px;
+        }
+
+        .inquiry-container p {
+            margin: 5px 0;
+        }
+
+        .inquiry-container .info {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .write-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="question-board">
+    <h2>상품 문의 목록</h2>
+
+    <div class="write-button">
+        <a th:href="@{/products/{productId}/inquiries/create(productId=${productId})}" class="btn btn-primary">문의 작성</a>
+    </div>
+
+    <div id="question-list">
+        <div th:each="inquiry : ${inquiries}" class="inquiry-container">
+            <h4 th:text="${inquiry.title}">문의 제목</h4>
+            <p class="info">작성자: <span th:text="${inquiry.member.nickname}">닉네임</span> | 작성일: <span th:text="${inquiry.date}">YYYY-MM-DD</span></p>
+            <p class="info">문의 유형: <span th:text="${inquiry.type.getKoreanName()}">문의 유형</span></p>
+            <p th:text="${inquiry.content}">문의 내용</p>
+            <a th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${productId}, inquiryId=${inquiry.id})}" class="btn btn-secondary btn-sm">상세 보기</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
