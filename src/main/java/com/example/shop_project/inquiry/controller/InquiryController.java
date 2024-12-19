@@ -54,6 +54,7 @@ public class InquiryController {
     @GetMapping("/{inquiryId}")
     public String getInquiryById(@PathVariable Long productId, @PathVariable Long inquiryId, Model model) {
         Inquiry inquiry = inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId);
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (inquiry.isSecret() && !inquiry.getMember().getEmail().equals(
                 SecurityContextHolder.getContext().getAuthentication().getName())) {
@@ -66,6 +67,7 @@ public class InquiryController {
         model.addAttribute("inquiry", inquiry);
         model.addAttribute("productId", productId);
         model.addAttribute("nickname", nickname);
+        model.addAttribute("userEmail", userEmail);
 
         return "inquiry/detail";
     }

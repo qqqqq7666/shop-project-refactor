@@ -57,6 +57,7 @@
         </div>
 
         <button
+                th:if="${inquiry.member.email == userEmail}"
                 id="delete-button"
                 type="button"
                 class="btn btn-primary"
