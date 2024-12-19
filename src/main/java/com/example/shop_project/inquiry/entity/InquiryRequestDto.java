@@ -20,4 +20,6 @@ public class InquiryRequestDto {
 
     @NotNull(message = "문의 유형은 필수 입력 항목입니다.")
     private InquiryType type; // 문의 유형
+
+    private Boolean isSecret; // 비밀글 여부
 }

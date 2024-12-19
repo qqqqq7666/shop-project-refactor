@@ -4,7 +4,6 @@ import com.example.shop_project.inquiry.entity.InquiryRequestDto;
 import com.example.shop_project.inquiry.entity.Inquiry;
 import com.example.shop_project.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,7 +23,9 @@ public class InquiryController {
     // 특정 상품의 문의 목록 페이지 렌더링
     @GetMapping
     public String showInquiriesByProduct(@PathVariable Long productId, Model model) {
-        List<Inquiry> inquiries = inquiryService.getInquiriesByProductId(productId);
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<Inquiry> inquiries = inquiryService.getInquiriesByProductId(productId, currentUserEmail);
+
         model.addAttribute("inquiries", inquiries);
         model.addAttribute("productId", productId);
         return "inquiry/list";
@@ -45,6 +46,7 @@ public class InquiryController {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         inquiryService.createInquiry(productId, dto, userEmail);
+        System.out.println("isSecret: " + dto.getIsSecret());
         return "redirect:/products/" + productId + "/inquiries";
     }
 
@@ -52,6 +54,12 @@ public class InquiryController {
     @GetMapping("/{inquiryId}")
     public String getInquiryById(@PathVariable Long productId, @PathVariable Long inquiryId, Model model) {
         Inquiry inquiry = inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId);
+
+        if (inquiry.isSecret() && !inquiry.getMember().getEmail().equals(
+                SecurityContextHolder.getContext().getAuthentication().getName())) {
+            inquiry.setTitle("비밀글입니다");
+            inquiry.setContent("비밀글입니다");
+        }
 
         String nickname = inquiry.getMember().getNickname();
 

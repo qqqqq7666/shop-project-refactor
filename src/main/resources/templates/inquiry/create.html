@@ -41,6 +41,19 @@
             <textarea class="form-control" name="content" placeholder="문의 내용을 입력하세요" required></textarea>
         </div>
 
+        <div class="mb-3">
+            <input type="checkbox" id="isSecret" name="isSecret" value="true" onclick="handleSecretCheckbox(this)">
+            <input type="hidden" id="isSecretHidden" name="isSecret" value="false">
+            <label class="form-label">비밀글 설정</label>
+        </div>
+
+        <script>
+            function handleSecretCheckbox(checkbox) {
+                document.getElementById('isSecretHidden').disabled = checkbox.checked;
+            }
+        </script>
+
+
         <div class="d-flex justify-content-center">
             <button type="submit" class="btn btn-primary">등록</button>
             <a class="btn btn-danger ms-3" th:href="@{/inquiries}">취소</a>

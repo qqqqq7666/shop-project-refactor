@@ -36,6 +36,7 @@ public class InquiryService {
                 .content(dto.getContent())
                 .title(dto.getTitle())
                 .type(dto.getType())
+                .isSecret(dto.getIsSecret()) // 비밀글 여부
                 .date(LocalDate.now())
                 .member(member) // 회원
                 .build();
@@ -45,8 +46,18 @@ public class InquiryService {
 
 
     // 특정 상품의 문의 목록 조회
-    public List<Inquiry> getInquiriesByProductId(Long productId) {
-        return inquiryRepository.findByProduct_ProductId(productId);
+    public List<Inquiry> getInquiriesByProductId(Long productId, String currentUserEmail) {
+        List<Inquiry> inquiries = inquiryRepository.findByProduct_ProductId(productId);
+
+        // 비밀글 처리
+        for (Inquiry inquiry : inquiries) {
+            if (inquiry.isSecret() && !inquiry.getMember().getEmail().equals(currentUserEmail)) {
+                inquiry.setTitle("비밀글입니다");
+                inquiry.setContent("비밀글입니다");
+            }
+        }
+
+        return inquiries;
     }
 
     // 특정 상품의 특정 문의 개별 조회
