@@ -48,14 +48,16 @@ public class MemberController {
 	        model.addAttribute("error", bindingResult.getFieldError().getDefaultMessage());
 	        return "member/join";
 	    }
-		
-		try {
-			memberService.Join(memberRequestDTO);		
-			return "redirect:/";
-		} catch (IllegalArgumentException e) {
-			model.addAttribute("error", e.getMessage());
-            return "member/join";
-		}
+
+		memberService.Join(memberRequestDTO);		
+		return "redirect:/";
+//		try {
+//			memberService.Join(memberRequestDTO);		
+//			return "redirect:/";
+//		} catch (IllegalArgumentException e) {
+//			model.addAttribute("error", e.getMessage());
+//            return "member/join";
+//		}
 	}
 	
 	@GetMapping("/login")

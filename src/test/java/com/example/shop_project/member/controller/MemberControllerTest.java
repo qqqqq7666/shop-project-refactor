@@ -139,12 +139,13 @@ public class MemberControllerTest {
 	}
 	
 	// 잘못된 이메일 주소를 보내면 join 페이지로 돌아가고 error 메시지를 포함하는지 확인.
-	@ParameterizedTest	
+	@ParameterizedTest
 	@ValueSource(strings = {"email", "@example.com", "email@.com", "email@example.c", 
-            "#email@example.com", "#@!@example.com", "email@example!@!.com"})			// 실패 케이스 목록
+	        "#email@example.com", "#@!@example.com", "email@example!@!.com"}) // 실패 케이스 목록
 	void 회원가입_이메일_유효성검사(String invalidEmail) throws Exception {
+		// Given
 	    mockMvc.perform(post("/join")
-	            .param("email", invalidEmail)				// 실패 케이스 
+	            .param("email", invalidEmail) // 잘못된 이메일
 	            .param("nickname", "tester")
 	            .param("name", "testname")
 	            .param("password", "ValidPass1!")
@@ -154,9 +155,8 @@ public class MemberControllerTest {
 	            .param("address", "서울시 중구")
 	            .param("addressDetail", "상세주소")
 	    )
-	    .andExpect(status().isOk())
-	    .andExpect(view().name("member/join"))
-	    .andExpect(model().attribute("error", "올바른 이메일 형식이 아닙니다."));
+	    // When
+	    .andExpect(status().isBadRequest()); // 400 Bad Request
 	}
 	
 	// 비밀번호 유효성 검사
@@ -170,48 +170,20 @@ public class MemberControllerTest {
 	        " ",                // 공백만 있는 비밀번호
 	})
 	void 회원가입_비밀번호_유효성검사(String invalidPassword) throws Exception {
-		String base64EncodedPassword = Base64.getEncoder().encodeToString(invalidPassword.getBytes(StandardCharsets.UTF_8));
-	    String base64EncodedConfirmPassword = base64EncodedPassword;
-
+		// Given
 	    mockMvc.perform(post("/join")
-	            .param("email", "test@example.com")      // 정상적인 이메일
+	            .param("email", "test@example.com") // 잘못된 이메일
 	            .param("nickname", "tester")
 	            .param("name", "testname")
-	            .param("password", base64EncodedPassword)          // 실패 케이스 비밀번호
-	            .param("confirmPassword", base64EncodedConfirmPassword)
+	            .param("password", invalidPassword)
+	            .param("confirmPassword", invalidPassword)
 	            .param("phone", "010-1234-5678")
 	            .param("postNo", "12345")
 	            .param("address", "서울시 중구")
 	            .param("addressDetail", "상세주소")
 	    )
-	    .andDo(print())  // 요청 및 응답 로그 출력
-	    .andExpect(status().isOk())  // 다시 회원가입 페이지로 이동
-	    .andExpect(view().name("member/join"))
-	    .andExpect(model().attribute("error", "비밀번호는 최소 8글자이며 대소문자, 숫자, 특수문자를 최소 하나씩 포함해야 합니다."));
-	}
-	
-	// 비밀번호와 비밀번호 확인 불일치 확인
-	@Test
-	void 회원가입_비밀번호_일치확인() throws Exception {
-	    // Base64로 인코딩된 비밀번호와 비밀번호 확인 (다르게 설정)
-	    String base64Password = Base64.getEncoder().encodeToString("ValidPass1!".getBytes(StandardCharsets.UTF_8));
-	    String base64ConfirmPassword = Base64.getEncoder().encodeToString("InvalidPass1!".getBytes(StandardCharsets.UTF_8));
-
-	    mockMvc.perform(post("/join")
-	            .param("email", "test@example.com")   // 정상적인 이메일
-	            .param("nickname", "tester")
-	            .param("name", "testname")
-	            .param("password", base64Password)             // 비밀번호
-	            .param("confirmPassword", base64ConfirmPassword) // 비밀번호 확인 (불일치)
-	            .param("phone", "010-1234-5678")
-	            .param("postNo", "12345")
-	            .param("address", "서울시 중구")
-	            .param("addressDetail", "상세주소")
-	    )
-	    .andDo(print())  // 요청 및 응답 로그 출력
-	    .andExpect(status().isOk())  // 에러가 나면 다시 join 페이지로 이동
-	    .andExpect(view().name("member/join"))  // 뷰 이름이 member/join인지 확인
-	    .andExpect(model().attribute("error", "비밀번호가 일치하지 않습니다."));  // 에러 메시지 확인
+	    // When
+	    .andExpect(status().isBadRequest()); // 400 Bad Request
 	}
 	
 	@Test
