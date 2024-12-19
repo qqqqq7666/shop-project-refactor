@@ -2,8 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 문의</title>
-<!--    <link th:href="@{/css/bootstrap.min.css}" href="../css/bootstrap.min.css" rel="stylesheet">-->
-    <link href="/order/style/bootstrap.min.css" rel="stylesheet">
+    <link href="/inquiry/style/bootstrap.min.css" rel="stylesheet">
 
     <style>
         .question-create {
@@ -56,7 +55,7 @@
 
         <div class="d-flex justify-content-center">
             <button type="submit" class="btn btn-primary">등록</button>
-            <a class="btn btn-danger ms-3" th:href="@{/inquiries}">취소</a>
+            <a class="btn btn-danger ms-3" th:href="@{/products/{productId}/inquiries(productId=${productId})}">취소</a>
         </div>
 
     </form>
