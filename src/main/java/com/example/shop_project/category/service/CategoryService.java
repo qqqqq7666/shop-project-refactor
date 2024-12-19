@@ -87,13 +87,16 @@ public class CategoryService {
         Category category = categoryRepository.findByCategoryId(categoryUpdateReqDto.getCategoryId());
         String updateCategoryName = categoryUpdateReqDto.getCategoryName();
 
-        // 카테고리명 중복 검사
-        if(category.getDepth() == 0){ // 메인 카테고리 수정인 경우
-            List<Category> categories = categoryRepository.findByDepth(0);
-            if (isCategoryNameDuplicate(updateCategoryName, categories)) {return null;}
+        List<Category> categories;
+        if (category.getDepth() == 0) { // 메인 카테고리 수정인 경우
+            categories = categoryRepository.findByDepth(0);
         } else { // 서브 카테고리 수정인 경우
-            List<Category> categories = category.getParentCategory().getSubCategories();
-            if (isCategoryNameDuplicate(updateCategoryName, categories)) {return null;}
+            categories = category.getParentCategory().getSubCategories();
+        }
+
+        // 카테고리명 중복 검사
+        if(isCategoryNameDuplicate(updateCategoryName, categories)) {
+            return null;
         }
 
         // 카테고리명 업데이트
@@ -108,32 +111,27 @@ public class CategoryService {
     public boolean deleteCategory(Long categoryId) {
         log.debug("카테고리 삭제(service) - categoryId: {}", categoryId);
         Category category = categoryRepository.findByCategoryId(categoryId);
-        String categoryName = category.getCategoryName();
 
+        String categoryName = category.getCategoryName();
         log.debug("카테고리 삭제(service) - categoryName: {}", categoryName);
 
         Category parentCategory = category.getParentCategory();
         parentCategory.getSubCategories().remove(category); // 연관관계 삭제
 
-        if(category != null) { // 항상 true
-            // productList 비었는지 확인 후 비었으면
-            categoryRepository.delete(category); // 서브 카테고리 삭제
+        // TODO: productList 비었는지 확인 후 비었으면
+        categoryRepository.delete(category); // 서브 카테고리 삭제
 
-            // 메인 카테고리에 서브 카테고리 없으면 메인 카테고리 삭제
-            if(parentCategory != null) { // 항상 true
-                List<Category> subCategories = parentCategory.getSubCategories();
-                if(subCategories.isEmpty()) {
-                    categoryRepository.delete(parentCategory); // 메인 카테고리 삭제
-                }
-            }
-
-            Category deleteCategory = categoryRepository.findByCategoryId(categoryId);
-            if(deleteCategory != null) {
-                return false;
-            }
-            return true;
+        // 메인 카테고리에 서브 카테고리 없으면 메인 카테고리 삭제
+        List<Category> subCategories = parentCategory.getSubCategories();
+        if(subCategories.isEmpty()) {
+            categoryRepository.delete(parentCategory); // 메인 카테고리 삭제
         }
-        return false;
+
+        Category deleteCategory = categoryRepository.findByCategoryId(categoryId);
+        if(deleteCategory != null) {
+            return false;
+        }
+        return true;
     }
 
     // 서브 카테고리 생성 메서드
