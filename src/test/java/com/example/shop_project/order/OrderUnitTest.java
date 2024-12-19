@@ -3,6 +3,7 @@ package com.example.shop_project.order;
 import com.example.shop_project.member.Membership;
 import com.example.shop_project.member.Role;
 import com.example.shop_project.member.entity.Member;
+import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.order.controller.OrderAPIController;
 import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
@@ -26,16 +27,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.lang.reflect.Type;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -61,176 +61,24 @@ public class OrderUnitTest {
     private ProductRepository productRepository;
     @Mock
     private OrderDetailRepository orderDetailRepository;
+    @Mock
+    private MemberRepository memberRepository;
 
-    private MockMvc mockMvc;
-
-    @BeforeEach
-    public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(OrderAPIController.class).build();
-    }
-
-    private Order order(){
-        return Order.builder()
-                .orderNo(1L)
-                .totalPrice(3000L)
-                .postNo("12345")
-                .requirement("test 요청사항")
-                .orderStatus(OrderStatus.NEW)
-                .address("test 주소")
-                .member(member())
-                .addressDetail("test addressDetail")
-                .contact("test contact")
-                .addressee("test addressee")
-                .createdDate(LocalDateTime.now())
-                .updatedDate(LocalDateTime.now())
-                .build();
-    }
-
-    private OrderRequestDto orderRequest() {
-        List<OrderDetailDto> detailDtoList = new ArrayList<>();
-        detailDtoList.add(detailDto());
-        return OrderRequestDto.builder()
-                .totalPrice(3000L)
-                .postNo("12345")
-                .requirement("test 요청사항")
-                .orderStatus(OrderStatus.NEW)
-                .address("test 주소")
-                .member(member())
-                .addressDetail("test addressDetail")
-                .detailDtoList(detailDtoList)
-                .contact("test contact")
-                .addressee("test addressee")
-                .build();
-    }
-
-    private OrderResponseDto orderResponseDto() {
-        return OrderResponseDto.builder()
-                .orderNo(1L)
-                .totalPrice(3000L)
-                .postNo("12345")
-                .requirement("test 요청사항")
-                .orderStatus(OrderStatus.NEW)
-                .address("test 주소")
-                .member(member())
-                .addressDetail("test addressDetail")
-                .contact("test contact")
-                .addressee("test addressee")
-                .createdDate(LocalDateTime.now())
-                .build();
-    }
-
-    private OrderDetailDto detailDto(){
-        return OrderDetailDto.builder()
-                .price(3000L)
-                .productId(1L)
-                .quantity(1L)
-                .build();
-    }
-
-    private OrderDetail orderDetail(){
-        return OrderDetail.builder()
-                .orderDetailId(1L)
-                .order(order())
-                .price(3000L)
-                .product(product())
-                .quantity(3000L)
-                .build();
-    }
-
-    private Member member(){
-        return new Member(
-                1L,
-                "test@test.com",
-                "testPassword",
-                "testName",
-                "testPhone",
-                "testPostNo",
-                "testAddress",
-                "testAddressDetail",
-                "testNickname",
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                "testProfileImage",
-                Role.USER,
-                Membership.BRONZE,
-                false);
-    }
-
-    private PaymentDto paymentDto() {
-        return PaymentDto.builder()
-                .amount(3000L)
-                .memberName(member().getName())
-                .payMethod(PayMethod.KG)
-                .payStatus(PayStatus.SUCCESS)
-                .build();
-    }
-
-    private Payment payment(){
-        return Payment.builder()
-                .paymentId(1L)
-                .amount(3000L)
-                .memberName(member().getName())
-                .payMethod(PayMethod.KG)
-                .payStatus(PayStatus.SUCCESS)
-                .order(order())
-                .build();
-    }
-
-    private Product product(){
-        return Product.builder()
-                .productId(1L)
-                .productName("test productName")
-                .categoryName("test categoryName")
-                .description("test description")
-                .build();
-    }
-
-    class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
-        private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        @Override
-        public JsonElement serialize(LocalDateTime localDateTime, Type srcType, JsonSerializationContext context) {
-            return new JsonPrimitive(formatter.format(localDateTime));
-        }
-    }
-
-    class LocalDateTimeDeserializer implements JsonDeserializer <LocalDateTime> {
-        @Override
-        public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
-            return LocalDateTime.parse(json.getAsString(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withLocale(Locale.KOREA));
-        }
-    }
-
-    private Gson gson(){
-        Gson gson;
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
-
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer());
-
-        gson = gsonBuilder.setPrettyPrinting().create();
-
-        return gson;
-    }
-
-
+    private final OrderTestEntity testEntity = new OrderTestEntity();
 
     @Test
-    @DisplayName("결제 생성 테스트")
-    void 결제생성테스트() throws Exception {
+    @DisplayName("결제 성공 테스트")
+    void checkoutSuccess() throws Exception {
         // given
-        Order order = order();
-        Payment payment = payment();
+        Order order = testEntity.order();
+        Payment payment = testEntity.payment();
 
         when(paymentRepository.save(payment)).thenReturn(payment);
         when(orderRepository.findFirstByOrderByOrderNoDesc()).thenReturn(Optional.ofNullable(order));
         when(orderMapper.toEntity(any(PaymentDto.class))).thenReturn(payment);
 
         // when
-        Payment response = paymentService.createPayment(paymentDto());
+        Payment response = paymentService.createPayment(testEntity.paymentDto());
 
         //then
         assertNotNull(response);
@@ -239,10 +87,10 @@ public class OrderUnitTest {
 
     @Test
     @DisplayName("주문별 결제내역 조회")
-    void 주문별결제내역조회() throws Exception {
+    void retrievePayment() throws Exception {
         // given
-        Order order = order();
-        Payment payment = payment();
+        Order order = testEntity.order();
+        Payment payment = testEntity.payment();
 
 //        doReturn(Optional.of(order)).when(orderRepository.findByOrderNo(1L));
         when(orderRepository.findByOrderNo(order.getOrderNo())).thenReturn(Optional.of(order));
@@ -258,19 +106,19 @@ public class OrderUnitTest {
 
     @Test
     @DisplayName("주문 생성 테스트")
-    void 주문생성() throws Exception {
+    void createOrder() throws Exception {
 
         // given
-        OrderRequestDto requestDto = orderRequest();
-        Order order = order();
-        OrderDetail orderDetail = orderDetail();
-        OrderDetailDto orderDetailDto = detailDto();
-        OrderResponseDto responseDto = orderResponseDto();
+        OrderRequestDto requestDto = testEntity.orderRequest();
+        Order order = testEntity.order();
+        OrderDetail orderDetail = testEntity.orderDetail();
+        OrderDetailDto orderDetailDto = testEntity.detailDto();
+        OrderResponseDto responseDto = testEntity.orderResponseDto();
 
         when(orderMapper.toEntity(any(OrderRequestDto.class))).thenReturn(order);
         when(orderRepository.save(order)).thenReturn(order);
         when(orderMapper.toEntity(any(OrderDetailDto.class))).thenReturn(orderDetail);
-        when(productRepository.findById(orderDetailDto.getProductId())).thenReturn(Optional.of(product()));
+        when(productRepository.findById(orderDetailDto.getProductId())).thenReturn(Optional.of(testEntity.product()));
         when(orderMapper.toResponseDto(order)).thenReturn(responseDto);
 
 
@@ -283,19 +131,124 @@ public class OrderUnitTest {
 
     @Test
     @DisplayName("주문상태 수정 테스트")
-    void 주문상태수정() throws Exception {
-        Order order = order();
-        OrderResponseDto responseDto = orderResponseDto();
+    void updateOrderStatus() throws Exception {
+        Order order = testEntity.order();
+        OrderStatus updatedStatus = OrderStatus.IN_SHIPPING;
+        OrderResponseDto responseDto = OrderResponseDto.builder()
+                .orderStatus(updatedStatus)
+                .build();
 
         when(orderRepository.findByOrderNo(order.getOrderNo())).thenReturn(Optional.of(order));
         when(orderRepository.save(order)).thenReturn(order);
         when(orderMapper.toResponseDto(order)).thenReturn(responseDto);
 
         // when
-        OrderResponseDto response = orderService.updateOrderStatus(order().getOrderNo(), OrderStatus.IN_SHIPPING);
+        OrderResponseDto response = orderService.updateOrderStatus(order.getOrderNo(), updatedStatus);
 
         // then
         assertNotNull(response);
-        assertEquals(response.getOrderStatus(), OrderStatus.IN_SHIPPING);
+        assertEquals(response.getOrderStatus(), updatedStatus);
+    }
+
+    @Test
+    @DisplayName("주문상세 목록 조회 테스트")
+    void retrieveOrderDetail() throws Exception {
+        // given
+        Long orderNo = 1L;
+        Order order = testEntity.order();
+        List<OrderDetail> detailList = Arrays.asList(testEntity.orderDetail());
+
+        when(orderRepository.findByOrderNo(orderNo)).thenReturn(Optional.of(order));
+        when(orderDetailRepository.findAllByOrder(order)).thenReturn(detailList);
+
+        // when
+        List<OrderDetail> response = orderService.getOrderDetailList(orderNo);
+
+        // then
+        assertNotNull(response);
+        assertEquals(response.get(0).getOrderDetailId(), 1L);
+    }
+
+    @Test
+    @DisplayName("주문, 주문상세 조회 테스트")
+    void retrieveOrderMap() throws Exception {
+        // given
+        Order order = testEntity.order();
+        Member member = testEntity.member();
+        OrderResponseDto orderResponseDto = testEntity.orderResponseDto();
+        List<OrderDetail> orderDetailList = Arrays.asList(testEntity.orderDetail());
+        Map<OrderResponseDto, List<OrderDetail>> map = new LinkedHashMap<>();
+        map.put(orderResponseDto, orderDetailList);
+        Principal principal = new Principal() {
+            @Override
+            public String getName() {
+                return member.getEmail();
+            }
+        };
+
+        when(memberRepository.findByEmail(principal.getName())).thenReturn(Optional.of(member));
+        when(orderRepository.findAllByMemberOrderByOrderNoDesc(member)).thenReturn(Arrays.asList(order));
+        when(orderMapper.toResponseDto(order)).thenReturn(orderResponseDto);
+        when(orderDetailRepository.findAllByOrder(order)).thenReturn(orderDetailList);
+
+        // when
+        Map<OrderResponseDto, List<OrderDetail>> response = orderService.getOrderAndDetailMap(principal);
+
+        // then
+        assertEquals(response.get(orderResponseDto), orderDetailList);
+    }
+
+    @Test
+    @DisplayName("전체 주문 조회 테스트")
+    void retrieveAllOrder() throws Exception {
+        // given
+        OrderResponseDto orderResponseDto = testEntity.orderResponseDto();
+        Order order = testEntity.order();
+
+        when(orderRepository.findAllByOrderByOrderNoDesc()).thenReturn(Arrays.asList(order));
+        when(orderMapper.toResponseDto(order)).thenReturn(orderResponseDto);
+
+        // when
+        List<OrderResponseDto> response = orderService.getOrderList();
+
+        // then
+        assertEquals(response.get(0).getOrderNo(), orderResponseDto.getOrderNo());
+    }
+
+    @Test
+    @DisplayName("주문 조회 테스트")
+    void retrieveOrder() throws Exception{
+        Long orderNo = 1L;
+        Order order = testEntity.order();
+        OrderResponseDto orderResponseDto = testEntity.orderResponseDto();
+
+        when(orderMapper.toResponseDto(order)).thenReturn(orderResponseDto);
+        when(orderRepository.findByOrderNo(orderNo)).thenReturn(Optional.of(order));
+
+        // when
+        OrderResponseDto response = orderService.getOrderByOrderNo(orderNo);
+
+        // then
+        assertEquals(response.getOrderNo(), orderNo);
+    }
+
+    @Test
+    @DisplayName("주문 삭제 테스트")
+    void deleteOrder() throws Exception {
+        // given
+        Order order = testEntity.order();
+
+        when(orderRepository.findByOrderNo(1L)).thenReturn(Optional.of(order));
+        doNothing().when(orderDetailRepository).deleteByOrder(order);
+        doNothing().when(paymentRepository).deleteByOrder(order);
+        doNothing().when(orderRepository).deleteByOrderNo(order.getOrderNo());
+
+        // when
+        orderService.deleteOrder(order.getOrderNo());
+
+        // verify
+        verify(orderDetailRepository, times(1)).deleteByOrder(any(Order.class));
+        verify(paymentRepository, times(1)).deleteByOrder(any(Order.class));
+        verify(orderRepository, times(1)).deleteByOrderNo(anyLong());
     }
 }
