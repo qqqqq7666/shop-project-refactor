@@ -5,66 +5,123 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.example.shop_project.member.Role;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
+import com.example.shop_project.product.controller.GlobalExceptionHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 
 public class AdminMemberRestControllerTest {
-	@InjectMocks
-    private AdminMemberController adminMemberController;
-
-    @Mock
-    private MemberRepository memberRepository;
-
+	@Autowired
     private MockMvc mockMvc;
+
+    private MemberRepository memberRepository = mock(MemberRepository.class);
+
+    @InjectMocks
+    private AdminMemberRestController adminMemberRestController;
 
     @BeforeEach
     void 테스트전처리() {
-    	MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(adminMemberController).build();
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(adminMemberRestController)
+        		.setControllerAdvice(new GlobalExceptionHandler())
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+        		.build();
     }
-    
-    @Test
-    void 회원관리_페이지_데이터_확인() throws Exception {
-        // given
-        long userCount = 100; // USER 권한 사용자 수
-        long adminCount = 10; // ADMIN 권한 사용자 수
 
-        List<Member> mockMembers = Arrays.asList(
-            Member.builder()
-                  .id(1L)
-                  .email("user@example.com")
-                  .nickname("유저")
-                  .role(Role.USER)
-                  .build(),
-            Member.builder()
-                  .id(2L)
-                  .email("admin@example.com")
-                  .nickname("관리자")
-                  .role(Role.ADMIN)
-                  .build()
-        );
+    @Test
+    void 권한변경_성공() throws Exception {
+    	// given
+        Long memberId = 1L;
+        Member mockMember = Member.builder()
+                .id(memberId)
+                .email("test@example.com")
+                .role(Role.USER) // 바꾸기 전엔 유저권한
+                .build();
 
         // when
-        when(memberRepository.countByRole(Role.USER)).thenReturn(userCount);
-        when(memberRepository.countByRole(Role.ADMIN)).thenReturn(adminCount);
-        when(memberRepository.findAll()).thenReturn(mockMembers);
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember));
+
+        Map<String, String> request = new HashMap<>();
+        request.put("role", "ADMIN");
 
         // then
-        mockMvc.perform(get("/admin/members"))
-                .andExpect(status().isOk()) 
-                .andExpect(view().name("admin/members")) 
-                .andExpect(model().attribute("userCount", userCount)) 
-                .andExpect(model().attribute("adminCount", adminCount)) 
-                .andExpect(model().attribute("members", mockMembers)); 
+        mockMvc.perform(put("/api/admin/members/role/{id}", memberId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN)) 
+                .andExpect(content().string("권한이 변경되었습니다."));
+
+        verify(memberRepository, times(1)).findById(memberId);
+        verify(memberRepository, times(1)).save(mockMember);
+    }
+
+    @Test
+    void 회원삭제_성공() throws Exception {
+        // given
+        Long memberId = 1L;
+        Member mockMember = Member.builder()
+                .id(memberId)
+                .email("test@example.com")
+                .withdraw(false) // 탈퇴되지 않은 상태
+                .build();
+
+        // when
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember));
+
+        // then
+        mockMvc.perform(put("/api/admin/members/withdraw/{id}", memberId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andExpect(content().string("회원이 탈퇴 처리되었습니다."));
+
+        verify(memberRepository, times(1)).findById(memberId);
+        verify(memberRepository, times(1)).save(mockMember);
+    }
+
+    @Test
+    void 회원삭제_실패_이미탈퇴됨() throws Exception {
+        // given
+        Long memberId = 1L;
+        Member mockMember = Member.builder()
+                .id(memberId)
+                .email("test@example.com")
+                .withdraw(true) // 이미 탈퇴된 상태
+                .build();
+
+        // when
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember));
+
+        // then
+        mockMvc.perform(put("/api/admin/members/withdraw/{id}", memberId))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andExpect(content().string("이미 탈퇴된 회원입니다."));
+
+        verify(memberRepository, times(1)).findById(memberId);
+        verify(memberRepository, never()).save(any(Member.class));
     }
 }
