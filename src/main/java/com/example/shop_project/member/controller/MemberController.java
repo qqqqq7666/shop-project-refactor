@@ -91,18 +91,6 @@ public class MemberController {
                                     Model model) {
         String email = userDetails.getUsername();
         Member member = memberService.findByEmail(email);
-  
-        // Base64 인코딩된 비밀번호를 디코딩
- 		String decodedPassword = new String(Base64.getDecoder().decode(memberRequestDTO.getPassword()), StandardCharsets.UTF_8);
- 		memberRequestDTO.setPassword(decodedPassword);
- 		String decodedConfirmPassword = new String(Base64.getDecoder().decode(memberRequestDTO.getConfirmPassword()), StandardCharsets.UTF_8);
- 		memberRequestDTO.setConfirmPassword(decodedConfirmPassword);
- 		
-        // 비밀번호 확인 체크
-        if (!memberRequestDTO.getPassword().equals(memberRequestDTO.getConfirmPassword())) {
-            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "member/editProfile";
-        }
 
         // 회원 정보를 업데이트
         memberService.updateMember(member, memberRequestDTO);
