@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/admin/category")
 public class CategoryController {
 
     private final CategoryService categoryService;
