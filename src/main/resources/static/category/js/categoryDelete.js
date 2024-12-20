@@ -11,17 +11,38 @@ function deleteSubCategory(categoryId) {
     })
         .then(response => {
             if (response.ok) {
-                console.log("삭제 성공");
-                alert("성공적으로 삭제되었습니다!");
-                location.reload(); // 페이지를 새로고침하여 목록 갱신
+                return response.json();
             } else if (response.status === 404) {
                 throw new Error('카테고리 삭제 실패');
             } else { // 그 외 에러 처리
                 throw new Error("카테고리 삭제에 실패했습니다.");
             }
         })
+        .then(data => {
+            alert('카테고리가 삭제되었습니다.');
+            deleteCategoryToUI(data);
+        })
         .catch(error => {
             console.error("에러 발생:", error);
             alert('문제가 발생했습니다. 다시 시도해주세요.');
         });
+}
+
+function deleteCategoryToUI(data) {
+    const subCategory = document.getElementById(`sub-category-${data.subCategoryId}`);
+    const parentElement = subCategory.parentElement;
+    const buttons = parentElement.querySelectorAll('button');
+
+    buttons.forEach((button) => {
+        button.remove();
+    });
+    parentElement.remove();
+    subCategory.remove();
+
+    console.log(data.existMainCategory === false);
+    if(data.existMainCategory === false) {
+        const mainCategory = document.getElementById(`main-category-box-${data.mainCategoryId}`);
+        console.log(`main-category-box-${data.mainCategoryId}`);
+
+    }
 }

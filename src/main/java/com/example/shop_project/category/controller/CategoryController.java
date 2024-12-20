@@ -1,6 +1,7 @@
 package com.example.shop_project.category.controller;
 
 import com.example.shop_project.category.dto.CategoryCreateReqDto;
+import com.example.shop_project.category.dto.CategoryDeleteResDto;
 import com.example.shop_project.category.dto.CategoryUpdateReqDto;
 import com.example.shop_project.category.service.CategoryService;
 import com.example.shop_project.category.dto.CategoryResDto;
@@ -58,13 +59,10 @@ public class CategoryController {
 
     // 카테고리 삭제
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteCategory(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<CategoryDeleteResDto> deleteCategory(@RequestBody Map<String, Object> request) {
         log.debug("카테고리 삭제(controller) - 요청 ID: {}", request.get("categoryId"));
         Long categoryId = Long.valueOf(request.get("categoryId").toString());
-        boolean isDeleted = categoryService.deleteCategory(categoryId);
-        if(isDeleted) {
-            return ResponseEntity.status(200).build();
-        }
-        return ResponseEntity.status(404).build();
+        CategoryDeleteResDto categoryDeleteResDto = categoryService.deleteCategory(categoryId);
+        return ResponseEntity.ok(categoryDeleteResDto);
     }
 }

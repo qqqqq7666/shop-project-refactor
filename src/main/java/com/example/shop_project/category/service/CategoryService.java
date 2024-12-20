@@ -1,6 +1,7 @@
 package com.example.shop_project.category.service;
 
 import com.example.shop_project.category.dto.CategoryCreateReqDto;
+import com.example.shop_project.category.dto.CategoryDeleteResDto;
 import com.example.shop_project.category.dto.CategoryResDto;
 import com.example.shop_project.category.dto.CategoryUpdateReqDto;
 import com.example.shop_project.category.entity.Category;
@@ -37,7 +38,7 @@ public class CategoryService {
     // 메인 카테고리 생성
     @Transactional
     public CategoryResDto createMainCategory(CategoryCreateReqDto categoryCreateReqDto) {
-        log.debug("카테고리 추가(service) - 메인 카테고리 추가 메서드 실행({})", categoryCreateReqDto.isCreatingMainCategory());
+        log.debug("카테고리 추가(service) - 메인 카테고리 추가 메서드 실행: {}", categoryCreateReqDto.isCreatingMainCategory());
 
         // 메인 카테고리명 중복 검사
         List<Category> mainCategories = categoryRepository.findByDepth(0); // 메인 카테고리
@@ -63,7 +64,7 @@ public class CategoryService {
     // 서브 카테고리 생성
     @Transactional
     public CategoryResDto createSubCategory(CategoryCreateReqDto categoryCreateReqDto) {
-        log.debug("카테고리 추가(service) - 서브 카테고리 추가 메서드 실행({})", categoryCreateReqDto.isCreatingMainCategory());
+        log.debug("카테고리 추가(service) - 메인 카테고리 추가 메서드 실행: {}", categoryCreateReqDto.isCreatingMainCategory());
 
         Category mainCategory = categoryRepository.findByCategoryName(categoryCreateReqDto.getMainCategoryName());
 
@@ -110,14 +111,16 @@ public class CategoryService {
 
     // 카테고리 삭제
     @Transactional
-    public boolean deleteCategory(Long categoryId) {
+    public CategoryDeleteResDto deleteCategory(Long categoryId) {
         log.debug("카테고리 삭제(service) - categoryId: {}", categoryId);
         Category category = categoryRepository.findByCategoryId(categoryId);
+        log.debug("카테고리 삭제(service) - categoryName: {}", category.getCategoryName());
 
-        String categoryName = category.getCategoryName();
-        log.debug("카테고리 삭제(service) - categoryName: {}", categoryName);
+        CategoryDeleteResDto categoryDeleteResDto = new CategoryDeleteResDto();
+        categoryDeleteResDto.setSubCategoryId(categoryId);
 
         Category parentCategory = category.getParentCategory();
+        categoryDeleteResDto.setMainCategoryId(parentCategory.getCategoryId());
         parentCategory.getSubCategories().remove(category); // 연관관계 삭제
 
         // TODO: productList 비었는지 확인 후 비었으면
@@ -126,9 +129,13 @@ public class CategoryService {
         // 메인 카테고리에 서브 카테고리 없으면 메인 카테고리 삭제
         List<Category> subCategories = parentCategory.getSubCategories();
         if(subCategories.isEmpty()) {
+            categoryDeleteResDto.setExistMainCategory(false);
             categoryRepository.delete(parentCategory); // 메인 카테고리 삭제
         }
-        return true;
+        else {
+            categoryDeleteResDto.setExistMainCategory(true);
+        }
+        return categoryDeleteResDto;
     }
 
     // 서브 카테고리 생성 메서드
