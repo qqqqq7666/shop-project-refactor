@@ -1,145 +1,146 @@
-/* 초기화 */
+/* 기본 스타일 초기화 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* body와 html에 기본 스크롤 설정 */
-html, body {
-    height: auto; /* 높이를 콘텐츠에 맞게 */
-    min-height: 100vh; /* 최소 높이는 뷰포트 높이 */
-    overflow-x: hidden; /* 가로 스크롤 방지 */
-    overflow-y: auto; /* 세로 스크롤 허용 */
+/* 배경 색상 설정 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
 }
 
-/* register-container */
+/* 페이지 전체 폭을 잡는 컨테이너 */
 .register-container {
     width: 800px;
-    margin: 0 auto;
+    margin: 0 auto; /* 가운데 정렬 */
     padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
-    box-sizing: border-box;
 }
-    .register-header {
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        color: #333;
-    }
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 15px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    .form-group-inline {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    .form-group-inline input {
-        flex: 1;
-        padding: 10px;
-        font-size: 14px;
-        border: 1px solid #ced4da;
-        border-radius: 5px;
-        margin-right: 10px;
-        box-sizing: border-box;
-    }
-    .form-group label {
-        font-size: 14px;
-        margin-bottom: 5px;
-    }
-    .form-group input {
-        width: 100%;
-        padding: 10px;
-        font-size: 14px;
-        border: 1px solid #ced4da;
-        border-radius: 5px;
-        box-sizing: border-box;
-    }
-    .check-btn, .btn-find {
-        padding: 10px;
-        font-size: 14px;
-        background-color: #e0e0e0;
-        border: none;
-        border-radius: 5px;
-        width: 120px;
-        text-align: center;
-        cursor: pointer;
-        box-sizing: border-box;
-    }
-    .check-btn:hover, .btn-find:hover {
-        background-color: #d6d6d6;
-    }
-    .form-message {
-        color: red;
-        font-size: 14px;
-        margin-top: 5px;
-        /* 에러 메시지가 없어도 공간 확보 */
-        min-height: 20px; 
-        display: inline-block;
-        box-sizing: border-box;
-    }
-    .btn-purple {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        color: #fff;
-        background-color: #6f42c1;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        box-sizing: border-box;
-        margin-top: 15px;
-    }
-    .btn-purple:hover {
-        background-color: #5a3599;
-    }
-    
-    /* 간편 회원가입 스타일 */
-    .social-login {
-        margin: 20px 0; /* 상단과 하단 간격 */
-        text-align: center;
-        width: 100%;
-    }
 
-    .social-login h3 {
-        font-size: 18px;
-        margin-bottom: 10px;
-        color: #555;
-    }
+/* 회원가입 제목 */
+.register-header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
 
-    .social-login button {
-        width: 150px;
-        padding: 10px;
-        margin: 5px;
-        font-size: 14px;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    
-    .social-login button.google {
-        background-color: #db4437;
-    }
+/* 각 폼 그룹(라벨 + 입력창) */
+.form-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
 
-    .social-login button.google:hover {
-        background-color: #c23321;
-    }
+/* 라벨 */
+.form-group label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block; /* 라벨을 블록으로 처리해 줄바꿈 */
+}
 
-    .social-login button.kakao {
-        background-color: #fee500;
-        color: #000;
-    }
+/* 일반적인 입력창 스타일 */
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
 
-    .social-login button.kakao:hover {
-        background-color: #e6c700;
-    }
+/* 한 줄에 버튼과 입력창을 나란히 배치할 경우 사용 */
+.form-group-inline {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.form-group-inline input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+/* 중복확인, 우편번호 찾기용 버튼 */
+.check-btn, .btn-find {
+    padding: 10px;
+    font-size: 14px;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    width: 120px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.check-btn:hover, .btn-find:hover {
+    background-color: #d6d6d6;
+}
+
+/* 에러 메시지 영역 */
+.form-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+    min-height: 20px;
+    display: inline-block;
+}
+
+/* 회원가입 버튼 */
+.btn-purple {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #6f42c1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.btn-purple:hover {
+    background-color: #5a3599;
+}
+
+/* 간편 회원가입 영역 */
+.social-login {
+    margin: 20px 0;
+    text-align: center; /* 버튼을 가운데에 배치 */
+    width: 100%;
+}
+
+.social-login h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* 간편 회원가입용 버튼 */
+.social-login button {
+    width: 150px;
+    padding: 10px;
+    margin: 5px;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.social-login button.google {
+    background-color: #db4437;
+}
+.social-login button.google:hover {
+    background-color: #c23321;
+}
+
+.social-login button.kakao {
+    background-color: #fee500;
+    color: #000;
+}
+.social-login button.kakao:hover {
+    background-color: #e6c700;
+}
