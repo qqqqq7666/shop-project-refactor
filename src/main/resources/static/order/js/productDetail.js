@@ -1,3 +1,5 @@
+// import * as optionModule from "/static/js/productDetail"
+
 let cart = [];
 
 function loadCart() {
@@ -9,14 +11,46 @@ function loadCart() {
 
 function addItem(productId, name, price) {
     const existingItem = cart.find(item => item.productId === productId);
-    if (existingItem) {
-        existingItem.quantity++;
-    } else {
-        console.log(productId);
-        cart.push({productId, name, price, quantity: 1 });
+    const optionText = document.querySelectorAll(".option-info span");
+    let option = [];
+    if(existingItem)
+        option = existingItem.option;
+
+    for (i = 0; i < optionText.length; i += 3){
+        const optionArray = optionText[i].textContent.split(" ");
+        const size = optionArray[1].slice(1);
+        const color = optionArray[3].slice(0, -1)
+        const quantity = parseInt(optionText[i + 1].textContent);
+        console.log(optionText[i + 1].textContent);
+
+        const existOption = option.find(o => o.size === size && o.color === color)
+        console.log(existOption);
+        // 옵션 존재하면 수량만 변경
+        if(existOption) {
+            existOption.quantity += quantity;
+        }
+        else
+            option.push({size, color, quantity});
+
     }
+
+    // console.log(option);
+    if (existingItem) {
+        existingItem.option = option;
+    } else
+        cart.push({productId, name, price, option});
+
+
+
+    // option.forEach((o, i) => {
+    //     const optionArray = o.textContent.split(" ");
+    //     const size = optionArray[1].slice(1);
+    //     const color = optionArray[3].slice(0, -1)
+    //     const quantity = parseInt(document.querySelector(".quantity-controls span").textContent);
+    //
+    //
+    // });
     saveCart();
-    // renderCart();
 }
 
 function saveCart() {

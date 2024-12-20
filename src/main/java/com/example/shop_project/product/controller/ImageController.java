@@ -20,12 +20,19 @@ public class ImageController {
     @GetMapping("/products/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
         try {
-            Path file = Paths.get(rootPath + "products/").resolve(filename);
+            Path file = Paths.get(rootPath).resolve("products").resolve(filename);
             Resource resource = new UrlResource(file.toUri());
 
-            if (resource.exists() || resource.isReadable()) {
+            if (resource.exists() && resource.isReadable()) {
+                String contentType = "image/jpeg"; // 기본 MIME 타입
+                if (filename.endsWith(".png")) {
+                    contentType = "image/png";
+                } else if (filename.endsWith(".gif")) {
+                    contentType = "image/gif";
+                }
+
                 return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG) // 이미지 타입 설정
+                        .contentType(MediaType.parseMediaType(contentType))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
                         .body(resource);
             } else {
@@ -36,3 +43,4 @@ public class ImageController {
         }
     }
 }
+

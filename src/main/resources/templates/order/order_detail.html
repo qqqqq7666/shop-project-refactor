@@ -36,8 +36,10 @@
                     <div class="flex-column">
                         <span>브랜드명</span><br>
                         <span th:text="${detail.getProduct().getProductName()}">Product Name (M / 2 pcs)</span><br>
-                        <span th:text="|Option:size / ${detail.getQuantity()}개|">옵션 / 개수</span><br>
-                        <span th:text="|${detail.getPrice()}원|">가격</span><br>
+                        <div>
+                        <span th:text="|${detail.getColor()} / ${detail.getSize()} / ${detail.getQuantity()}개|">옵션 / 개수</span><br>
+                        </div>
+                        <span th:text="|${detail.getPrice() * detail.getQuantity()}원|">가격</span><br>
                     </div>
                 </li>
             </ul>

@@ -136,12 +136,6 @@ function removeImage(index) {
 document.getElementById('productForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
-    // 이미지 개수 제한 검사
-    if (images.length > 5) {
-        alert("*** 이미지는 최대 5개까지 저장 가능합니다 ***"); // 알림창 표시
-        return; // 제출 중단
-    }
-
     const formData = new FormData();
 
     // ProductRequestDto 생성
@@ -197,7 +191,7 @@ document.getElementById('productForm').addEventListener('submit', function (even
         .then(data => {
             console.log("상품 등록 성공:", data);
             alert('상품이 성공적으로 등록되었습니다!');
-            window.location.href = '/products/manage'; // 상품 리스트 페이지로 이동
+            window.location.href = '/admin/products';
         })
         .catch(errors => {
             // 필드별 에러 메시지 표시
