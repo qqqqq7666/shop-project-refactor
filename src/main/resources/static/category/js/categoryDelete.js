@@ -31,18 +31,13 @@ function deleteSubCategory(categoryId) {
 function deleteCategoryToUI(data) {
     const subCategory = document.getElementById(`sub-category-${data.subCategoryId}`);
     const parentElement = subCategory.parentElement;
-    const buttons = parentElement.querySelectorAll('button');
 
-    buttons.forEach((button) => {
-        button.remove();
-    });
     parentElement.remove();
-    subCategory.remove();
 
     console.log(data.existMainCategory === false);
     if(data.existMainCategory === false) {
         const mainCategory = document.getElementById(`main-category-box-${data.mainCategoryId}`);
         console.log(`main-category-box-${data.mainCategoryId}`);
-
+        mainCategory.remove();
     }
 }
