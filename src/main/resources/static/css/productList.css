@@ -57,6 +57,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
+    object-fit: cover; /* 이미지 비율 유지 */
 }
 
 .product-card {

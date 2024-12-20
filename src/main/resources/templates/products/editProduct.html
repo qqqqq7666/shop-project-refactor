@@ -65,20 +65,18 @@
 
 
 
-    <!-- 이미지 미리보기 -->
+    <!-- 이미지 파일 -->
     <div>
-        <label>*기존 이미지</label>
-        <ul>
-            <li th:each="imageUrl : ${product.imageUrls}">
-                <img th:src="@{${imageUrl}}" alt="Product Image" style="width: 150px;">
-            </li>
-        </ul>
-    </div>
-
-    <!-- 새로운 이미지 업로드 -->
-    <div>
-        <label for="images">새로운 이미지 업로드</label>
-        <input type="file" id="images" name="images" multiple>
+        <label for="images">*사진 첨부</label>
+        <div class="tooltip-container">
+            <img src="/images/imageInfo.png" alt="info" class="info-icon">
+            <span class="tooltip-text">순서 1의 사진의 대표 사진으로 등록됩니다.</span>
+        </div>
+        <input type="file" id="images" name="images" multiple style="display: none;">
+        <!-- 사용자 정의 파일 선택 버튼 -->
+        <button type="button" id="customFileButton">이미지 파일 선택</button>
+        <span id="fileCountMessage">선택된 파일: 0개</span>
+        <ul id="imagePreviewList"></ul>
     </div>
 
     <!-- 수정 버튼 -->
@@ -87,7 +85,6 @@
     </div>
 </form>
 
-<script src="/js/productCreate.js"></script>
 <script src="/js/productCreateValidation.js"></script>
 <script src="/js/productManage.js"></script>
 </body>
