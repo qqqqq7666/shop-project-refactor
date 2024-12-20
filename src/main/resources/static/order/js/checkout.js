@@ -124,8 +124,6 @@ function renderProduct() {
 
 
         product.getElementsByClassName("product-name")[0].innerText = name;
-        // product.getElementsByClassName("product-price")[0].innerText = `${totalPrice.toLocaleString()}원`;
-        // product.getElementsByClassName("product-quantity")[0].innerText = `x${quantity}`;
 
         product.getElementsByClassName("product-price")[0].prepend(`${totalPrice.toLocaleString()}원`);
         cartList.prepend(product);
@@ -137,7 +135,7 @@ function renderProduct() {
     } else
         total += 3000;
 
-    document.getElementById("total").innerText = total.toLocaleString();
+    document.getElementById("total").innerText = `${total.toLocaleString()}원`;
 }
 
 function requestPay(payInfo, paymentDto){
@@ -188,6 +186,14 @@ function requestPay(payInfo, paymentDto){
 
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
+        const detailDtoList = [];
+        cart.forEach(item =>{
+            item.option.forEach(o => {
+                detailDtoList.push({productId: item.productId, price: item.price, quantity: o.quantity, size: o.size, color: o.color});
+            })
+        })
+
+        console.log(detailDtoList);
 
         let member;
 
@@ -233,7 +239,7 @@ async function checkout() {
             requirement,
             orderStatus: "NEW",
             totalPrice: total,
-            detailDtoList: cart,
+            detailDtoList,
         }
 
         // 결제 정보

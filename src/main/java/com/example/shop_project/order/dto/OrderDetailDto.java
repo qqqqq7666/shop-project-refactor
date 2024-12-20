@@ -13,13 +13,11 @@ public class OrderDetailDto {
     @Positive
     @NotNull
     private Long price;
-    @Positive
-    @NotNull
-    private Long quantity;
     @NotNull
     private Long productId;
 //    @NotNull
     private Size size;
 //    @NotNull
     private String color;
+    private Long quantity;
 }
