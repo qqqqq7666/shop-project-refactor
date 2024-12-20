@@ -61,7 +61,8 @@
 				        th:name="role" 
 				        th:data-id="${member.id}" 
 				        th:data-previous-value="${member.role}" 
-				        th:onchange="onRoleChange(this)">
+				        th:onchange="onRoleChange(this)"
+				        th:disabled="${member.role.toString() == 'ADMIN' or member.withdraw}">
 				        <!-- USER 옵션 -->
 				        <option th:value="'USER'" th:selected="${member.role.toString() == 'USER'}">USER</option>
 				        <!-- ADMIN 옵션 -->
