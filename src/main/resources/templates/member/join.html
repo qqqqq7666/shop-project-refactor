@@ -3,64 +3,109 @@
 <head>
     <title>회원가입</title>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<link rel="stylesheet" href="/member/css/joinStyle.css">
 </head>
 <body>
-    <h1>회원가입</h1>
+
+<div class="register-container">
+    <div class="register-header">회원가입</div>
     <form th:action="@{/join}" method="post">
-        <label for="email">이메일:</label>
-        <input type="email" id="email" name="email" required maxlength="255"><br>
-		<button type="button" id="emailCheckBtn">이메일 중복 확인</button>
-    	<span id="emailError" style="color: red;"></span><br>
-		<br>
-		
-        <label for="nickname">닉네임:</label>
-        <input type="text" id="nickname" name="nickname" required maxlength="20"><br>
-        <button type="button" id="nicknameCheckBtn">닉네임 중복 확인</button>
-    	<span id="nicknameError" style="color: red;"></span><br>
-		<br>
-		
-        <label for="password">비밀번호:</label>
-        <input type="password" id="password" name="password" required maxlength="50"><br>
-        <span id="passwordError" style="color: red;"></span>
-        <br>
+        
 
-        <label for="confirmPassword">비밀번호 확인:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required maxlength="50"><br>
-        <span id="passwordConfirmError" style="color: red;"></span>
-		<br>
-		
-		<label for="phone">이름:</label>
-        <input type="text" id="name" name="name" required><br>
-		
-        <label for="phone">전화번호:</label>
-        <input type="text" id="phone" name="phone" required><br>
+        <!-- 이메일 입력 -->
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <div class="form-group-inline">
+                <input type="email" id="email" name="email" required maxlength="255">
+                <button type="button" class="check-btn" id="emailCheckBtn">중복확인</button>
+            </div>
+            <span id="emailError" class="form-message"></span>
+        </div>
 
-		 <!-- 주소 입력 -->
-        <label for="postNo">우편번호:</label>
-        <input type="text" id="postNo" name="postNo" readonly /><br>
+        <!-- 닉네임 입력 -->
+        <div class="form-group">
+            <label for="nickname">닉네임</label>
+            <div class="form-group-inline">
+                <input type="text" id="nickname" name="nickname" required maxlength="20">
+                <button type="button" class="check-btn" id="nicknameCheckBtn">중복확인</button>
+            </div>
+            <span id="nicknameError" class="form-message"></span>
+        </div>
 
-        <label for="address">주소:</label>
-        <input type="text" id="address" name="address" readonly /><br>
+        <!-- 비밀번호 입력 -->
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required maxlength="50">
+            <span id="passwordError" class="form-message"></span>
+        </div>
 
-        <!-- 상세 주소 -->
-        <label for="addressDetail">상세 주소:</label>
-        <input type="text" id="addressDetail" name="addressDetail" placeholder="상세 주소를 입력하세요" /><br>
+        <!-- 비밀번호 확인 -->
+        <div class="form-group">
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required maxlength="50">
+            <span id="passwordConfirmError" class="form-message"></span>
+        </div>
 
-        <!-- 우편번호 검색 버튼 -->
-        <button type="button" onclick="openPostcodePopup()">우편번호 검색</button><br>
+        <!-- 이름 입력 -->
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" required>
+        </div>
 
+        <!-- 전화번호 입력 -->
+        <div class="form-group">
+            <label for="phone">전화번호</label>
+            <input type="text" id="phone" name="phone" required>
+        </div>
 
+        <!-- 우편번호 입력 -->
+        <div class="form-group">
+            <label for="postNo">우편번호</label>
+            <div class="form-group-inline">
+                <input type="text" id="postNo" name="postNo" readonly>
+                <button type="button" class="btn-find" onclick="openPostcodePopup()">우편번호 찾기</button>
+            </div>
+        </div>
 
-		<!-- 오류 메시지 표시 -->
-        <div th:if="${error}" style="color: red;">
+        <!-- 주소 입력 -->
+        <div class="form-group">
+            <label for="address">주소</label>
+            <input type="text" id="address" name="address" readonly>
+        </div>
+
+        <!-- 상세 주소 입력 -->
+        <div class="form-group">
+            <label for="addressDetail">상세 주소</label>
+            <input type="text" id="addressDetail" name="addressDetail" placeholder="상세 주소를 입력하세요">
+        </div>
+
+		<!-- 에러 메시지 출력 -->
+        <div th:if="${error}" class="form-message">
             <p th:text="${error}"></p>
         </div>
 
-        <button type="submit">회원가입</button>
+        <!-- 회원가입 버튼 -->
+        <button type="submit" class="btn-purple">회원가입</button>
+        
+        <!-- 간편 회원가입 -->
+        <div class="social-login">
+            <h3>간편 회원가입 (OAUTH, 임시)</h3>
+            <button type="button" class="google">Google</button>
+            <button type="button" class="kakao">Kakao</button>
+        </div>
     </form>
-    
-    <!-- 자바스크립트 파일 추가 -->
-    <script type="module" src="/member/js/joincheck.js"></script>
-    <script src="/member/js/joinPostInput.js"></script>
+</div>
+
+<script type="module" src="/member/js/joincheck.js"></script>
+<script src="/member/js/joinPostInput.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+

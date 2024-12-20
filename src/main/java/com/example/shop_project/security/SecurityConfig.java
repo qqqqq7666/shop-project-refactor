@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login") // 커스텀 로그인 페이지
                         .loginProcessingUrl("/perform_login") // 폼 액션 URL
-                        .defaultSuccessUrl("/mypage", true) // 임시로 로그인 성공 시 마이페이지로 이동
+                        .defaultSuccessUrl("/", true) // 로그인 성공시 메인페이지로 이동
                         .failureUrl("/login?error=true") // 실패 시 이동 경로
                         .usernameParameter("email") // 이메일 필드
                         .passwordParameter("password") // 비밀번호 필드
