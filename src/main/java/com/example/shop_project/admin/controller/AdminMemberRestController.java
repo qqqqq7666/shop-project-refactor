@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,12 +25,9 @@ import lombok.RequiredArgsConstructor;
 public class AdminMemberRestController {
 	private final MemberRepository memberRepository;
 	
-	@PutMapping("/role/{id}")
+	@PutMapping(value = "/role/{id}", produces = MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8")
 	public ResponseEntity<?> updateRole(@PathVariable("id") Long id, @RequestBody  Map<String, String> request) {
 	    Optional<Member> optionalMember = memberRepository.findById(id);
-	    if (optionalMember.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원이 존재하지 않습니다.");
-	    }
 
 	    Member member = optionalMember.get();
 	    Role newRole = Role.valueOf(request.get("role")); 
@@ -40,13 +38,9 @@ public class AdminMemberRestController {
 	}
 	
 	// 회원 삭제 (withdraw 값 변경)
-    @PutMapping("/withdraw/{id}")
+    @PutMapping(value = "/withdraw/{id}", produces = MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8")
     public ResponseEntity<?> withdrawMember(@PathVariable("id") Long id) {
         Optional<Member> optionalMember = memberRepository.findById(id);
-
-        if (optionalMember.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원이 존재하지 않습니다.");
-        }
 
         Member member = optionalMember.get();
         if (member.getWithdraw()) {
