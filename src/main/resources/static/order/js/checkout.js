@@ -90,30 +90,46 @@ function sample6_execDaumPostcode() {
 }
 
 const cartList = document.getElementById("cart-list");
-const productArr = JSON.parse(localStorage.getItem("cart"));
+const cart = JSON.parse(localStorage.getItem("cart"));
 let total = 0;
 
 // 결제 품목 표시
 function renderProduct() {
 
-    for (i = 0; i < productArr.length; i++) {
+    for (i = 0; i < cart.length; i++) {
         const product = document.createElement("li");
         product.classList.add("list-group-item", "d-flex", "justify-content-between", "lh-sm");
         product.innerHTML = '<div>\n' +
-            '              <h6 class="my-0 product-name">Product name</h6>\n' +
-            '              <small class="text-body-secondary product-quantity">x2</small>\n' +
+            '              <h6 class="my-0 product-name">Product name</h6>' +
+            '              <div class="product-detail justify-content-between"><br></div>' +
+            // '              \n' +
             '            </div>\n' +
-            '            <span class="text-body-secondary product-price">30원</span>';
+            '            <div class="text-body-secondary product-price"><br><br></div>';
+        const productDetail = product.getElementsByClassName("product-detail")[0];
+        const name = cart[i].name;
+        const price = cart[i].price;
+        let totalPrice = 0;
+        cart[i].option.forEach(option => {
+            const detail = document.createElement("div");
+            const detailPrice = document.createElement("div");
+            detail.innerHTML = `<small class='text-body-secondary'>(${option.size} / ${option.color}) x${option.quantity}</small>`;
+            detailPrice.innerHTML = `<small class='text-body-secondary'>${(option.quantity * price).toLocaleString()}원</small>`;
+            productDetail.appendChild(detail);
+            product.getElementsByClassName("product-price")[0].appendChild(detailPrice);
 
-        const price = productArr[i].price;
-        const quantity = productArr[i].quantity;
+            //
+            totalPrice += option.quantity * price;
+        })
 
-        product.getElementsByClassName("product-name")[0].innerText = productArr[i].name;
-        product.getElementsByClassName("product-price")[0].innerText = `${(price * quantity).toLocaleString()}원`;
-        product.getElementsByClassName("product-quantity")[0].innerText = `x${quantity}`;
 
+
+        product.getElementsByClassName("product-name")[0].innerText = name;
+        // product.getElementsByClassName("product-price")[0].innerText = `${totalPrice.toLocaleString()}원`;
+        // product.getElementsByClassName("product-quantity")[0].innerText = `x${quantity}`;
+
+        product.getElementsByClassName("product-price")[0].prepend(`${totalPrice.toLocaleString()}원`);
         cartList.prepend(product);
-        total += price * quantity;
+        total += totalPrice;
     }
     if (total >= 50000) {
         const discount = document.getElementById("discount");
@@ -217,7 +233,7 @@ async function checkout() {
             requirement,
             orderStatus: "NEW",
             totalPrice: total,
-            detailDtoList: productArr,
+            detailDtoList: cart,
         }
 
         // 결제 정보
@@ -225,7 +241,7 @@ async function checkout() {
             channelKey,
             pay_method: "card",
             merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
-            name: `${productArr[0].name} 외 ${productArr.length - 1}개`,
+            name: `${cart[0].name} 외 ${cart.length - 1}개`,
             amount: total,
             buyer_email: "test@portone.io",
             buyer_name: member.name,
@@ -284,7 +300,7 @@ async function checkout() {
 }
 
 document.getElementById("checkout-btn").addEventListener("click", checkout);
-document.getElementById("total-count").innerText = productArr.length;
+document.getElementById("total-count").innerText = cart.length;
 const requirementSelect = document.getElementById("requirement");
 const requireTextarea = document.getElementById("message-textarea");
 const contact = document.querySelector("input[name = 'contact']");
