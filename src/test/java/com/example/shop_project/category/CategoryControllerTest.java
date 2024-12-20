@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.example.shop_project.category.controller.CategoryController;
+import com.example.shop_project.category.dto.CategoryDeleteResDto;
 import com.example.shop_project.category.dto.CategoryResDto;
 import com.example.shop_project.category.dto.CategoryUpdateReqDto;
 import com.example.shop_project.category.service.CategoryService;
@@ -56,7 +57,7 @@ public class CategoryControllerTest {
 
         Mockito.when(categoryService.getAllCategories()).thenReturn(categoryList);
 
-        mockMvc.perform(get("/categories/categoryList"))
+        mockMvc.perform(get("/admin/category/categoryList"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("category/categoryList"))
                 .andExpect(model().attributeExists("categories"))
@@ -75,7 +76,7 @@ public class CategoryControllerTest {
 
         Mockito.when(categoryService.createMainCategory(Mockito.any())).thenReturn(resDto);
 
-        mockMvc.perform(post("/categories/create")
+        mockMvc.perform(post("/admin/category/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("mainCategoryName", "MainCategory")
                         .param("subCategoryName", "SubCategory")
@@ -96,7 +97,7 @@ public class CategoryControllerTest {
 
         Mockito.when(categoryService.createSubCategory(Mockito.any())).thenReturn(resDto);
 
-        mockMvc.perform(post("/categories/create")
+        mockMvc.perform(post("/admin/category/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("mainCategoryName", "MainCategory")
                         .param("subCategoryName", "SubCategory")
@@ -113,7 +114,7 @@ public class CategoryControllerTest {
 
         Mockito.when(categoryService.updateCategory(Mockito.any())).thenReturn(resDto);
 
-        mockMvc.perform(patch("/categories/update")
+        mockMvc.perform(patch("/admin/category/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateReq)))
                 .andExpect(status().isOk())
@@ -123,10 +124,11 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 삭제 테스트")
     void deleteCategory() throws Exception {
-        Map<String, Object> request = Map.of("categoryId", 1L);
-        Mockito.when(categoryService.deleteCategory(1L)).thenReturn(true);
+        Map<String, Object> request = Map.of("categoryId", 2L);
+        CategoryDeleteResDto categoryDeleteResDto = new CategoryDeleteResDto(2L, 1L, false);
+        Mockito.when(categoryService.deleteCategory(2L)).thenReturn(categoryDeleteResDto);
 
-        mockMvc.perform(delete("/categories/delete")
+        mockMvc.perform(delete("/admin/category/delete")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());

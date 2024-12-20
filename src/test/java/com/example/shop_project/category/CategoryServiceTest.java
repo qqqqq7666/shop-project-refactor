@@ -1,6 +1,7 @@
 package com.example.shop_project.category;
 
 import com.example.shop_project.category.dto.CategoryCreateReqDto;
+import com.example.shop_project.category.dto.CategoryDeleteResDto;
 import com.example.shop_project.category.dto.CategoryResDto;
 import com.example.shop_project.category.dto.CategoryUpdateReqDto;
 import com.example.shop_project.category.entity.Category;
@@ -58,9 +59,6 @@ public class CategoryServiceTest {
                 .build();
 
         subCategory.setParentCategory(mainCategory);
-
-        Mockito.when(categoryRepository.findByCategoryId(2L)).thenReturn(subCategory);
-        Mockito.when(categoryRepository.findByCategoryId(1L)).thenReturn(mainCategory);
     }
 
     @Test
@@ -96,30 +94,23 @@ public class CategoryServiceTest {
 
     @Test
     void createSubCategory() {
-        CategoryCreateReqDto reqDto = new CategoryCreateReqDto("MainCategory", "NewSubCategory", false);
-
+        // given
+        CategoryCreateReqDto reqDto = new CategoryCreateReqDto("MainCategory", "TwoSubCategory", false);
         Mockito.when(categoryRepository.findByCategoryName("MainCategory")).thenReturn(mainCategory);
-        Category newSubCategory = Category.builder()
-                .categoryId(3L)
-                .categoryName("NewSubCategory")
-                .depth(mainCategory.getDepth() + 1)
-                .parentCategory(mainCategory)
-                .build();
-        List<Category> updatedSubCategories = new ArrayList<>(mainCategory.getSubCategories());
-        updatedSubCategories.add(newSubCategory);
-        mainCategory.setSubCategories(updatedSubCategories);
 
+        // when
         CategoryResDto result = categoryService.createSubCategory(reqDto);
 
+        // then
         // 메인 카테고리 검증
         assertNotNull(result);
         assertEquals("MainCategory", result.getCategoryName());
         // 서브 카테고리 검증
         assertNotNull(result.getSubCategories());
         assertEquals(2, result.getSubCategories().size());
-        assertEquals("NewSubCategory", result.getSubCategories().get(1).getCategoryName());
+        assertEquals("TwoSubCategory", result.getSubCategories().get(1).getCategoryName());
 
-        Mockito.verify(categoryRepository).save(Mockito.any());
+        Mockito.verify(categoryRepository, Mockito.times(1)).save(Mockito.any(Category.class));
     }
 
 
@@ -139,12 +130,9 @@ public class CategoryServiceTest {
     @Test
     void deleteCategory() {
         Mockito.when(categoryRepository.findByCategoryId(2L)).thenReturn(subCategory); // 삭제 전
-        Mockito.when(categoryRepository.findByCategoryId(1L)).thenReturn(mainCategory);
-        Mockito.when(categoryRepository.findByCategoryId(Mockito.anyLong())).thenReturn(null); // 삭제 후
 
-        boolean result = categoryService.deleteCategory(2L);
+        CategoryDeleteResDto result = categoryService.deleteCategory(2L);
 
-        assertTrue(result);
         Mockito.verify(categoryRepository, Mockito.times(1)).delete(subCategory);
         if (mainCategory.getSubCategories().isEmpty()) {
             Mockito.verify(categoryRepository, Mockito.times(1)).delete(mainCategory);
@@ -152,4 +140,5 @@ public class CategoryServiceTest {
             Mockito.verify(categoryRepository, Mockito.never()).delete(mainCategory);
         }
     }
+
 }
