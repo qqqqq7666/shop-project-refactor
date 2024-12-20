@@ -5,6 +5,7 @@ import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.order.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +41,8 @@ public class OrderViewController {
     }
 
     @GetMapping
-    public String orderList(Model model, Principal principal){
-        model.addAttribute("orderMap", orderService.getOrderAndDetailMap(principal));
+    public String orderList(Model model, Principal principal, @RequestParam(defaultValue = "0") int page){
+        model.addAttribute("orderPage", orderService.getOrderAndDetailMap(principal, PageRequest.of(page, 10)));
         return "order/order_list";
     }
 

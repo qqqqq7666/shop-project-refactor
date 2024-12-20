@@ -52,7 +52,7 @@
         <div class = "sort-dropdown-size">
             <label>사이즈</label>
             <select>
-                <option th:each="option : ${product.options}"
+                <option id="size" th:each="option : ${product.options}"
                         th:text="${option.size}"
                         th:value="${option.size}">Size</option>
             </select>
@@ -61,7 +61,7 @@
         <div class = "sort-dropdown-color">
             <label>색상 </label>
             <select>
-                <option th:each="option : ${product.options}"
+                <option id="color" th:each="option : ${product.options}"
                         th:text="${option.color}"
                         th:value="${option.color}">Color</option>
             </select>

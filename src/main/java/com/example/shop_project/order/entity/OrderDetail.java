@@ -2,6 +2,7 @@ package com.example.shop_project.order.entity;
 
 import com.example.shop_project.BaseEntity;
 import com.example.shop_project.product.entity.Product;
+import com.example.shop_project.product.entity.Size;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,9 @@ public class OrderDetail extends BaseEntity {
     private Long price;
     @Column(nullable = false)
     private Long quantity;
+    @Enumerated(EnumType.STRING)
+    private Size size;
+    private String color;
 
     @ManyToOne
     @JoinColumn(name = "order_no", nullable = false)

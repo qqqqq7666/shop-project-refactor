@@ -14,7 +14,11 @@ import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.order.repository.PaymentRepository;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,20 +64,12 @@ public class OrderService {
         return detailList;
     }
 
-    public Map<OrderResponseDto, List<OrderDetail>> getOrderAndDetailMap(Principal principal) {
-        Map<OrderResponseDto, List<OrderDetail>> res = new LinkedHashMap<>();
+    public Page<OrderResponseDto> getOrderAndDetailMap(Principal principal, Pageable pageable) {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-        List<Order> orderList = orderRepository.findAllByMemberOrderByOrderNoDesc(member);
-        for (Order order : orderList) {
-            if(order.getOrderStatus() == OrderStatus.FAIL)
-                continue;
-            res.put(orderMapper.toResponseDto(order), orderDetailRepository.findAllByOrder(order));
-        }
+        Page<Order> orderPage = orderRepository.findAllByMemberAndOrderStatusNotOrderByOrderNoDesc(member, pageable, OrderStatus.FAIL);
+        Page<OrderResponseDto> orderResponseDtoPage = orderPage.map(order -> orderMapper.toResponseDto(order));
 
-        for (OrderResponseDto o : res.keySet())
-            log.info("맵 키셋: {}", o.getOrderNo());
-
-        return res;
+        return orderResponseDtoPage;
     }
 
     public List<OrderResponseDto> getOrderList() {

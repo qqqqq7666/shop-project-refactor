@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "orders")
@@ -40,8 +42,8 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-//    @OneToMany(mappedBy = "order")
-//    private List<OrderDetail> orderDetails;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderDetail> orderDetailList;
 
     public void updateOrder(OrderRequestDto orderRequestDto){
         totalPrice = orderRequestDto.getTotalPrice();
