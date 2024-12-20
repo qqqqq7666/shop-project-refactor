@@ -42,7 +42,7 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<OrderDetail> orderDetailList;
 
     public void updateOrder(OrderRequestDto orderRequestDto){
