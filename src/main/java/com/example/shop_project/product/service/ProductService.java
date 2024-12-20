@@ -7,6 +7,9 @@ import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.entity.*;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.bridge.MessageUtil;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -265,9 +269,9 @@ public class ProductService {
 
         // 이미지 업데이트 로직
         if (images != null && !images.isEmpty()) {
-            product.getImages().clear(); // 기존 이미지 제거
             for (int i = 0; i < images.size(); i++) {
-                String imagePath = imageService.uploadImage("products", images.get(i));
+                MultipartFile image = images.get(i);
+                String imagePath = imageService.uploadImage("products", image);
                 ProductImage productImage = new ProductImage();
                 productImage.setImageUrl(imagePath);
                 productImage.setSortOrder(i + 1);
@@ -285,4 +289,14 @@ public class ProductService {
         return mapToResponseDto(updatedProduct);
     }
 
+    public List<String> getProductImageUrls(Long productId) {
+        // 상품을 데이터베이스에서 조회
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
+
+        // 상품 이미지 경로 리스트를 반환
+        return product.getImages().stream() // 상품의 이미지 리스트를 스트림으로 변환
+                .map(image -> "http://localhost:8080" + image.getImageUrl()) // 각 파일 이름에 URL 경로를 추가
+                .collect(Collectors.toList());
+    }
 }
