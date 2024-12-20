@@ -65,6 +65,8 @@ public class ProductController {
 
         productService.createProduct(productRequestDto, images);
 
+
+
         // JSON 형식의 응답 반환
         Map<String, String> response = new HashMap<>();
         response.put("message", "Product created successfully!");
@@ -76,7 +78,16 @@ public class ProductController {
     public ResponseEntity<?> updateProductPartially(
             @PathVariable Long productId,
             @RequestPart(value = "updates") String updatesJson,
-            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+            @RequestPart(value = "images", required = false) List<MultipartFile> images
+            ) {
+
+
+
+        for (MultipartFile file : images) {
+            log.debug("파일 이름: " + file.getOriginalFilename());
+            log.debug("파일 크기: " + file.getSize());
+            log.debug("파일 타입: " + file.getContentType());
+        }
 
         // JSON 문자열을 Map으로 변환
         ObjectMapper objectMapper = new ObjectMapper();
