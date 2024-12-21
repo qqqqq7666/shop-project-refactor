@@ -105,6 +105,32 @@ body {
     background-color: #5a3599;
 }
 
+/* 버튼 컨테이너 스타일 */
+.form-group-button {
+    display: flex;
+    justify-content: center; /* 버튼들을 중앙에 배치 */
+    gap: 10px; /* 버튼 사이의 간격 */
+    margin-top: 20px;
+}
+
+/* 취소 버튼 스타일 */
+.btn-cancel {
+    padding: 10px;
+    font-size: 14px;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    width: 120px;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* 취소 버튼 hover 효과 */
+.btn-cancel:hover {
+    background-color: #d6d6d6;
+}
+
+
 /* 간편 회원가입 영역 */
 .social-login {
     margin: 20px 0;
