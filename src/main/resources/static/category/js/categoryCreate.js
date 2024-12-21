@@ -121,6 +121,13 @@ function toggleForm(formId) {
     // 카테고리 추가 버튼 처리
     const parentElement = formContainer.parentElement;
     const addButton = parentElement.querySelector('.add-btn');
+    if (addButton) {
+        if (formContainer.classList.contains('active')) {
+            addButton.style.display = 'none';
+        } else {
+            addButton.style.display = '';
+        }
+    }
     if (formContainer.classList.contains('active')) {
         // 폼이 활성화 상태면 버튼 숨김
         addButton.style.display = 'none';
