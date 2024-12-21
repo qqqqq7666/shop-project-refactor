@@ -12,6 +12,6 @@ public class AdminController {
         return "admin/adminMain"; // 관리자 메인 페이지
     }
 
-    @GetMapping("/categories/categoryList")
+    @GetMapping("/admin/category/categoryList")
     public String categoryList() { return "category/categoryList"; }
 }

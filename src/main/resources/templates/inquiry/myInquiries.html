@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>문의 목록</title>
+    <title>내 문의 목록</title>
     <link href="/inquiry/style/bootstrap.min.css" rel="stylesheet">
     <style>
         .question-board {
@@ -35,19 +35,11 @@
             font-size: 0.9rem;
             color: #555;
         }
-
-        .write-button {
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 <body>
 <div class="question-board">
-    <h2>상품 문의 목록</h2>
-
-    <div class="write-button">
-        <a th:href="@{/products/{productId}/inquiries/create(productId=${productId})}" class="btn btn-primary">문의 작성</a>
-    </div>
+    <h2>내 문의 목록</h2>
 
     <div id="question-list">
         <div th:each="inquiry : ${inquiries}" class="inquiry-container">
@@ -55,7 +47,7 @@
             <p class="info">작성자: <span th:text="${inquiry.member.nickname}">닉네임</span> | 작성일: <span th:text="${inquiry.date}">YYYY-MM-DD</span></p>
             <p class="info">문의 유형: <span th:text="${inquiry.type.getKoreanName()}">문의 유형</span></p>
             <p th:text="${inquiry.content}">문의 내용</p>
-            <a th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${productId}, inquiryId=${inquiry.id})}" class="btn btn-secondary btn-sm">상세 보기</a>
+            <a th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" class="btn btn-secondary btn-sm">상세 보기</a>
         </div>
     </div>
 </div>

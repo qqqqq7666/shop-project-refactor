@@ -39,4 +39,7 @@ public class Inquiry {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private InquiryType type; // 문의 유형 (SIZE, SHIPPING, RESTOCK, DETAILS)
+
+    @Column(nullable = false)
+    private boolean isSecret; // 비밀글 여부
 }

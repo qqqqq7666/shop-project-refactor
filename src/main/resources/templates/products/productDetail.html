@@ -43,7 +43,7 @@
     <!-- 세부 정보 섹션 -->
     <div class="product-info">
         <h1 th:text="${product.productName}">Product Name</h1>
-        <p th:text="'₩' + ${#numbers.formatInteger(product.price, 3, 'COMMA')}">가격</p>
+        <p id="productPrice" th:data-price="${product.price}" th:text="'₩' + ${#numbers.formatInteger(product.price, 3, 'COMMA')}">가격</p>
 
         <h3>Details</h3>
         <p th:text="${product.description}">설명</p>
@@ -51,7 +51,8 @@
         <!-- 사이즈 및 색상 옵션 -->
         <div class = "sort-dropdown-size">
             <label>사이즈</label>
-            <select>
+            <select id="sizeSelect">
+                <option value="">사이즈를 선택하세요</option>
                 <option th:each="option : ${product.options}"
                         th:text="${option.size}"
                         th:value="${option.size}">Size</option>
@@ -59,8 +60,9 @@
         </div>
 
         <div class = "sort-dropdown-color">
-            <label>색상 </label>
-            <select>
+            <label>색상</label>
+            <select id="colorSelect">
+                <option value="">색상을 선택하세요</option>
                 <option th:each="option : ${product.options}"
                         th:text="${option.color}"
                         th:value="${option.color}">Color</option>
@@ -68,9 +70,14 @@
         </div>
 
         <!-- 총 가격 및 버튼 -->
-        <div class="product-purchase">
-            <h3>TOTAL: <span th:text="'₩' + ${#numbers.formatInteger(product.price, 3, 'COMMA')}"></span></h3>
-            <div>
+        <div>
+            <div id="selectedOptions">
+                <!-- 선택한 옵션 목록이 여기에 표시됩니다 -->
+            </div>
+            <div id="totalContainer">
+                <!-- 총 가격 및 수량 -->
+            </div>
+            <div class="product-purchase">
                 <button>Buy now</button>
                 <button id="add-product-btn"
                         th:onclick="addItem([[${product.getProductId()}]], [[${product.getProductName()}]], [[${product.getPrice()}]], 1); alert('장바구니에 상품이 담겼습니다.');"
@@ -83,4 +90,5 @@
 </div>
 </body>
 <script src="/order/js/productDetail.js"></script>
+<script src="/js/productDetail.js"></script>
 </html>

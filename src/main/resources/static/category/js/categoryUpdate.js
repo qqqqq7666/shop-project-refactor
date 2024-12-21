@@ -1,6 +1,6 @@
 // 수정 버튼 클릭 시
 function editCategory(tagId, categoryId) {
-    console.log("###################1 categoryId: " + categoryId);
+    console.log("#1 categoryId: " + categoryId);
     // 기존 요소와 부모 요소 가져오기
     const categoryElement = document.getElementById(tagId);
     const currentText = categoryElement.textContent;
@@ -56,10 +56,10 @@ function saveCategory(tagId, categoryId) {
     // 수정된 카테고리 이름
     const inputField = document.getElementById(`update-${tagId}`);
     const newCategoryName = inputField.value.trim();
-    console.log("###################2 categoryId: " + categoryId);
+    console.log("#2 categoryId: " + categoryId);
 
     // 서버로 데이터 전송
-    fetch('/categories/update', {
+    fetch('/admin/category/update', {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -72,13 +72,13 @@ function saveCategory(tagId, categoryId) {
         .then(response => {
             if (response.ok) {
                 return response.json();
-            } else if (response.status === 400) {  // badRequest
+            } else if (response.status === 400) {  // BadRequest
                 cancelEditCategory(tagId);
                 throw new Error('유효하지 않은 카테고리입니다(15자 이내 영대소문자, 한글, /만 가능).');
             } else if (response.status === 409) {  // Conflict
                 cancelEditCategory(tagId);
-                throw new Error('카테고리명이 중복되었습니다.');
-            } else {
+                return response.json().then(errorMessage => {throw errorMessage});
+            } else { // 그 외 에러 처리
                 cancelEditCategory(tagId);
                 throw new Error('카테고리 업데이트 실패에 실패했습니다.');
             }
