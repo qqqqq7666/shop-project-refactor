@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품 리스트</title>
+  <link rel="stylesheet" href="/css/productList.css">
+</head>
+<body>
+<div class="container">
+  <!-- 상단 정렬과 검색 -->
+  <div class="top-bar">
+    <div class="sort-dropdown">
+      <label for="sort">정렬:</label>
+      <select id="sort" name="sort">
+        <option value="createdAt" th:selected="${sort == 'createdAt'}">기본순</option>
+        <option value="salesCount" th:selected="${sort == 'salesCount'}">판매순</option>
+        <option value="viewCount" th:selected="${sort == 'viewCount'}">조회순</option>
+      </select>
+    </div>
+    <div class="search-box">
+      <form th:action="@{/products/productList}" method="get" id="searchForm">
+        <input type="text" name="search" placeholder="상품 검색" th:value="${search}">
+        <button type="submit">검색</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 제품 목록 -->
+  <div class="product-list">
+    <div th:each="product : ${productPage.content}" class="product-card">
+      <a th:href="@{/products/detail/{id}(id=${product.productId})}">
+        <img th:src="${product.imageUrls[0]}" alt="상품 이미지">
+      </a>
+      <p class="title" th:text="${product.productName}">상품명</p>
+      <p class="price" th:text="'₩' + ${product.price}">가격</p>
+    </div>
+  </div>
+
+  <!-- 페이지네이션 -->
+  <div class="pagination">
+    <!-- 처음 페이지로 이동 -->
+    <a th:if="${currentPage > 0}" th:href="@{/products/productList(page=0, search=${search}, sort=${sort})}">&lt;&lt;</a>
+    <!-- 이전 페이지 -->
+    <a th:if="${startPage > 1}" th:href="@{/products/productList(page=${startPage - 2}, search=${search}, sort=${sort})}">&lt;</a>
+    <!-- 페이지 번호 표시 -->
+    <span th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+        <a th:href="@{/products/productList(page=${pageNum - 1}, search=${search}, sort=${sort})}"
+           th:classappend="${currentPage == pageNum - 1} ? 'active' : ''"
+           th:text="${pageNum}"></a>
+    </span>
+    <!-- 다음 페이지 -->
+    <a th:if="${endPage < totalPages}" th:href="@{/products/productList(page=${endPage}, search=${search}, sort=${sort})}">&gt;</a>
+    <!-- 끝 페이지로 이동 -->
+    <a th:if="${currentPage < totalPages - 1}" th:href="@{/products/productList(page=${totalPages - 1}, search=${search}, sort=${sort})}">&gt;&gt;</a>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  document.getElementById('sort').addEventListener('change', function() {
+    const selectedSort = this.value;
+    const currentSearch = document.querySelector('input[name="search"]').value || '';
+    const url = `/products/productList?sort=${selectedSort}&search=${currentSearch}`;
+    window.location.href = url;
+  });
+</script>
+</body>
+</html>

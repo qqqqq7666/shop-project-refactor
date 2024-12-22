@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원가입</title>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<link rel="stylesheet" href="/member/css/joinStyle.css">
+</head>
+<body>
+
+<div class="register-container">
+    <div class="register-header">회원가입</div>
+    <form th:action="@{/join}" method="post">
+        
+
+        <!-- 이메일 입력 -->
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <div class="form-group-inline">
+                <input type="email" id="email" name="email" required maxlength="255">
+                <button type="button" class="check-btn" id="emailCheckBtn">중복확인</button>
+            </div>
+            <span id="emailError" class="form-message"></span>
+        </div>
+
+        <!-- 닉네임 입력 -->
+        <div class="form-group">
+            <label for="nickname">닉네임</label>
+            <div class="form-group-inline">
+                <input type="text" id="nickname" name="nickname" required maxlength="20">
+                <button type="button" class="check-btn" id="nicknameCheckBtn">중복확인</button>
+            </div>
+            <span id="nicknameError" class="form-message"></span>
+        </div>
+
+        <!-- 비밀번호 입력 -->
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required maxlength="50">
+            <span id="passwordError" class="form-message"></span>
+        </div>
+
+        <!-- 비밀번호 확인 -->
+        <div class="form-group">
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required maxlength="50">
+            <span id="passwordConfirmError" class="form-message"></span>
+        </div>
+
+        <!-- 이름 입력 -->
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <!-- 전화번호 입력 -->
+        <div class="form-group">
+            <label for="phone">전화번호</label>
+            <input type="text" id="phone" name="phone" required>
+        </div>
+
+        <!-- 우편번호 입력 -->
+        <div class="form-group">
+            <label for="postNo">우편번호</label>
+            <div class="form-group-inline">
+                <input type="text" id="postNo" name="postNo" readonly>
+                <button type="button" class="btn-find" onclick="openPostcodePopup()">우편번호 찾기</button>
+            </div>
+        </div>
+
+        <!-- 주소 입력 -->
+        <div class="form-group">
+            <label for="address">주소</label>
+            <input type="text" id="address" name="address" readonly>
+        </div>
+
+        <!-- 상세 주소 입력 -->
+        <div class="form-group">
+            <label for="addressDetail">상세 주소</label>
+            <input type="text" id="addressDetail" name="addressDetail" placeholder="상세 주소를 입력하세요">
+        </div>
+
+		<!-- 에러 메시지 출력 -->
+        <div th:if="${error}" class="form-message">
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- 회원가입 버튼 -->
+        <button type="submit" class="btn-purple">회원가입</button>
+        
+        <!-- 간편 회원가입 -->
+        <div class="social-login">
+            <h3>간편 회원가입 (OAUTH, 임시)</h3>
+            <button type="button" class="google">Google</button>
+            <button type="button" class="kakao">Kakao</button>
+        </div>
+    </form>
+</div>
+
+<script type="module" src="/member/js/joincheck.js"></script>
+<script src="/member/js/joinPostInput.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

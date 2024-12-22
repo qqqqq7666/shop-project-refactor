@@ -1,0 +1,102 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.search-box {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.search-box input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
+.search-box button {
+    padding: 5px 10px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.search-box button:hover {
+    background-color: #333;
+}
+
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #333;
+    color: white;
+}
+
+img {
+    object-fit: cover;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.actions {
+    text-align: right;
+}
+
+
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    color: #fafafa;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 8px 8px;
+    margin: 2px 5px;
+    text-decoration: none;
+    color: #333; /* 글자 색상 */
+    background-color: #fff; /* 배경을 하얀색으로 설정 */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination a:hover {
+    background-color: #f0f0f0; /* 호버 시 밝은 회색 */
+    color: #333;
+}
+
+.pagination a.active {
+    background-color: #000; /* 활성화된 페이지: 검정 배경 */
+    color: #fff; /* 글자 색상을 하얀색 */
+    border-color: #000;
+}
