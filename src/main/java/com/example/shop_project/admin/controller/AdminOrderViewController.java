@@ -1,7 +1,6 @@
 package com.example.shop_project.admin.controller;
 
 import com.example.shop_project.member.service.MemberService;
-import com.example.shop_project.order.entity.Order;
 import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.order.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.security.Principal;
 
 @Controller
 @RequestMapping("/admin/orders")
