@@ -47,7 +47,7 @@ class InquiryControllerTest {
         Long productId = 1L;
         List<Inquiry> mockInquiries = new ArrayList<>();
         mockInquiries.add(new Inquiry());
-        when(inquiryService.getInquiriesByProductId(productId)).thenReturn(mockInquiries);
+        //when(inquiryService.getInquiriesByProductId(productId)).thenReturn(mockInquiries);
 
         // when
         String viewName = inquiryController.showInquiriesByProduct(productId, model);
