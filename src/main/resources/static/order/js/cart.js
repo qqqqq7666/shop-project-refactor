@@ -1,5 +1,5 @@
 let cart = [];
-
+let currentProductOption;
 // 로컬스토리지에서 데이터 가져오기
 function loadCart() {
     const savedCart = localStorage.getItem("cart");
@@ -25,32 +25,68 @@ function renderCart() {
     let total = 0;
     let count = 0;
 
-    cart.forEach((item, index) => {
-        item.option.forEach((option, optionIndex)=> {
+    cart.forEach(async (item, index) => {
+        item.option.forEach((option, optionIndex) => {
             const li = document.createElement("li");
             li.innerHTML = `
             <div>
             <img src="/images/imageInfo.png" width="100px">
             </div>
-            <div>
-            <span>${item.name}</span>
+            <div align="center">
+            <span>${item.name}<br><br></span>
             <span>${item.price}원</span>
             </div>
-            <div class="quantity-controls">
-            <span>(${option.size} / ${option.color})</span>
+            <h6>X</h6>
+            <div class="quantity-controls" align="center">
+            <span>(${option.size} / ${option.color})<br>
                 <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, -1)">-</button>
                 <input type="text" value="${option.quantity}" readonly />
                 <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, 1)">+</button>
-                <span>${(option.quantity * item.price).toLocaleString()}원</span>
+                <br>
+                <button type="button" id="${index}-${optionIndex}" class="btn btn-primary option-change-button option${index}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    옵션 변경
+                </button>
+            </span>
             </div>
-            <small>
-                        <span>${item.price * option.quantity}원</span>
+            <h3>=</h3>
+            <span>${item.price * option.quantity}원</span>
+            <div>
             <button class="btn btn-primary" onclick="removeOption(${index}, ${optionIndex})">삭제</button>
-            </small>
+            </div>
         `;
             cartItems.appendChild(li);
+            total += option.quantity * item.price;
+
         });
+
+        // 상품 옵션 변경 모달 render
+        const response = await fetch(`/api/order/product-option/${cart[index].productId}`);
+        const productOption = await response.json();
+        document.body.addEventListener("click", event => {
+            if (event.target.classList.contains(`option${index}`)) {
+                document.getElementById("option-size").innerHTML = ""
+                document.getElementById("option-color").innerHTML = ""
+                console.log(event.target.id);
+                productOption.options.forEach(option => {
+                    const optionSize = document.createElement("option");
+                    const optionColor = document.createElement("option");
+
+                    optionSize.value = option.size;
+                    optionColor.value = option.color;
+                    optionSize.textContent = option.size;
+                    optionColor.textContent = option.color;
+
+                    document.getElementById("option-size").appendChild(optionSize);
+                    document.getElementById("option-color").appendChild(optionColor);
+
+                    currentProductOption = event.target.id;
+                });
+            }
+        });
+
+        cartItems.getEvent
     });
+
 
     itemCount.textContent = cart.length.toLocaleString();
     totalPrice.textContent = total.toLocaleString();
@@ -63,7 +99,7 @@ function addItem(productId, name, price) {
     if (existingItem) {
         existingItem.quantity++;
     } else {
-        cart.push({productId, name, price, quantity: 1 });
+        cart.push({productId, name, price, quantity: 1});
     }
     saveCart();
     renderCart();
@@ -101,9 +137,9 @@ function clearCart() {
 
 // 더미 상품 데이터
 const mockProducts = [
-    { productId: 1, name: "케이블 라운드넥 니트", price: 29000 },
-    { productId: 2, name: "씨빅 오리진 숏 푸퍼", price: 89000 },
-    { productId: 3, name: "워싱 와이드 데님팬츠", price: 39000 }
+    {productId: 1, name: "케이블 라운드넥 니트", price: 29000},
+    {productId: 2, name: "씨빅 오리진 숏 푸퍼", price: 89000},
+    {productId: 3, name: "워싱 와이드 데님팬츠", price: 39000}
 ];
 
 // 더미 상품 추가 함수
@@ -121,11 +157,28 @@ function initializeCart() {
     loadCart();
 }
 
+// 장바구니 상품 옵션 변경
+function changeProductOption(cartIndex, optionIndex) {
+    console.log(`${cartIndex}, ${optionIndex}`);
+    cart[cartIndex].option[optionIndex].size = document.getElementById("option-size").value;
+    cart[cartIndex].option[optionIndex].color = document.getElementById("option-color").value;
+    saveCart();
+    alert("상품 옵션이 변경되었습니다.");
+    document.getElementById("cancel-modal").click();
+    renderCart();
+}
+
 // DOM이 준비되면 초기화
 document.addEventListener("DOMContentLoaded", initializeCart);
 document.getElementById("checkout").addEventListener("click", () => {
-    if(localStorage.getItem("cart") === "[]")
+    if (localStorage.getItem("cart") === "[]")
         alert("장바구니가 비어있습니다.");
     else
         window.location.href = "/order/checkout";
 })
+document.getElementById("option-save-button").addEventListener("click", () => {
+    const indexSet = currentProductOption.split("-");
+    const cartIndex = parseInt(indexSet[0]);
+    const optionIndex = parseInt(indexSet[1]);
+    changeProductOption(cartIndex, optionIndex);
+});
