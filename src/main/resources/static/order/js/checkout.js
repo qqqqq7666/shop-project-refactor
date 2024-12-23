@@ -138,7 +138,7 @@ function renderProduct() {
     document.getElementById("total").innerText = `${total.toLocaleString()}원`;
 }
 
-function requestPay(payInfo, paymentDto){
+function requestPay(payInfo, paymentDto, orderDetailDtoLIst){
     IMP.init("imp31477127");
     IMP.request_pay(payInfo,
         async function (rsp) {
@@ -176,6 +176,13 @@ function requestPay(payInfo, paymentDto){
                         if (res.ok) {
                             setTimeout(() => alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`), 100);
                             setTimeout(() => location.href = "/order/cart", 1000);
+                            fetch("/api/payment/restore-product-stock", {
+                                method: "PATCH",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(orderDetailDtoLIst),
+                            });
                             return res;
                         }
                     })
@@ -193,18 +200,18 @@ async function checkout() {
             })
         })
 
-        fetch("/api/payment/update-product-stock", {
+        const stockResponse = await fetch("/api/payment/decrease-product-stock", {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(orderDetailDtoList)
-        })
-            .then(res => {
-                if(!res.ok){
-                    alert("상품 재고가 부족합니다.");
-                }
-            });
+        });
+
+        if(!stockResponse.ok){
+            alert("상품 재고가 부족합니다.");
+            return;
+        }
 
         console.log(orderDetailDtoList);
 
@@ -302,7 +309,7 @@ async function checkout() {
             .then(async (response) => {
                 if (response.ok) {
                     // 주문 성공시 결제 요청
-                    requestPay(payInfo, paymentDto)
+                    requestPay(payInfo, paymentDto, orderDetailDtoList)
 
                     return response.json();
 

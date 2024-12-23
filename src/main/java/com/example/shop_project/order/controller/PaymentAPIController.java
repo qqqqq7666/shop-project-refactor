@@ -1,7 +1,6 @@
 package com.example.shop_project.order.controller;
 import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.PaymentDto;
-import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.Payment;
 import com.example.shop_project.order.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,15 @@ public class PaymentAPIController {
         return ResponseEntity.created(URI.create("/")).body(payment);
     }
 
-    @PatchMapping("/update-product-stock")
-    public ResponseEntity<Void> updateProductStock(@Validated @RequestBody List<OrderDetailDto> orderDetailDtoList){
-        paymentService.productStockUpdate(orderDetailDtoList);
+    @PatchMapping("/decrease-product-stock")
+    public ResponseEntity<Void> decreaseProductStock(@Validated @RequestBody List<OrderDetailDto> orderDetailDtoList){
+        paymentService.decreaseProductStock(orderDetailDtoList);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/restore-product-stock")
+    public ResponseEntity<Void> restoreProductStock(@Validated @RequestBody List<OrderDetailDto> orderDetailDtoList){
+        paymentService.productStockRollback(orderDetailDtoList);
         return ResponseEntity.ok().build();
     }
 }
