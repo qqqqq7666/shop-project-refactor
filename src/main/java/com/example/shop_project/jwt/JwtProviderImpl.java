@@ -70,11 +70,14 @@ public class JwtProviderImpl implements JwtProvider<AuthTokenImpl> {
                 );
             }
 
+            // 권한을 SimpleGrantedAuthority에 추가
+            String roleKey = claims.get(MemberConstants.AUTHORIZATION_TOKEN_KEY, String.class);
+            if (roleKey == null || roleKey.isEmpty()) {
+                throw new JwtException("Role is missing in the token");
+            }
+
             Set<SimpleGrantedAuthority> authorities = Collections.singleton(
-                new SimpleGrantedAuthority(claims.get(
-                		MemberConstants.AUTHORIZATION_TOKEN_KEY,
-                    String.class
-                ))
+                new SimpleGrantedAuthority(roleKey)
             );
 
             User principal = new User(claims.getSubject(), "", authorities);
@@ -89,59 +92,27 @@ public class JwtProviderImpl implements JwtProvider<AuthTokenImpl> {
         }
     }
     
-//    @Override
-//    public AuthTokenImpl createAccessToken(
-//        String userId,
-//        Role role,
-//        Map<String, Object> claims
-//    ) {
-//        claims.put("type", MemberConstants.ACCESS_TOKEN_TYPE_VALUE);
-//        return new AuthTokenImpl(
-//            userId,
-//            role,
-//            key,
-//            (Claims) claims,
-//            new Date(System.currentTimeMillis() + accessExpires)
-//        );
-//    }
-//
-//    @Override
-//    public AuthTokenImpl createRefreshToken(
-//        String userId,
-//        Role role,
-//        Map<String, Object> claims
-//    ) {
-//        claims.put("type", MemberConstants.REFRESH_TOKEN_TYPE_VALUE);
-//        return new AuthTokenImpl(
-//            userId,
-//            role,
-//            key,
-//            (Claims) claims,
-//            new Date(System.currentTimeMillis() + refreshExpires)
-//        );
-//    }
-    
     @Override
     public AuthTokenImpl createAccessToken(
         String userId,
         Role role,
         Map<String, Object> claims
     ) {
-        // 불변(Immutable) 대응
         if (claims == null) {
             claims = new HashMap<>();
         } else {
             claims = new HashMap<>(claims);
         }
-        // 토큰 타입 설정
-        claims.put("type", MemberConstants.ACCESS_TOKEN_TYPE_VALUE);
 
-        // 여기서는 (Claims)로 캐스팅하지 않는다!
+        // 토큰 타입 및 권한 정보 추가
+        claims.put("type", MemberConstants.ACCESS_TOKEN_TYPE_VALUE); // 타입 추가
+        claims.put(MemberConstants.AUTHORIZATION_TOKEN_KEY, role.getKey()); // 권한 추가
+
         return new AuthTokenImpl(
             userId,
             role,
             key,
-            claims, // 그냥 Map으로 넘김
+            claims,
             new Date(System.currentTimeMillis() + accessExpires)
         );
     }
@@ -157,9 +128,11 @@ public class JwtProviderImpl implements JwtProvider<AuthTokenImpl> {
         } else {
             claims = new HashMap<>(claims);
         }
-        claims.put("type", MemberConstants.REFRESH_TOKEN_TYPE_VALUE);
 
-        // 마찬가지로 Map으로 전달
+        // 토큰 타입 및 권한 정보 추가
+        claims.put("type", MemberConstants.REFRESH_TOKEN_TYPE_VALUE); // 타입 추가
+        claims.put(MemberConstants.AUTHORIZATION_TOKEN_KEY, role.getKey()); // 권한 추가
+
         return new AuthTokenImpl(
             userId,
             role,

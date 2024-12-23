@@ -9,4 +9,5 @@ import lombok.ToString;
 @Getter
 public class JwtTokenResponse {
 	private String accessToken;
+
 }

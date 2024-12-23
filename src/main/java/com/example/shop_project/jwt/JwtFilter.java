@@ -16,6 +16,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import com.example.shop_project.jwt.AuthTokenImpl;
 import static com.example.shop_project.jwt.MemberConstants.AUTHORIZATION_TOKEN_KEY;
@@ -23,6 +24,7 @@ import static com.example.shop_project.jwt.MemberConstants.AUTHORIZATION_TOKEN_K
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtProviderImpl tokenProvider;
@@ -33,40 +35,37 @@ public class JwtFilter extends OncePerRequestFilter {
         HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
-//        Optional<String> token = resolveToken(request);
-//
-//     // /jwt-login 경로면 토큰 검사하지 않고 바로 패스
-//        if (request.getRequestURI().equals("/jwt-login")) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
-//        
-//        if (token.isPresent()) {
-//            AuthTokenImpl jwtToken = tokenProvider.convertAuthToken(token.get().split(" ")[1]);
-//
-//            if (jwtToken.validate()) {
-//                Authentication authentication = tokenProvider.getAuthentication(jwtToken);
-//
-//                SecurityContextHolder
-//                    .getContext()
-//                    .setAuthentication(authentication);
-//            }
-//        }
-//
-//        filterChain.doFilter(request, response);
+        
+    	log.info("🔍 JwtFilter: 요청 URL = {}", request.getRequestURI());
     	
-    	 // 1) 쿠키에서 Access Token 추출
+        // 1) 쿠키에서 Access Token 추출
         Optional<String> accessToken = getAccessTokenFromCookie(request);
+        log.info("🔑 AccessToken found in cookie: {}", accessToken.isPresent());
 
-        // 2) 토큰 검증
+        // 2) 토큰 검증 및 SecurityContext 설정
         if (accessToken.isPresent()) {
             AuthTokenImpl jwtToken = tokenProvider.convertAuthToken(accessToken.get());
 
             if (jwtToken.validate()) {
-                Authentication authentication = tokenProvider.getAuthentication(jwtToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                try {
+                    Authentication authentication = tokenProvider.getAuthentication(jwtToken);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    log.info("✅ SecurityContext에 Authentication 객체 설정 완료: {}", authentication);
+                } catch (Exception e) {
+                    // 인증 중 발생한 예외 처리
+                    SecurityContextHolder.clearContext();
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
+            } else {
+                // 토큰이 유효하지 않을 경우
+                SecurityContextHolder.clearContext();
             }
         }
+        
+     // SecurityContextHolder 상태 확인
+        log.info("🔍 최종 SecurityContext Authentication: {}", 
+            SecurityContextHolder.getContext().getAuthentication());
 
         filterChain.doFilter(request, response);
     }
@@ -81,15 +80,4 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         return Optional.empty();
     }
-
-//    private Optional<String> resolveToken(HttpServletRequest request) {
-//        String authToken = request.getHeader(AUTHORIZATION_TOKEN_KEY);
-//
-//        if (StringUtils.hasText(authToken)) {
-//            return Optional.of(authToken);
-//        } else {
-//            return Optional.empty();
-//        }
-//    }
 }
-

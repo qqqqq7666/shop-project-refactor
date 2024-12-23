@@ -46,10 +46,10 @@ public class SecurityConfig {
                                 "/images/**", 
                                 "/order/**", 
                                 "/member/**",
-                                "/",
-                                "/mypage"
+                                "/"
+                                //"/mypage"
                         ).permitAll()
-                        //.requestMatchers("**/css/**", "**/js/**", "**/images/**").permitAll()
+                        .requestMatchers("/mypage").authenticated()
                         .anyRequest().authenticated()
                 )
                 

@@ -28,33 +28,29 @@ import io.jsonwebtoken.Jwts;
 @AllArgsConstructor
 @Slf4j
 public class AuthTokenImpl implements AuthToken<Claims> {
-	private final String token;
-	private final Key key;
-	
-//	public AuthTokenImpl (
-//			String userId,
-//			Role role,
-//			Key key,
-//			Claims claims,
-//			Date expiredDate
-//	) {
-//		this.key= key;
-//		this.token = createJwtToken(userId, role, claims, expiredDate).get();
-//	}
-	
-	public AuthTokenImpl(
-            String userId,
-            Role role,
-            Key key,
-            Map<String, Object> claimsMap, // ★ 수정: 파라미터를 Map<String, Object>로 받음
-            Date expiredDate
+    private final String token;
+    private final Key key;
+
+    // 1. JWT 생성자
+    public AuthTokenImpl(
+        String userId,
+        Role role,
+        Key key,
+        Map<String, Object> claimsMap,
+        Date expiredDate
     ) {
         this.key = key;
-        // 여기서 DefaultClaims로 변환
-        DefaultClaims claims = new DefaultClaims(claimsMap);
-        claims.put(AUTHORITIES_TOKEN_KEY, role);
 
-        // JWT 문자열 생성
+        // Map 복사 및 DefaultClaims 변환
+        Map<String, Object> modifiableMap = new HashMap<>();
+        if (claimsMap != null) {
+            modifiableMap.putAll(claimsMap);
+        }
+
+        DefaultClaims claims = new DefaultClaims(modifiableMap);
+        claims.put(MemberConstants.AUTHORIZATION_TOKEN_KEY, role.getKey()); // role.getKey()로 String 권한 추가
+
+        // JWT 생성
         this.token = Jwts.builder()
                 .setSubject(userId)
                 .addClaims(claims)
@@ -62,74 +58,35 @@ public class AuthTokenImpl implements AuthToken<Claims> {
                 .setExpiration(expiredDate)
                 .compact();
     }
-	
-	private Optional<String> createJwtToken(
-			String userId,
-			Role role,
-			Map<String, Object> claimsMap,
-			Date expiredDate
-	) {
-//		DefaultClaims claims = new DefaultClaims(claimsMap);
-//		claims.put(AUTHORITIES_TOKEN_KEY, role);
-//		
-//		return Optional.ofNullable(Jwts.builder()
-//				.setSubject(userId)
-//				.addClaims(claims)
-//				.signWith(key, SignatureAlgorithm.HS256)
-//				.setExpiration(expiredDate)
-//				.compact()
-//		
-//		);
-		
-		 // 불변 Map일 수도 있는 claimsMap을 복사해 변경 가능하게 만든다.
-	    Map<String, Object> modifiableMap = new HashMap<>();
-	    if (claimsMap != null) {
-	        modifiableMap.putAll(claimsMap);
-	    }
 
-	    // DefaultClaims를 생성하기 전에 role을 넣어주거나,
-	    // DefaultClaims를 만든 뒤 put해도 OK
-	    DefaultClaims claims = new DefaultClaims(modifiableMap);
+    // 2. 토큰 유효성 검증
+    @Override
+    public boolean validate() {
+        return getDate() != null;
+    }
 
-	    // 권한 정보를 추가
-	    claims.put(AUTHORITIES_TOKEN_KEY, role);
+    // 3. Claims 반환
+    @Override
+    public Claims getDate() {
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(key) // 🔑 key를 직접 사용 (HMAC 키는 .getEncoded() 필요 없음)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (SecurityException e) {
+            log.warn("Invalid JWT signature");
+        } catch (MalformedJwtException e) {
+            log.warn("Invalid JWT token");
+        } catch (ExpiredJwtException e) {
+            log.warn("Expired JWT token");
+        } catch (UnsupportedJwtException e) {
+            log.warn("Unsupported JWT Token");
+        } catch (IllegalArgumentException e) {
+            log.warn("JWT token compact of handler are invalid");
+        }
 
-	    return Optional.ofNullable(Jwts.builder()
-	            .setSubject(userId)
-	            .addClaims(claims)
-	            .signWith(key, SignatureAlgorithm.HS256)
-	            .setExpiration(expiredDate)
-	            .compact()
-	    );
-	}
-	
-	@Override
-	public boolean validate() {
-		return getDate() != null;
-	}
-	
-	@Override
-	public Claims getDate() {
-		try {
-			return Jwts
-					.parserBuilder()
-					.setSigningKey(key.getEncoded())
-					.build()
-					.parseClaimsJws(token)
-					.getBody();
-		} catch (SecurityException e) {
-	        log.warn("Invalid JWT signature");
-	    } catch (MalformedJwtException e) {
-	        log.warn("Invalid JWT token");
-	    } catch (ExpiredJwtException e) {
-	        log.warn("Expired JWT token");
-	    } catch (UnsupportedJwtException e) {
-	        log.warn("Unsupported JWT Token");
-	    } catch (IllegalArgumentException e) {
-	        log.warn("JWT token compact of handler are invalid");
-	    }
-		
-		return null;
-	}
-	
+        return null;
+    }
 }

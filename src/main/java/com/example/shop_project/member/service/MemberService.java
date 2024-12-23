@@ -81,30 +81,28 @@ public class MemberService {
 	
 	// jwt
 	public JwtTokenDto login(JwtTokenLoginRequest request) {
-	    Member user = memberRepository.findByEmail(request.getEmail())
-	        .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+	    // 1) 이메일로 사용자 찾기
+	    Member member = memberRepository.findByEmail(request.getEmail())
+	        .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-	    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-	        throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-	    }
+	    // 2) 이메일을 subject로 사용
+	    String subject = member.getEmail();   // 예: "user@example.com"
 
-	    Map<String, Object> claims = Map.of(
-	        "accountId", user.getId(),
-	        "role", user.getRole()
-	    );
-
+	    // 3) Access Token 생성
 	    AuthTokenImpl accessToken = jwtProvider.createAccessToken(
-	        user.getId().toString(),
-	        user.getRole(),
-	        claims
+	        subject,          // <-- 'userId' 자리에 이메일을 보냄
+	        member.getRole(),
+	        null
 	    );
 
+	    // 4) Refresh Token 생성
 	    AuthTokenImpl refreshToken = jwtProvider.createRefreshToken(
-	        user.getId().toString(),
-	        user.getRole(),
-	        claims
+	        subject,          // <-- 마찬가지로 이메일
+	        member.getRole(),
+	        null
 	    );
 
+	    // 5) Dto로 묶어서 반환
 	    return JwtTokenDto.builder()
 	        .accessToken(accessToken.getToken())
 	        .refreshToken(refreshToken.getToken())
