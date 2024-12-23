@@ -193,6 +193,19 @@ async function checkout() {
             })
         })
 
+        fetch("/api/payment/update-product-stock", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(orderDetailDtoList)
+        })
+            .then(res => {
+                if(!res.ok){
+                    alert("상품 재고가 부족합니다.");
+                }
+            });
+
         console.log(orderDetailDtoList);
 
         let member;

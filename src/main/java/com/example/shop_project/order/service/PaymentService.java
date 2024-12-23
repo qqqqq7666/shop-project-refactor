@@ -44,6 +44,7 @@ public class PaymentService {
         return paymentRepository.findByOrder(order).orElseThrow();
     }
 
+    @Transactional
     public void productStockUpdate(List<OrderDetailDto> orderDetailDtoList){
         orderDetailDtoList.forEach(orderDetailDto -> {
             Product product = productRepository.findById(orderDetailDto.getProductId()).orElseThrow(() -> new NoSuchElementException("상품이 존재하지 않습니다."));

@@ -25,7 +25,7 @@ public class PaymentAPIController {
     }
 
     @PatchMapping("/update-product-stock")
-    public ResponseEntity<Void> updateProductStock(List<OrderDetailDto> orderDetailDtoList){
+    public ResponseEntity<Void> updateProductStock(@Validated @RequestBody List<OrderDetailDto> orderDetailDtoList){
         paymentService.productStockUpdate(orderDetailDtoList);
         return ResponseEntity.ok().build();
     }
