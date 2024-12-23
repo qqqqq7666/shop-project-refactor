@@ -38,10 +38,18 @@ public class SecurityConfig {
 //                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                        		"/login",
-                        		"/join",
-                        		"/jwt-login"
-                        ).permitAll()		// 후에 접근 허용 경로 수정 필요
+                        		"/login", 
+                                "/join", 
+                                "/jwt-login", 
+                                "/css/**", 
+                                "/js/**", 
+                                "/images/**", 
+                                "/order/**", 
+                                "/member/**",
+                                "/",
+                                "/mypage"
+                        ).permitAll()
+                        //.requestMatchers("**/css/**", "**/js/**", "**/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 

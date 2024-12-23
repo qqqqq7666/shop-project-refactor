@@ -22,6 +22,7 @@ import java.util.Set;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -88,18 +89,59 @@ public class JwtProviderImpl implements JwtProvider<AuthTokenImpl> {
         }
     }
     
+//    @Override
+//    public AuthTokenImpl createAccessToken(
+//        String userId,
+//        Role role,
+//        Map<String, Object> claims
+//    ) {
+//        claims.put("type", MemberConstants.ACCESS_TOKEN_TYPE_VALUE);
+//        return new AuthTokenImpl(
+//            userId,
+//            role,
+//            key,
+//            (Claims) claims,
+//            new Date(System.currentTimeMillis() + accessExpires)
+//        );
+//    }
+//
+//    @Override
+//    public AuthTokenImpl createRefreshToken(
+//        String userId,
+//        Role role,
+//        Map<String, Object> claims
+//    ) {
+//        claims.put("type", MemberConstants.REFRESH_TOKEN_TYPE_VALUE);
+//        return new AuthTokenImpl(
+//            userId,
+//            role,
+//            key,
+//            (Claims) claims,
+//            new Date(System.currentTimeMillis() + refreshExpires)
+//        );
+//    }
+    
     @Override
     public AuthTokenImpl createAccessToken(
         String userId,
         Role role,
         Map<String, Object> claims
     ) {
+        // 불변(Immutable) 대응
+        if (claims == null) {
+            claims = new HashMap<>();
+        } else {
+            claims = new HashMap<>(claims);
+        }
+        // 토큰 타입 설정
         claims.put("type", MemberConstants.ACCESS_TOKEN_TYPE_VALUE);
+
+        // 여기서는 (Claims)로 캐스팅하지 않는다!
         return new AuthTokenImpl(
             userId,
             role,
             key,
-            (Claims) claims,
+            claims, // 그냥 Map으로 넘김
             new Date(System.currentTimeMillis() + accessExpires)
         );
     }
@@ -110,12 +152,19 @@ public class JwtProviderImpl implements JwtProvider<AuthTokenImpl> {
         Role role,
         Map<String, Object> claims
     ) {
+        if (claims == null) {
+            claims = new HashMap<>();
+        } else {
+            claims = new HashMap<>(claims);
+        }
         claims.put("type", MemberConstants.REFRESH_TOKEN_TYPE_VALUE);
+
+        // 마찬가지로 Map으로 전달
         return new AuthTokenImpl(
             userId,
             role,
             key,
-            (Claims) claims,
+            claims,
             new Date(System.currentTimeMillis() + refreshExpires)
         );
     }

@@ -70,3 +70,40 @@ body, html {
     color: #6c757d;
     margin-top: 20px;
 }
+
+
+
+
+/* 입력 필드 포커스 효과 (사용자 경험 개선) */
+.form-control:focus {
+    border-color: #6f42c1; /* 포커스 시 보더 색상 변경 */
+    outline: none;
+    box-shadow: 0 0 5px rgba(111, 66, 193, 0.5);
+}
+
+/* 버튼 비활성화 상태 (추가된 스타일) */
+.btn-purple:disabled {
+    background-color: #a192c4; /* 비활성화 시 연한 보라색 */
+    cursor: not-allowed;
+}
+
+/* 반응형 디자인 (화면이 작아질 때 로그인 박스 조정) */
+@media (max-width: 480px) {
+    .login-box {
+        padding: 20px;
+    }
+
+    .login-header {
+        font-size: 20px;
+    }
+
+    .form-control {
+        height: 45px;
+        font-size: 14px;
+    }
+
+    .btn-purple {
+        font-size: 14px;
+        height: 45px;
+    }
+}

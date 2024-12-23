@@ -34,6 +34,12 @@ public class JwtFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         Optional<String> token = resolveToken(request);
 
+     // /jwt-login 경로면 토큰 검사하지 않고 바로 패스
+        if (request.getRequestURI().equals("/jwt-login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         if (token.isPresent()) {
             AuthTokenImpl jwtToken = tokenProvider.convertAuthToken(token.get().split(" ")[1]);
 

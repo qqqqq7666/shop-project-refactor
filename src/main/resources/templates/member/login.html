@@ -1,4 +1,4 @@
-
+<!--  
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,6 +25,34 @@
     </div>
 </body>
 </html>
+-->
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <link rel="stylesheet" href="/order/style/bootstrap.min.css">
+    <link rel="stylesheet" href="/member/css/loginStyle.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">로그인</div>
+            <form id="loginForm">
+                <input type="email" id="email" class="form-control" placeholder="이메일" required>
+                <input type="password" id="password" class="form-control" placeholder="비밀번호" required>
+                <div class="password-reset">
+                    <a href="/password-reset">비밀번호 찾기</a>
+                </div>
+                <button type="button" id="loginButton" class="btn btn-purple">로그인</button>
+            </form>
+            <div class="social-login">간편 로그인 자리 (OAUTH)</div>
+        </div>
+    </div>
+    <script src="/member/js/jwtLogin.js"></script>
+</body>
+</html>
 
 
