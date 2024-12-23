@@ -35,12 +35,8 @@ public class JwtFilter extends OncePerRequestFilter {
         HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
-        
-    	log.info("🔍 JwtFilter: 요청 URL = {}", request.getRequestURI());
-    	
         // 1) 쿠키에서 Access Token 추출
         Optional<String> accessToken = getAccessTokenFromCookie(request);
-        log.info("🔑 AccessToken found in cookie: {}", accessToken.isPresent());
 
         // 2) 토큰 검증 및 SecurityContext 설정
         if (accessToken.isPresent()) {
@@ -50,7 +46,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 try {
                     Authentication authentication = tokenProvider.getAuthentication(jwtToken);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    log.info("✅ SecurityContext에 Authentication 객체 설정 완료: {}", authentication);
                 } catch (Exception e) {
                     // 인증 중 발생한 예외 처리
                     SecurityContextHolder.clearContext();
@@ -62,10 +57,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.clearContext();
             }
         }
-        
-     // SecurityContextHolder 상태 확인
-        log.info("🔍 최종 SecurityContext Authentication: {}", 
-            SecurityContextHolder.getContext().getAuthentication());
 
         filterChain.doFilter(request, response);
     }
