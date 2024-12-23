@@ -9,7 +9,7 @@ function editCategory(tagId, categoryId) {
     // 기존 요소의 텍스트와 수정, 삭제 버튼 숨기기
     categoryElement.style.display = 'none';
     const editButtons = parentElement.querySelectorAll('.update-btn, .delete-btn');
-    for (var i=0 ; i<editButtons.length ; i++) {
+    for (let i=0 ; i<editButtons.length ; i++) {
         if (editButtons[i]) editButtons[i].style.display = 'none';
     }
 
@@ -56,6 +56,10 @@ function saveCategory(tagId, categoryId) {
     // 수정된 카테고리 이름
     const inputField = document.getElementById(`update-${tagId}`);
     const newCategoryName = inputField.value.trim();
+    if (!newCategoryName) {
+        alert('카테고리 이름은 비워둘 수 없습니다.');
+        return;
+    }
     console.log("#2 categoryId: " + categoryId);
 
     // 서버로 데이터 전송
