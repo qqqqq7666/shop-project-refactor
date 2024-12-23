@@ -64,7 +64,7 @@ public class OrderControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/order/" + order.getOrderNo())
+                get("/api/v1/orders/" + order.getOrderNo())
         );
 
         // then
@@ -84,7 +84,7 @@ public class OrderControllerTest {
                 .willReturn(Arrays.asList(orderDetail));
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/order/1/order-detail")
+                get("/api/v1/orders/1/order-detail")
         );
 
         // then
@@ -106,7 +106,7 @@ public class OrderControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/order/create")
+                post("/api/v1/orders/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                         .with(csrf())
@@ -122,7 +122,7 @@ public class OrderControllerTest {
     @DisplayName("주문삭제 수정 테스트")
     void deleteOrder() throws Exception{
         ResultActions resultActions = mockMvc.perform(
-                delete("/api/order/1/delete")
+                delete("/api/v1/orders/1/delete")
 
         );
 
@@ -152,7 +152,7 @@ public class OrderControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                patch("/api/order/1/update-status")
+                patch("/api/v1/orders/1/update-status")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
         );
@@ -173,7 +173,7 @@ public class OrderControllerTest {
                 .willReturn(member);
 
         ResultActions resultActions = mockMvc.perform(
-                get("/api/order/member-info")
+                get("/api/v1/orders/member-info")
         );
 
         resultActions.andExpect(status().isOk())
@@ -190,7 +190,7 @@ public class OrderControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/order/recent-order-no")
+                get("/api/v1/orders/recent-order-no")
         );
 
         // then

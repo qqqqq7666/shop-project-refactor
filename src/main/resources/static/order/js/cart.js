@@ -60,7 +60,7 @@ function renderCart() {
         });
 
         // 상품 옵션 변경 모달 render
-        const response = await fetch(`/api/order/product-option/${cart[index].productId}`);
+        const response = await fetch(`/api/v1/orders/product-option/${cart[index].productId}`);
         const productOption = await response.json();
         document.body.addEventListener("click", event => {
             if (event.target.classList.contains(`option${index}`)) {

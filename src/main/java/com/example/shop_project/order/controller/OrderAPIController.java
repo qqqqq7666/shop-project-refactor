@@ -24,7 +24,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/v1/orders")
 @Slf4j
 public class OrderAPIController {
     @Autowired

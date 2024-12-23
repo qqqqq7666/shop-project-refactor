@@ -14,9 +14,10 @@ public class OrderDetailDto {
     private Long price;
     @NotNull
     private Long productId;
-//    @NotNull
+    @NotNull
     private Size size;
-//    @NotNull
+    @NotNull
     private String color;
+    @NotNull
     private Long quantity;
 }

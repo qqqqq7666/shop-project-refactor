@@ -145,7 +145,7 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst){
             // callback 로직
             if (rsp.success) {
                 // payment create post 요청
-                fetch("/api/payment/create", {
+                fetch("/api/v1/payments/create", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -162,10 +162,10 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst){
                         }
                     })
             } else {
-                const orderNoJson = await fetch("/api/order/recent-order-no");
+                const orderNoJson = await fetch("/api/v1/orders/recent-order-no");
                 const orderNo = await orderNoJson.json();
                 const orderStatus = "FAIL";
-                fetch(`/api/order/${orderNo.toString()}/update-status`, {
+                fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
@@ -176,7 +176,7 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst){
                         if (res.ok) {
                             setTimeout(() => alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`), 100);
                             setTimeout(() => location.href = "/order/cart", 1000);
-                            fetch("/api/payment/restore-product-stock", {
+                            fetch("/api/v1/payments/restore-product-stock", {
                                 method: "PATCH",
                                 headers: {
                                     "Content-Type": "application/json",
@@ -193,6 +193,22 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst){
 
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
+        window.addEventListener("beforeunload", async (event) => {
+            event.preventDefault();
+            const orderNoJson = await fetch("/api/v1/orders/recent-order-no");
+            const orderNo = await orderNoJson.json();
+            const orderStatus = "FAIL";
+            fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({orderStatus}),
+                keepalive: true
+            });
+            // navigator.sendBeacon(`/api/v1/orders/${orderNo.toString()}/update-status`, JSON.stringify({orderStatus}));
+
+        });
         const orderDetailDtoList = [];
         cart.forEach(item =>{
             item.option.forEach(o => {
@@ -200,7 +216,7 @@ async function checkout() {
             })
         })
 
-        const stockResponse = await fetch("/api/payment/decrease-product-stock", {
+        const stockResponse = await fetch("/api/v1/payments/decrease-product-stock", {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -218,7 +234,7 @@ async function checkout() {
         let member;
 
         try {
-            const response = await fetch("/api/order/member-info")
+            const response = await fetch("/api/v1/orders/member-info")
             member = await response.json();
         } catch (error) {
             alert("로그인이 만료되었습니다.");
@@ -263,13 +279,18 @@ async function checkout() {
         }
 
         // 결제 정보
+        let name;
+        if(cart.length === 1)
+            name = cart[0].name;
+        else
+            name = `${cart[0].name} 외 ${cart.length - 1}개`
         const payInfo = {
             channelKey,
             pay_method: "card",
             merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
-            name: `${cart[0].name} 외 ${cart.length - 1}개`,
+            name,
             amount: total,
-            buyer_email: "test@portone.io",
+            buyer_email: member.email,
             buyer_name: member.name,
             buyer_tel: member.phone, //필수 파라미터 입니다.
             buyer_addr: member.address,
@@ -299,7 +320,7 @@ async function checkout() {
             payStatus: "SUCCESS",
         }
 
-        fetch("/api/order/create", {
+        fetch("/api/v1/orders/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

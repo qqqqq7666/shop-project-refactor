@@ -59,9 +59,9 @@ public class Order extends BaseEntity {
     }
 
 
-    public void addOrderDetailToCreate() {
+    public void assignOrderToOrderDetail() {
         orderDetailList.forEach(orderDetail -> {
-            orderDetail.assignOrderCreate(this);
+            orderDetail.assignOrderToCreate(this);
         });
     }
 }

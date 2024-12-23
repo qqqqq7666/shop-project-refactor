@@ -12,7 +12,6 @@ import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.order.repository.PaymentRepository;
 import com.example.shop_project.product.repository.ProductRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,7 +43,7 @@ public class OrderService {
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
         Order order = orderMapper.toEntity(orderRequestDto, productRepository);
-        order.addOrderDetailToCreate();
+        order.assignOrderToOrderDetail();
         Order newOrder = orderRepository.save(order);
         return orderMapper.toResponseDto(newOrder);
     }

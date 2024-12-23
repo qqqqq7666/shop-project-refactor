@@ -32,9 +32,7 @@ public class OrderDetail extends BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    // product
-
-    public void assignOrderCreate(Order order){
+    public void assignOrderToCreate(Order order){
         this.order = order;
     }
 }

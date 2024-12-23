@@ -12,7 +12,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/payment")
+@RequestMapping("api/v1/payments")
 public class PaymentAPIController {
     @Autowired
     PaymentService paymentService;
