@@ -12,6 +12,7 @@ import com.example.shop_project.jwt.JwtProviderImpl;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,37 +33,63 @@ public class JwtFilter extends OncePerRequestFilter {
         HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
-        Optional<String> token = resolveToken(request);
+//        Optional<String> token = resolveToken(request);
+//
+//     // /jwt-login 경로면 토큰 검사하지 않고 바로 패스
+//        if (request.getRequestURI().equals("/jwt-login")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//        
+//        if (token.isPresent()) {
+//            AuthTokenImpl jwtToken = tokenProvider.convertAuthToken(token.get().split(" ")[1]);
+//
+//            if (jwtToken.validate()) {
+//                Authentication authentication = tokenProvider.getAuthentication(jwtToken);
+//
+//                SecurityContextHolder
+//                    .getContext()
+//                    .setAuthentication(authentication);
+//            }
+//        }
+//
+//        filterChain.doFilter(request, response);
+    	
+    	 // 1) 쿠키에서 Access Token 추출
+        Optional<String> accessToken = getAccessTokenFromCookie(request);
 
-     // /jwt-login 경로면 토큰 검사하지 않고 바로 패스
-        if (request.getRequestURI().equals("/jwt-login")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
-        if (token.isPresent()) {
-            AuthTokenImpl jwtToken = tokenProvider.convertAuthToken(token.get().split(" ")[1]);
+        // 2) 토큰 검증
+        if (accessToken.isPresent()) {
+            AuthTokenImpl jwtToken = tokenProvider.convertAuthToken(accessToken.get());
 
             if (jwtToken.validate()) {
                 Authentication authentication = tokenProvider.getAuthentication(jwtToken);
-
-                SecurityContextHolder
-                    .getContext()
-                    .setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
         filterChain.doFilter(request, response);
     }
-
-    private Optional<String> resolveToken(HttpServletRequest request) {
-        String authToken = request.getHeader(AUTHORIZATION_TOKEN_KEY);
-
-        if (StringUtils.hasText(authToken)) {
-            return Optional.of(authToken);
-        } else {
-            return Optional.empty();
+    
+    private Optional<String> getAccessTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    return Optional.of(cookie.getValue());
+                }
+            }
         }
+        return Optional.empty();
     }
+
+//    private Optional<String> resolveToken(HttpServletRequest request) {
+//        String authToken = request.getHeader(AUTHORIZATION_TOKEN_KEY);
+//
+//        if (StringUtils.hasText(authToken)) {
+//            return Optional.of(authToken);
+//        } else {
+//            return Optional.empty();
+//        }
+//    }
 }
 
