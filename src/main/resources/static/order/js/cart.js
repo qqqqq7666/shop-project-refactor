@@ -159,13 +159,18 @@ function initializeCart() {
 
 // 장바구니 상품 옵션 변경
 function changeProductOption(cartIndex, optionIndex) {
-    console.log(`${cartIndex}, ${optionIndex}`);
-    cart[cartIndex].option[optionIndex].size = document.getElementById("option-size").value;
-    cart[cartIndex].option[optionIndex].color = document.getElementById("option-color").value;
-    saveCart();
-    alert("상품 옵션이 변경되었습니다.");
-    document.getElementById("cancel-modal").click();
-    renderCart();
+    const toChangeSize = document.getElementById("option-size").value;
+    const toChangeColor = document.getElementById("option-color").value;
+    if (cart[cartIndex].option.find(option => option.size === toChangeSize && option.color === toChangeColor)){
+        alert("동일한 옵션의 상품이 존재합니다.");
+    } else {
+        cart[cartIndex].option[optionIndex].size = toChangeSize;
+        cart[cartIndex].option[optionIndex].color = toChangeColor;
+        saveCart();
+        alert("상품 옵션이 변경되었습니다.");
+        document.getElementById("cancel-modal").click();
+        renderCart();
+    }
 }
 
 // DOM이 준비되면 초기화
