@@ -10,8 +10,6 @@ import com.example.shop_project.order.entity.Payment;
 import com.example.shop_project.product.entity.Product;
 import com.example.shop_project.product.repository.ProductRepository;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;

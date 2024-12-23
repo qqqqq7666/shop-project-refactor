@@ -30,7 +30,6 @@ public class OrderViewController {
 
     // TODO order의 멤버와 principal로 찾은 맴버를 비교해서 다르면 exception 발생
     // TODO 결제 실패 시 우선 비공개 처리, 개선할 방법 고려
-    // TODO 페이지네이션 필요
     @GetMapping("/{orderNo}")
     public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model, Principal principal){
         model.addAttribute("detailList", orderService.getOrderDetailList(orderNo));
@@ -54,12 +53,11 @@ public class OrderViewController {
 
     @GetMapping("checkout")
     public String checkout(@ModelAttribute Principal principal){
-//        log.info("cookie: {}", jSession);
         return "order/checkout";
     }
 
     @GetMapping("cart")
     public String cart(){
-        return "cart/cart";
+        return "/order/cart/cart";
     }
 }

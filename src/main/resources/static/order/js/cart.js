@@ -26,24 +26,33 @@ function renderCart() {
     let count = 0;
 
     cart.forEach((item, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
+        item.option.forEach((option, optionIndex)=> {
+            const li = document.createElement("li");
+            li.innerHTML = `
+            <div>
+            <img src="/images/imageInfo.png" width="100px">
+            </div>
+            <div>
             <span>${item.name}</span>
             <span>${item.price}원</span>
-            <div class="quantity-controls">
-                <button class="btn btn-primary" onclick="updateQuantity(${index}, -1)">-</button>
-                <input type="text" value="${item.quantity}" readonly />
-                <button class="btn btn-primary" onclick="updateQuantity(${index}, 1)">+</button>
             </div>
-            <span>${item.price * item.quantity}원</span>
-            <button class="btn btn-primary" onclick="removeItem(${index})">삭제</button>
+            <div class="quantity-controls">
+            <span>(${option.size} / ${option.color})</span>
+                <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, -1)">-</button>
+                <input type="text" value="${option.quantity}" readonly />
+                <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, 1)">+</button>
+                <span>${(option.quantity * item.price).toLocaleString()}원</span>
+            </div>
+            <small>
+                        <span>${item.price * option.quantity}원</span>
+            <button class="btn btn-primary" onclick="removeOption(${index}, ${optionIndex})">삭제</button>
+            </small>
         `;
-        cartItems.appendChild(li);
-        total += item.price * item.quantity;
-        count += item.quantity;
+            cartItems.appendChild(li);
+        });
     });
 
-    itemCount.textContent = count;
+    itemCount.textContent = cart.length.toLocaleString();
     totalPrice.textContent = total.toLocaleString();
     finalPrice.textContent = (total + 3000).toLocaleString(); // 배송비 포함
 }
@@ -68,13 +77,19 @@ function removeItem(index) {
 }
 
 // 수량 업데이트
-function updateQuantity(index, change) {
-    const item = cart[index];
+function updateQuantity(index, optionIndex, change) {
+    const item = cart[index].option[optionIndex];
     if (item) {
         item.quantity = Math.max(1, item.quantity + change); // 최소 수량은 1
         saveCart();
         renderCart();
     }
+}
+
+function removeOption(index, optionIndex) {
+    cart[index].option.splice(optionIndex, 1);
+    saveCart();
+    renderCart();
 }
 
 // 장바구니 비우기

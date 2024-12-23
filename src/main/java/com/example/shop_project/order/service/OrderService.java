@@ -40,8 +40,6 @@ public class OrderService {
     private MemberRepository memberRepository;
     @Autowired
     private PaymentRepository paymentRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
