@@ -57,6 +57,7 @@ public class Member extends BaseEntity {
 	@Column(name = "nickname", nullable = false)
 	private String nickname;
 	
+	// 삭제 예정
 	@Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 	

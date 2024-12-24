@@ -12,30 +12,49 @@
 
     <!-- Card Example -->
     <div class="card mb-3 w-100" style="max-width: 540px;" id="product-card"
-         th:each="order : ${orderMap}">
+         th:each="order : ${orderPage}">
         <div>
-            <h4 th:text="${#temporals.format(order.getKey().getCreatedDate(), 'yy.MM.dd')}"></h4>
+            <h4 th:text="${#temporals.format(order.getCreatedDate(), 'yy.MM.dd')}"></h4>
         </div>
-        <div class="row g-0" th:each="detail : ${order.getValue()}">
+        <div class="row g-0" th:each="detail, i : ${order.getOrderDetailList()}">
             <!-- Image Section -->
             <div class="col-md-4">
                 <img src="https://via.placeholder.com/150" class="img-fluid rounded-start" alt="Product Image">
             </div>
-
             <!-- Text Section -->
             <div class="col-md-8">
                 <div class="card-body">
-                    <p class="card-text text-muted" style="position: absolute; top: 0; right: 0; margin: 10px; font-size: 0.9em;"><a th:href="|order/${order.getKey().getOrderNo()}|">주문 상세</a></p>
+                    <p class="card-text text-muted"
+                       style="position: absolute; top: 0; right: 0; margin: 10px; font-size: 0.9em;"><a
+                            th:href="|order/${order.getOrderNo()}|">주문 상세</a></p>
                     <h5 class="card-title" th:text="${detail.getProduct().getProductName()}">Product Name</h5>
-                    <p class="card-text mb-1" th:text="|Option / ${detail.getQuantity()}개|">Size/Quantity</p>
+                    <p class="card-text mb-1"
+                       th:text="|(${detail.getColor()} / ${detail.getSize()}) / ${detail.getQuantity()}개|">
+                        Size/Quantity</p>
                     <p class="card-text" th:text="|${detail.getPrice()}원|">Price: <strong>price</strong></p>
                 </div>
             </div>
             <hr>
         </div>
     </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li th:if="${currentPage > 0}" class="page-item">
+                <a class="page-link" th:href="|?page=${currentPage - 1}|" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <div th:each="i : ${#numbers.sequence(0, orderPage.getTotalPages() - 1)}">
+                <li class="page-item"><a class="page-link" th:text="${i + 1}" th:href="|?page=${i}|">1</a></li>
+            </div>
+            <li th:if="${currentPage < orderPage.getTotalPages() - 1}" class="page-item">
+                <a class="page-link" th:href="|?page=${currentPage + 1}|" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
-
 <script src="/order/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

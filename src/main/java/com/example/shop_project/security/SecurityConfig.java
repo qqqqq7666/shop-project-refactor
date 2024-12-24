@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+//import com.example.shop_project.jwt.JwtAuthenticationFilter;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -32,13 +34,14 @@ public class SecurityConfig {
 //        		)
                 .authorizeHttpRequests(auth -> auth
                 		.requestMatchers("/admin/**").hasAuthority("ADMIN") // 관리자만 접근 허용
+                		.requestMatchers("/mypage/**").authenticated() // 인증 필요
                         .requestMatchers("/**").permitAll()		// 후에 접근 허용 경로 수정 필요
                 )
                 //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
                 .formLogin(form -> form
                         .loginPage("/login") // 커스텀 로그인 페이지
                         .loginProcessingUrl("/perform_login") // 폼 액션 URL
-                        .defaultSuccessUrl("/mypage", true) // 임시로 로그인 성공 시 마이페이지로 이동
+                        .defaultSuccessUrl("/", true) // 로그인 성공시 메인페이지로 이동
                         .failureUrl("/login?error=true") // 실패 시 이동 경로
                         .usernameParameter("email") // 이메일 필드
                         .passwordParameter("password") // 비밀번호 필드

@@ -39,7 +39,7 @@ public class OrderAPIController {
         return ResponseEntity.ok(orderService.getOrderDetailList(orderNo));
     }
 
-    @PostMapping(value = "/create")
+    @PostMapping("/create")
     public ResponseEntity<OrderResponseDto> createOrder(@Validated @RequestBody OrderRequestDto orderRequestDto){
         OrderResponseDto response = orderService.createOrder(orderRequestDto);
 
