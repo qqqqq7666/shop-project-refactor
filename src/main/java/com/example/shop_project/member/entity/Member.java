@@ -42,17 +42,17 @@ public class Member extends BaseEntity {
 	
 	@Column(name = "name", nullable = false)
 	private String name;
-	
+	 
 	@Column(name = "phone", nullable = false)
 	private String phone;
 	
-	@Column(name = "post_no", nullable = false)
+	@Column(name = "post_no", nullable = true)
 	private String postNo;
 	
-	@Column(name = "address", nullable = false)
+	@Column(name = "address", nullable = true)
 	private String address;
 
-	@Column(name = "address_detail", nullable = false)
+	@Column(name = "address_detail", nullable = true)
 	private String addressDetail;
 	
 	@Column(name = "nickname", nullable = false)

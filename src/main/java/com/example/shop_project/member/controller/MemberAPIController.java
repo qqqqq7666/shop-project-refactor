@@ -60,40 +60,4 @@ public class MemberAPIController {
         }
     }
 	
-	
-	 @GetMapping("/userinfo")
-	    public ResponseEntity<JwtTokenResponse> getUserInfo(
-	            @AuthenticationPrincipal OAuth2User principal,
-	            HttpServletResponse response
-	    ) {
-	        if (principal != null) {
-	            JwtTokenDto jwtTokenDto = memberService.googleLogin(GoogleUserInfoDto.builder()
-	                    .email((String) principal.getAttribute("email"))
-	                    .name((String) principal.getAttribute("name"))
-	                    .providerId((String) principal.getAttribute("sub"))
-	                    .build()
-	            );
-
-	            // Refresh Token 쿠키 설정
-	            Cookie refreshTokenCookie = new Cookie(
-	                    "refreshToken",
-	                    jwtTokenDto.getRefreshToken()
-	            );
-
-	            refreshTokenCookie.setHttpOnly(true); // JavaScript 접근 차단
-	            refreshTokenCookie.setSecure(true);  // HTTPS에서만 전송
-	            refreshTokenCookie.setPath("/");     // 모든 경로에서 접근 가능
-	            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일간 유효
-
-	            response.addCookie(refreshTokenCookie);
-
-	            return ResponseEntity.ok().body(JwtTokenResponse.builder()
-	                    .accessToken(jwtTokenDto.getAccessToken())
-	                    .build());
-	        } else {
-	            return ResponseEntity.ok().body(JwtTokenResponse.builder()
-	                    .accessToken("null")
-	                    .build());
-	        }
-	    }
 }

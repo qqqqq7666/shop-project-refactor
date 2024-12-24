@@ -113,40 +113,25 @@ public class MemberService {
 	}
 	
 	// Google OAUTH2
-	public JwtTokenDto googleLogin(GoogleUserInfoDto googleUserInfoDto) {
-        Member user = memberRepository.findByEmail(googleUserInfoDto.getEmail())
-                .orElseGet(() -> memberRepository.save(Member.builder()
-                        .email(googleUserInfoDto.getEmail())
-                        .name(googleUserInfoDto.getName())
-                        .provider(Provider.GOOGLE)
-                        .providerId(googleUserInfoDto.getProviderId())
-                        .role(Role.USER)
-                        .build()
-                ));
-
-        // 추가 Claims 설정
-        Map<String, Object> claims = Map.of(
-                "accountId", user.getId(),
-                "role", user.getRole()
-        );
-
-        // Access Token 생성
-        AuthTokenImpl accessToken = jwtProvider.createAccessToken(
-                user.getId().toString(),
-                user.getRole(),
-                claims
-        );
-
-        // Refresh Token 생성
-        AuthTokenImpl refreshToken = jwtProvider.createRefreshToken(
-                user.getId().toString(),
-                user.getRole(),
-                claims
-        );
-
-        return JwtTokenDto.builder()
-                .accessToken(accessToken.getToken())
-                .refreshToken(refreshToken.getToken())
-                .build();
+	public Member saveOrUpdateGoogleUser(String email, String name, String providerId) {
+        // 1) DB에서 이메일로 사용자 찾기
+        return memberRepository.findByEmail(email)
+            .map(user -> {
+                // 2) 이미 존재하면, 필요한 경우 업데이트
+                user.setName(name);           // 이름 업데이트 예시
+                user.setProvider(Provider.GOOGLE);   // provider: GOOGLE
+                user.setProviderId(providerId);
+                return memberRepository.save(user);
+            })
+            .orElseGet(() -> {
+                // 3) 없으면 새로 생성
+                return memberRepository.save(Member.builder()
+                    .email(email)
+                    .name(name)
+                    .provider(Provider.GOOGLE)
+                    .providerId(providerId)
+                    .role(Role.USER) // 일반 유저 권한
+                    .build());
+            });
     }
 }

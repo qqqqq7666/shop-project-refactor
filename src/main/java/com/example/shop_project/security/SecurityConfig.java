@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.shop_project.jwt.JwtFilter;
+import com.example.shop_project.oauth2.CustomOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 	private final JwtFilter jwtFilter;
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -45,7 +47,8 @@ public class SecurityConfig {
                                 "/member/**",
                                 "/",
                                 "/api/**",
-                                "/oauth2/**"
+                                "/oauth2/**",
+                                "/signup/**"
                         ).permitAll()
                         .requestMatchers("/mypage").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
@@ -55,8 +58,11 @@ public class SecurityConfig {
         		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
         		.oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")             // 로그인 페이지
-                        .defaultSuccessUrl("/")      // 로그인 성공 시 이동 URL
+                        .defaultSuccessUrl("/signup/extra")      // 로그인 성공 시 이동 URL
                         .failureUrl("/login?error=true") // 로그인 실패 시
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
                     );
         
         return http.build();
