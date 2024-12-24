@@ -48,6 +48,10 @@ public class JwtController {
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 
+        // csrf 공격을 막기 위한 samesite 설정
+        response.setHeader("Set-Cookie", String.format("accessToken=%s; Path=/; HttpOnly; Secure; SameSite=Lax", jwtTokenDto.getAccessToken()));
+        response.addHeader("Set-Cookie", String.format("refreshToken=%s; Path=/; HttpOnly; Secure; SameSite=Lax", jwtTokenDto.getRefreshToken()));
+        
         // 3) 추가로 클라이언트에 AccessToken을 JSON으로 줄 필요가 없다면, 
         //    JwtTokenResponse 대신 간단한 성공 메시지를 내려줘도 됨.
         return ResponseEntity.ok(
