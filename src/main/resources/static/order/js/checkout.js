@@ -122,7 +122,6 @@ function renderProduct() {
         })
 
 
-
         product.getElementsByClassName("product-name")[0].innerText = name;
 
         product.getElementsByClassName("product-price")[0].prepend(`${totalPrice.toLocaleString()}원`);
@@ -138,7 +137,7 @@ function renderProduct() {
     document.getElementById("total").innerText = `${total.toLocaleString()}원`;
 }
 
-function requestPay(payInfo, paymentDto, orderDetailDtoLIst){
+function requestPay(payInfo, paymentDto, orderDetailDtoLIst) {
     IMP.init("imp31477127");
     IMP.request_pay(payInfo,
         async function (rsp) {
@@ -193,26 +192,36 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst){
 
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
+        const orderNoJson = await fetch("/api/v1/orders/recent-order-no");
+        const orderNo = await orderNoJson.json() + 1;
         window.addEventListener("beforeunload", async (event) => {
             event.preventDefault();
-            const orderNoJson = await fetch("/api/v1/orders/recent-order-no");
-            const orderNo = await orderNoJson.json();
-            const orderStatus = "FAIL";
-            fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({orderStatus}),
-                keepalive: true
-            });
-            // navigator.sendBeacon(`/api/v1/orders/${orderNo.toString()}/update-status`, JSON.stringify({orderStatus}));
-
         });
+        window.addEventListener("unload", () => {
+            // fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
+            //     method: "PATCH",
+            //     body: "FAIL",
+            //     headers: {
+            //         "Content-Type": 'application/json',
+            //     },
+            //     keepalive: true,
+            // });
+            const headers = {
+                type: 'application/json',
+            };
+            const blob = new Blob([JSON.stringify("FAIL")], headers);
+            navigator.sendBeacon(`/api/v1/orders/${orderNo.toString()}/update-status`, blob);
+        })// navigator.sendBeacon(`/api/v1/orders/${orderNo.toString()}/update-status`, JSON.stringify({orderStatus}));
         const orderDetailDtoList = [];
-        cart.forEach(item =>{
+        cart.forEach(item => {
             item.option.forEach(o => {
-                orderDetailDtoList.push({productId: item.productId, price: item.price, quantity: o.quantity, size: o.size, color: o.color});
+                orderDetailDtoList.push({
+                    productId: item.productId,
+                    price: item.price,
+                    quantity: o.quantity,
+                    size: o.size,
+                    color: o.color
+                });
             })
         })
 
@@ -224,7 +233,7 @@ async function checkout() {
             body: JSON.stringify(orderDetailDtoList)
         });
 
-        if(!stockResponse.ok){
+        if (!stockResponse.ok) {
             alert("상품 재고가 부족합니다.");
             return;
         }
@@ -280,7 +289,7 @@ async function checkout() {
 
         // 결제 정보
         let name;
-        if(cart.length === 1)
+        if (cart.length === 1)
             name = cart[0].name;
         else
             name = `${cart[0].name} 외 ${cart.length - 1}개`
