@@ -29,7 +29,7 @@ document.body.addEventListener('click', (event) => {
             console.log(pair[0] + ': ' + pair[1]);
         }
 
-        fetch('/admin/category/create', {
+        fetch('/api/v1/categories/create', {
             method: 'POST',
             body: formData
         })

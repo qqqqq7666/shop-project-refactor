@@ -63,7 +63,7 @@ function saveCategory(tagId, categoryId) {
     console.log("#2 categoryId: " + categoryId);
 
     // 서버로 데이터 전송
-    fetch('/admin/category/update', {
+    fetch('/api/v1/categories/update', {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
