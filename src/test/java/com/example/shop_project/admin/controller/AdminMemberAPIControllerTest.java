@@ -33,14 +33,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 
-public class AdminMemberRestControllerTest {
+public class AdminMemberAPIControllerTest {
 	@Autowired
     private MockMvc mockMvc;
 
     private MemberRepository memberRepository = mock(MemberRepository.class);
 
     @InjectMocks
-    private AdminMemberRestController adminMemberRestController;
+    private AdminMemberAPIController adminMemberRestController;
 
     @BeforeEach
     void 테스트전처리() {

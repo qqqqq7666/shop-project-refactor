@@ -46,8 +46,8 @@ public class SecurityConfig {
                                 "/images/**", 
                                 "/order/**", 
                                 "/member/**",
-                                "/"
-                                //"/mypage"
+                                "/",
+                                "/api/**"
                         ).permitAll()
                         .requestMatchers("/mypage").authenticated()
                         .anyRequest().authenticated()

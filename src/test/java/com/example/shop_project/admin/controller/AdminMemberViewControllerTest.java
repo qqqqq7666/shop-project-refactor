@@ -21,9 +21,9 @@ import com.example.shop_project.member.Role;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
 
-public class AdminMemberControllerTest {
+public class AdminMemberViewControllerTest {
 	@InjectMocks
-    private AdminMemberController adminMemberController;
+    private AdminMemberViewController adminMemberController;
 
     @Mock
     private MemberRepository memberRepository;

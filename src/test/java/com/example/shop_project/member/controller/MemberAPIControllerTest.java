@@ -19,12 +19,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view; 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-public class MemberRestControllerTest {
+public class MemberAPIControllerTest {
 	@Autowired
     private MockMvc mockMvc;
 	
 	@InjectMocks
-    private MemberRestController memberRestController;
+    private MemberAPIController memberRestController;
 	
 	private MemberRepository memberRepository = mock(MemberRepository.class);
 	

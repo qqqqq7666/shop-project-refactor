@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/member")
-public class MemberRestController {
+@RequestMapping("/api/v1/members")
+public class MemberAPIController {
 	private final MemberRepository memberRepository;
 	
 	@GetMapping("/check-email")

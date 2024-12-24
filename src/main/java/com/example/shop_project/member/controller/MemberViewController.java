@@ -33,7 +33,7 @@ import org.springframework.security.core.Authentication;
 
 @RequiredArgsConstructor
 @Controller
-public class MemberController {
+public class MemberViewController {
 	private final MemberService memberService;
 	private final MemberRepository memberRepository; 
 
