@@ -137,7 +137,7 @@ function renderProduct() {
     document.getElementById("total").innerText = `${total.toLocaleString()}원`;
 }
 
-function requestPay(payInfo, paymentDto, orderDetailDtoLIst) {
+function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDto) {
     IMP.init("imp31477127");
     IMP.request_pay(payInfo,
         async function (rsp) {
@@ -153,6 +153,7 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst) {
                 })
                     .then(res => {
                         if (res.ok) {
+                            savePoint(savedPointRequestDto);
                             console.log("결제 데이터 저장 성공");
                             localStorage.removeItem("cart")
                             const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
@@ -285,6 +286,14 @@ async function checkout() {
             orderStatus: "NEW",
             totalPrice: total,
             orderDetailDtoList,
+            isPaidWithPoint: true
+        }
+
+        // 포인트 정보 객체
+        const savedPointRequestDto = {
+            email: member.email,
+            saveReason: "PURCHASE",
+            savedPoint: total * 0.01
         }
 
         // 결제 정보
@@ -339,7 +348,7 @@ async function checkout() {
             .then(async (response) => {
                 if (response.ok) {
                     // 주문 성공시 결제 요청
-                    requestPay(payInfo, paymentDto, orderDetailDtoList)
+                    requestPay(payInfo, paymentDto, orderDetailDtoList, savedPointRequestDto)
 
                     return response.json();
 
@@ -353,6 +362,21 @@ async function checkout() {
             .then((data) => console.log("Response:", data))
             .catch((error) => console.error("Error:", error));
     }
+}
+
+function savePoint(SavedPointRequestDto){
+    fetch("/api/v1/points/save-point", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(SavedPointRequestDto)
+    })
+        .then(response => {
+            if(!response.ok){
+                console.log("포인트 적립 안됨");
+            }
+        })
 }
 
 document.getElementById("checkout-btn").addEventListener("click", checkout);

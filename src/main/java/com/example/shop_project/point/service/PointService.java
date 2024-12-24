@@ -57,11 +57,6 @@ public class PointService {
         return pointMapper.toDto(pointRepository.save(point));
     }
 
-//    public List<SavedPointResponseDto> getSavedPointList(String email){
-//        Member foundMember = findMember(email);
-//
-//    }
-
     public Point findPointByEmail(String email){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         return pointRepository.findByMember(member).orElseThrow(() -> new IllegalArgumentException("포인트가 존재하지 않습니다."));

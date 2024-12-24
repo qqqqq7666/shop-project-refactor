@@ -27,11 +27,6 @@ public class PointAPIController {
         return ResponseEntity.ok(pointService.getPointByMember(principal.getName()));
     }
 
-    @GetMapping("/saved-point")
-    public ResponseEntity<SavedPointResponseDto> getSavedPointList(Principal principal){
-        return null;
-    }
-
     @PostMapping("/save-point")
     public ResponseEntity<PointDto> savePoint(@RequestBody SavedPointRequestDto requestDto){
         PointDto response = pointService.createSavedPoint(requestDto);

@@ -34,4 +34,6 @@ public class OrderRequestDto {
     private String contact;
     @NotBlank
     private String addressee;
+    @NotNull
+    private Boolean isPaidWithPoint;
 }
