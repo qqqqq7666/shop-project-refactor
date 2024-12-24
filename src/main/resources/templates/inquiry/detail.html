@@ -89,9 +89,35 @@
         </script>
 
         <a th:href="@{/products/{productId}/inquiries(productId=${productId})}" class="btn btn-secondary back-button" >문의 목록으로 돌아가기</a>
+        <hr>
+        <div>
+            <h3>댓글</h3>
+            <ul>
+                <li th:each="comment : ${inquiry.comments}">
+                    <span th:text="${comment.member.nickname}">작성자</span>
+                    <div class="border p-3">
+                        <p th:text="${comment.content}">댓글 내용</p>
+                    </div>
+                    <small th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">작성 시간</small>
+                    <!--삭제 버튼 -->
+                    <form th:if="${#authentication.name == comment.member.email}"
+                          th:action="@{/products/{productId}/inquiries/{inquiryId}/comment/{commentId}(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id}, commentId=${comment.id})}"
+                          method="post"
+                          onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                    </form>
+                </li>
+            </ul>
 
+            <!-- 댓글 작성 폼 -->
+            <form th:action="@{/products/{productId}/inquiries/{inquiryId}/comment(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" method="post">
+                <textarea name="content" placeholder="댓글을 입력하세요." required></textarea>
+                <button type="submit">댓글 작성</button>
+            </form>
+
+        </div>
     </div>
 </div>
-
 </body>
 </html>
