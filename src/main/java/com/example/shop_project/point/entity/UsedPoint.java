@@ -17,14 +17,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class PointDetail {
+public class UsedPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointDetailId;
+    private Long usedPointId;
     @Column(nullable = false)
     private Integer amount;
-    @Column(nullable = false)
-    private Integer balance;
     @CreatedDate
     private LocalDateTime createdDate;
 
