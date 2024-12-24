@@ -30,7 +30,11 @@ public class UsedPoint {
     @JoinColumn(name = "point_id", nullable = false)
     private Point point;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_no", nullable = false)
     private Order order;
+
+    public void assignPointToCreate(Point point){
+        this.point = point;
+    }
 }
