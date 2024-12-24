@@ -91,10 +91,10 @@ function sample6_execDaumPostcode() {
 
 const cartList = document.getElementById("cart-list");
 const cart = JSON.parse(localStorage.getItem("cart"));
-let total = 0;
 
 // 결제 품목 표시
 function renderProduct() {
+    let total = 0;
 
     for (i = 0; i < cart.length; i++) {
         const product = document.createElement("li");
@@ -264,6 +264,14 @@ async function checkout() {
         let addressDetail = document.querySelector("input[name = 'addressDetail']").value;
         let addressee = document.querySelector("input[name = 'addressee']").value;
         let contact = document.querySelector("input[name = 'contact']").value;
+        let total = 0;
+        cart.forEach(item => {
+            item.option.forEach(option => {
+                total += option.quantity * item.price;
+            })
+        })
+        if(total < 50000)
+            total += 3000;
 
         if (flag === "true") {
             address = member.address;
