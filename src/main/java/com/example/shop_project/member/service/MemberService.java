@@ -13,9 +13,12 @@ import com.example.shop_project.jwt.AuthTokenImpl;
 import com.example.shop_project.jwt.JwtProviderImpl;
 import com.example.shop_project.jwt.dto.JwtTokenDto;
 import com.example.shop_project.jwt.dto.JwtTokenLoginRequest;
+import com.example.shop_project.member.Provider;
+import com.example.shop_project.member.Role;
 import com.example.shop_project.member.dto.MemberRequestDTO;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
+import com.example.shop_project.oauth2.GoogleUserInfoDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -108,4 +111,42 @@ public class MemberService {
 	        .refreshToken(refreshToken.getToken())
 	        .build();
 	}
+	
+	// Google OAUTH2
+	public JwtTokenDto googleLogin(GoogleUserInfoDto googleUserInfoDto) {
+        Member user = memberRepository.findByEmail(googleUserInfoDto.getEmail())
+                .orElseGet(() -> memberRepository.save(Member.builder()
+                        .email(googleUserInfoDto.getEmail())
+                        .name(googleUserInfoDto.getName())
+                        .provider(Provider.GOOGLE)
+                        .providerId(googleUserInfoDto.getProviderId())
+                        .role(Role.USER)
+                        .build()
+                ));
+
+        // 추가 Claims 설정
+        Map<String, Object> claims = Map.of(
+                "accountId", user.getId(),
+                "role", user.getRole()
+        );
+
+        // Access Token 생성
+        AuthTokenImpl accessToken = jwtProvider.createAccessToken(
+                user.getId().toString(),
+                user.getRole(),
+                claims
+        );
+
+        // Refresh Token 생성
+        AuthTokenImpl refreshToken = jwtProvider.createRefreshToken(
+                user.getId().toString(),
+                user.getRole(),
+                claims
+        );
+
+        return JwtTokenDto.builder()
+                .accessToken(accessToken.getToken())
+                .refreshToken(refreshToken.getToken())
+                .build();
+    }
 }

@@ -50,6 +50,7 @@ public class SecurityConfig {
                                 "/api/**"
                         ).permitAll()
                         .requestMatchers("/mypage").authenticated()
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 

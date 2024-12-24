@@ -5,6 +5,7 @@ import org.hibernate.annotations.processing.Pattern;
 
 import com.example.shop_project.BaseEntity;
 import com.example.shop_project.member.Membership;
+import com.example.shop_project.member.Provider;
 import com.example.shop_project.member.Role;
 
 import jakarta.persistence.Column;
@@ -80,6 +81,14 @@ public class Member extends BaseEntity {
     
     @Column(name = "withdraw", nullable = false)
     private Boolean withdraw;
+    
+    // OAuth2를 사용하는 경우 provider와 providerId를 저장
+    @Column(name = "provider")
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+    
+    @Column(name = "provider_id")
+    private String providerId;
 	
 	@PrePersist
     public void prePersist() {
@@ -94,6 +103,9 @@ public class Member extends BaseEntity {
         
         if (this.membership == null) 
             this.membership = Membership.BRONZE;
+        
+        if (this.provider == null) 
+            this.provider = Provider.NONE;
         
         withdraw = false;
     }
