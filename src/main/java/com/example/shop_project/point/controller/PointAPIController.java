@@ -1,8 +1,7 @@
 package com.example.shop_project.point.controller;
 
-import com.example.shop_project.point.dto.PointDto;
-import com.example.shop_project.point.dto.SavedPointRequestDto;
-import com.example.shop_project.point.dto.SavedPointResponseDto;
+import com.example.shop_project.point.dto.*;
+import com.example.shop_project.point.entity.UsedPoint;
 import com.example.shop_project.point.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +38,12 @@ public class PointAPIController {
         return ResponseEntity.created(URI.create("/mypage")).body(response);
     }
 
-//    @PostMapping ResponseEntity<SavedPointResponseDto> savePoint(){
-//
-//    }
+    @PostMapping("use-point")
+    public ResponseEntity<PointDto> usePoint(@RequestBody UsedPointRequestDto responseDto){
+        PointDto response = pointService.createUsedPoint(responseDto);
+        return ResponseEntity.created(URI.create("/mypage")).body(response);
+    }
+
+//    @PostMapping("/use-point")
+//    public ResponseEntity<PointDto> usePoint(@RequestBody)
 }

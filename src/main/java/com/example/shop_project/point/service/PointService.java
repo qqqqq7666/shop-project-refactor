@@ -2,9 +2,11 @@ package com.example.shop_project.point.service;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
+import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.point.dto.PointDto;
 import com.example.shop_project.point.dto.SavedPointRequestDto;
 import com.example.shop_project.point.dto.SavedPointResponseDto;
+import com.example.shop_project.point.dto.UsedPointRequestDto;
 import com.example.shop_project.point.entity.Point;
 import com.example.shop_project.point.mapper.PointMapper;
 import com.example.shop_project.point.repository.PointRepository;
@@ -27,6 +29,8 @@ public class PointService {
     private MemberRepository memberRepository;
     @Autowired
     private PointMapper pointMapper;
+    @Autowired
+    private OrderRepository orderRepository;
 
     // 회원가입할 때 같이 생성
     public void createPoint(Long memberId){
@@ -44,6 +48,12 @@ public class PointService {
     public PointDto createSavedPoint(SavedPointRequestDto requestDto){
         Point point = findPointByEmail(requestDto.getEmail());
         point.savePoint(pointMapper.toEntity(requestDto));
+        return pointMapper.toDto(pointRepository.save(point));
+    }
+
+    public PointDto createUsedPoint(UsedPointRequestDto requestDto){
+        Point point = findPointByEmail(requestDto.getEmail());
+        point.usePoint(pointMapper.toEntity(requestDto, orderRepository));
         return pointMapper.toDto(pointRepository.save(point));
     }
 

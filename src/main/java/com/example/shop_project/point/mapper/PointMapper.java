@@ -1,5 +1,7 @@
 package com.example.shop_project.point.mapper;
 
+import com.example.shop_project.order.entity.Order;
+import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.point.dto.*;
 import com.example.shop_project.point.entity.Point;
 import com.example.shop_project.point.entity.SavedPoint;
@@ -7,7 +9,7 @@ import com.example.shop_project.point.entity.UsedPoint;
 import com.example.shop_project.point.repository.PointRepository;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = PointRepository.class)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = OrderRepository.class)
 public interface PointMapper {
     PointDto toDto(Point point);
 
@@ -15,14 +17,14 @@ public interface PointMapper {
     SavedPoint toEntity(SavedPointRequestDto savedPointRequestDto);
     SavedPointResponseDto toResponseDto(SavedPoint savedPoint);
 
-//    @Mapping(target = "point", source = "pointId", qualifiedByName = "pointMapper")
-    UsedPoint toEntity(UsedPointRequestDto usedPointRequestDto, @Context PointRepository pointRepository);
+    @Mapping(target = "order", source = "orderNo", qualifiedByName = "orderMapper")
+    UsedPoint toEntity(UsedPointRequestDto usedPointRequestDto, @Context OrderRepository orderRepository);
     UsedPointResponseDto toResponseDto(UsedPoint usedPoint);
 
-    @Named("pointMapper")
-    default Point pointMapper(Long pointId, @Context PointRepository pointRepository){
-        if(pointId == null)
+    @Named("orderMapper")
+    default Order orderMapper(Long orderNo, @Context OrderRepository orderRepository){
+        if(orderNo == null)
             return null;
-        return pointRepository.findById(pointId).orElseThrow(() -> new IllegalArgumentException("포인트가 존재하지 않습니다."));
+        return orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
     }
 }

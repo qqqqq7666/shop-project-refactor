@@ -42,9 +42,11 @@ public class Point extends BaseEntity {
     @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UsedPoint> usedPointList = new ArrayList<>();
 
-    public void usePoint(Integer point){
-        balance -= point;
-        totalUsedPoint += point;
+    public void usePoint(UsedPoint usedPoint){
+        usedPoint.assignPointToCreate(this);
+        usedPointList.add(usedPoint);
+        balance -= usedPoint.getAmount();
+        totalUsedPoint += usedPoint.getAmount();
     }
 
     public void savePoint(SavedPoint savedPoint){

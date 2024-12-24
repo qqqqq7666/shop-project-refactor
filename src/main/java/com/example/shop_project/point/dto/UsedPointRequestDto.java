@@ -9,7 +9,7 @@ import lombok.Getter;
 @Builder
 public class UsedPointRequestDto {
     @NotNull
-    private Long pointId;
+    private String email;
     @NotNull
     private Long orderNo;
     @NotNull
