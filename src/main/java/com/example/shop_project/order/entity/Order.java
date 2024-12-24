@@ -38,6 +38,8 @@ public class Order extends BaseEntity {
     private String contact;
     @Column(nullable = false)
     private String addressee;
+    @Column(nullable = false)
+    private Boolean isPaidWithPoint;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
