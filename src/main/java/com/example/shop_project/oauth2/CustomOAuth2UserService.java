@@ -26,25 +26,25 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) 
            throws OAuth2AuthenticationException {
-        // 1) 구글에서 사용자 정보 가져오기
+        // 구글에서 사용자 정보 가져오기
         OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
 
-        // 2) 필요한 필드 파싱
+        // 필요한 필드 파싱
         String email = oAuth2User.<String>getAttribute("email");
         String name  = oAuth2User.<String>getAttribute("name");
         String sub   = oAuth2User.<String>getAttribute("sub"); // 구글 고유ID
         
-        // 3) 여기서는 DB insert 안 함!!!
-        //    그냥 SecurityContext에 인증 정보만 채움
+        // 여기서는 DB insert 안 함!!!
+        // 그냥 SecurityContext에 인증 정보만 채움
 
-        // 4) 반환할 OAuth2User의 attributes
+        // 반환할 OAuth2User의 attributes
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        // 5) 권한을 ROLE_USER 로 가정
+        // 권한을 ROLE_USER 로 가정
         return new DefaultOAuth2User(
             Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
             attributes,
-            "email" // key: "email" or "sub"
+            "email"
         );
     }
 }

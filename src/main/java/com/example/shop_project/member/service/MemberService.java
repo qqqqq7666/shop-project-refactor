@@ -120,7 +120,7 @@ public class MemberService {
                 // 2) 이미 존재하면, 필요한 경우 업데이트
                 user.setName(name);           // 이름 업데이트 예시
                 user.setProvider(Provider.GOOGLE);   // provider: GOOGLE
-                user.setProviderId(providerId);
+
                 return memberRepository.save(user);
             })
             .orElseGet(() -> {
@@ -129,7 +129,7 @@ public class MemberService {
                     .email(email)
                     .name(name)
                     .provider(Provider.GOOGLE)
-                    .providerId(providerId)
+
                     .role(Role.USER) // 일반 유저 권한
                     .build());
             });

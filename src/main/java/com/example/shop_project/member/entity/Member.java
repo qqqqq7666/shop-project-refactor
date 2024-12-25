@@ -82,14 +82,11 @@ public class Member extends BaseEntity {
     @Column(name = "withdraw", nullable = false)
     private Boolean withdraw;
     
-    // OAuth2를 사용하는 경우 provider와 providerId를 저장
+    // OAuth2를 사용하는 경우 provider 저장
     @Column(name = "provider")
     @Enumerated(EnumType.STRING)
     private Provider provider;
-    
-    @Column(name = "provider_id")
-    private String providerId;
-	
+   
 	@PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();

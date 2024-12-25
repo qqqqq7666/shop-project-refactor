@@ -57,13 +57,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
         		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
         		.oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login")             // 로그인 페이지
-                        .defaultSuccessUrl("/signup/extra")      // 로그인 성공 시 이동 URL
-                        .failureUrl("/login?error=true") // 로그인 실패 시
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
-                        )
-                    );
+        			    .loginPage("/login")
+        			    .defaultSuccessUrl("/signup/confirm") // 수정!
+        			    .failureUrl("/login?error=true")
+        			    .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+        			);
         
         return http.build();
     }
