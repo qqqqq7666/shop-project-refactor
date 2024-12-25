@@ -3,6 +3,8 @@ package com.example.shop_project.order.controller;
 import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.order.service.PaymentService;
+import com.example.shop_project.point.dto.PointDto;
+import com.example.shop_project.point.service.PointService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -17,11 +19,13 @@ import java.security.Principal;
 @Slf4j
 public class OrderViewController {
     @Autowired
-    OrderService orderService;
+    private OrderService orderService;
     @Autowired
-    MemberService memberService;
+    private MemberService memberService;
     @Autowired
-    PaymentService paymentService;
+    private PaymentService paymentService;
+    @Autowired
+    private PointService pointService;
 
     @GetMapping("/create")
     public String createOrder(){
@@ -52,7 +56,9 @@ public class OrderViewController {
     }
 
     @GetMapping("checkout")
-    public String checkout(@ModelAttribute Principal principal){
+    public String checkout(Principal principal, Model model){
+        PointDto pointDto = pointService.getPointByMember(principal.getName());
+        model.addAttribute("point", pointDto);
         return "order/checkout";
     }
 

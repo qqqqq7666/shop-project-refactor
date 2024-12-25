@@ -8,15 +8,19 @@ import com.example.shop_project.point.dto.SavedPointRequestDto;
 import com.example.shop_project.point.dto.SavedPointResponseDto;
 import com.example.shop_project.point.dto.UsedPointRequestDto;
 import com.example.shop_project.point.entity.Point;
+import com.example.shop_project.point.entity.SavedPoint;
 import com.example.shop_project.point.mapper.PointMapper;
 import com.example.shop_project.point.repository.PointRepository;
 import com.example.shop_project.point.repository.SavedPointRepository;
 import com.example.shop_project.point.repository.UsedPointRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class PointService {
     @Autowired
@@ -31,6 +35,8 @@ public class PointService {
     private PointMapper pointMapper;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     // 회원가입할 때 같이 생성
     public void createPoint(Long memberId){
@@ -47,11 +53,22 @@ public class PointService {
 
     public PointDto createSavedPoint(SavedPointRequestDto requestDto){
         Point point = findPointByEmail(requestDto.getEmail());
+        SavedPoint savedPoint = pointMapper.toEntity(requestDto);
+        try {
+            log.warn("savedPoint = {}", objectMapper.writeValueAsString(savedPoint));
+        } catch (Exception e){
+            e.getStackTrace();
+        }
         point.savePoint(pointMapper.toEntity(requestDto));
         return pointMapper.toDto(pointRepository.save(point));
     }
 
     public PointDto createUsedPoint(UsedPointRequestDto requestDto){
+        try {
+            log.warn("usedPointDto = {}", objectMapper.writeValueAsString(requestDto));
+        } catch (Exception e){
+            e.getStackTrace();
+        }
         Point point = findPointByEmail(requestDto.getEmail());
         point.usePoint(pointMapper.toEntity(requestDto, orderRepository));
         return pointMapper.toDto(pointRepository.save(point));

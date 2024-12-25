@@ -23,6 +23,7 @@ public class SavedPoint {
     @Column(nullable = false)
     private Integer savedPoint;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private SaveReason saveReason;
     @CreatedDate
     private LocalDateTime createdDate;

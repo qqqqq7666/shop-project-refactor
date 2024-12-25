@@ -137,7 +137,7 @@ function renderProduct() {
     document.getElementById("total").innerText = `${total.toLocaleString()}원`;
 }
 
-function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDto) {
+function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDto, usedPointRequestDto, isPaidWithPoint) {
     IMP.init("imp31477127");
     IMP.request_pay(payInfo,
         async function (rsp) {
@@ -154,6 +154,11 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDt
                     .then(res => {
                         if (res.ok) {
                             savePoint(savedPointRequestDto);
+                            if(isPaidWithPoint) {
+                                usePoint(usedPointRequestDto)
+                                console.log(usedPointRequestDto);
+                                console.log("포인트 사용함");
+                            }
                             console.log("결제 데이터 저장 성공");
                             localStorage.removeItem("cart")
                             const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
@@ -193,6 +198,10 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDt
 
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
+        const pointAmount = parseInt(document.getElementById("point-input").value);
+        let isPaidWithPoint = false;
+        if(pointAmount > 0)
+            isPaidWithPoint = true;
         const orderNoJson = await fetch("/api/v1/orders/recent-order-no");
         const orderNo = await orderNoJson.json() + 1;
         window.addEventListener("beforeunload", async (event) => {
@@ -294,15 +303,24 @@ async function checkout() {
             orderStatus: "NEW",
             totalPrice: total,
             orderDetailDtoList,
-            isPaidWithPoint: true
+            isPaidWithPoint
         }
 
         // 포인트 정보 객체
+
         const savedPointRequestDto = {
             email: member.email,
             saveReason: "PURCHASE",
             savedPoint: total * 0.01
-        }
+        };
+
+        const usedPointRequestDto = {
+            email: member.email,
+            orderNo: orderNo,
+            amount: pointAmount
+        };
+        console.log(isPaidWithPoint);
+        console.log(usedPointRequestDto);
 
         // 결제 정보
         let name;
@@ -315,7 +333,7 @@ async function checkout() {
             pay_method: "card",
             merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
             name,
-            amount: total,
+            amount: total - pointAmount,
             buyer_email: member.email,
             buyer_name: member.name,
             buyer_tel: member.phone, //필수 파라미터 입니다.
@@ -356,7 +374,7 @@ async function checkout() {
             .then(async (response) => {
                 if (response.ok) {
                     // 주문 성공시 결제 요청
-                    requestPay(payInfo, paymentDto, orderDetailDtoList, savedPointRequestDto)
+                    requestPay(payInfo, paymentDto, orderDetailDtoList, savedPointRequestDto, usedPointRequestDto, isPaidWithPoint)
 
                     return response.json();
 
@@ -372,13 +390,23 @@ async function checkout() {
     }
 }
 
-function savePoint(SavedPointRequestDto){
+function usePoint(usedPointRequestDto){
+    fetch("/api/v1/points/use-point", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(usedPointRequestDto)
+    })
+}
+
+function savePoint(savedPointRequestDto){
     fetch("/api/v1/points/save-point", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(SavedPointRequestDto)
+        body: JSON.stringify(savedPointRequestDto)
     })
         .then(response => {
             if(!response.ok){
