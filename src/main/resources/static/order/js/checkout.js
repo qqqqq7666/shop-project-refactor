@@ -160,6 +160,7 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDt
                                 console.log("포인트 사용함");
                             }
                             console.log("결제 데이터 저장 성공");
+                            window.removeEventListener("pagehide", checkoutFail);
                             localStorage.removeItem("cart")
                             const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
                             modal.show();
@@ -207,21 +208,7 @@ async function checkout() {
         window.addEventListener("beforeunload", async (event) => {
             event.preventDefault();
         });
-        window.addEventListener("unload", () => {
-            // fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
-            //     method: "PATCH",
-            //     body: "FAIL",
-            //     headers: {
-            //         "Content-Type": 'application/json',
-            //     },
-            //     keepalive: true,
-            // });
-            const headers = {
-                type: 'application/json',
-            };
-            const blob = new Blob([JSON.stringify("FAIL")], headers);
-            navigator.sendBeacon(`/api/v1/orders/${orderNo.toString()}/update-status`, blob);
-        })// navigator.sendBeacon(`/api/v1/orders/${orderNo.toString()}/update-status`, JSON.stringify({orderStatus}));
+        window.addEventListener("pagehide", checkoutFail.bind(orderNo));
         const orderDetailDtoList = [];
         cart.forEach(item => {
             item.option.forEach(o => {
@@ -413,6 +400,21 @@ function savePoint(savedPointRequestDto){
                 console.log("포인트 적립 안됨");
             }
         })
+}
+
+function checkoutFail(orderNo){
+    fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
+        method: "PATCH",
+        body: "FAIL",
+        headers: {
+            "Content-Type": 'application/json',
+        },
+        keepalive: true,
+    })
+        .then(response => {
+            if(response.ok)
+                return response.json();
+        });
 }
 
 document.getElementById("checkout-btn").addEventListener("click", checkout);
