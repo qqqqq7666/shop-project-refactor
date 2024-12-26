@@ -5,7 +5,7 @@ const statusButton = document.getElementsByClassName("btn");
 Array.from(statusButton).forEach(btn => {
     const orderStatus = btn.value;
     btn.addEventListener("click", () => {
-        fetch(`/api/order/${window.location.pathname.split("/").pop()}/update-status`, {
+        fetch(`/api/v1/orders/${window.location.pathname.split("/").pop()}/update-status`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

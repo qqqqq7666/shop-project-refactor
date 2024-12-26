@@ -8,6 +8,10 @@ import com.example.shop_project.order.dto.PaymentDto;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.service.OrderService;
+import com.example.shop_project.product.dto.ProductResponseDto;
+import com.example.shop_project.product.entity.Product;
+import com.example.shop_project.product.entity.ProductOption;
+import com.example.shop_project.product.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +24,15 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/v1/orders")
 @Slf4j
 public class OrderAPIController {
     @Autowired
-    OrderService orderService;
+    private OrderService orderService;
     @Autowired
-    MemberService memberService;
+    private MemberService memberService;
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/{orderNo}")
     public ResponseEntity<OrderResponseDto> getOrder(@PathVariable(name = "orderNo") Long orderNo){
@@ -77,5 +83,10 @@ public class OrderAPIController {
     public ResponseEntity<Long> getRecentOrderNo(){
         Long orderNo = orderService.getRecentOrder().getOrderNo();
         return ResponseEntity.ok(orderNo);
+    }
+
+    @GetMapping("/product-option/{productId}")
+    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId){
+        return ResponseEntity.ok(productService.getProductById(productId));
     }
 }
