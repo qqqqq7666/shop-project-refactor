@@ -35,6 +35,13 @@ function submitPartialUpdate() {
     const formData = new FormData();
     formData.append('updates', JSON.stringify(updates)); // JSON 문자열로 추가
 
+    // 기존 이미지 URL 수집
+    const existingImages = document.querySelectorAll('.prevImages');
+    existingImages.forEach((image, index) => {
+        // 이미지 URL을 FormData에 추가
+        formData.append(`existingImageUrls`, image.src);
+    });
+
     // 이미지 추가
     const imageInput = document.getElementById("images");
     if (imageInput.files.length > 0) {
@@ -54,7 +61,7 @@ function submitPartialUpdate() {
         })
         .then(data => {
             alert("상품이 성공적으로 수정되었습니다!");
-            window.location.href = "/products/manage";
+            window.location.href = "/admin/products";
         })
         .catch(error => {
             console.error("Error updating product:", error);

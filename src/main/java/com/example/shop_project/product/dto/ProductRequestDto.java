@@ -15,8 +15,8 @@ public class ProductRequestDto {
     @Size(max = 20, message = "제품 이름은 최대 20자까지 가능합니다.")
     private String productName;
 
-    @NotBlank(message = "카테고리는 필수 입력 항목입니다.")
-    private String categoryName;
+    @NotNull(message = "카테고리는 필수 입력 항목입니다.")
+    private Long categoryId;
 
     @NotBlank(message = "상세 설명은 필수 입력 항목입니다.")
     @Size(max = 100, message = "상세 설명은 최대 100자까지 가능합니다.")
@@ -27,5 +27,7 @@ public class ProductRequestDto {
 
     @NotEmpty(message = "옵션은 최소 1개 이상 입력해야 합니다.")
     private List<ProductOptionDto> options;
+
+    private String nickname;
 }
 

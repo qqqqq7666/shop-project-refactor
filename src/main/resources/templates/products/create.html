@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>상품 등록 페이지</title>
-  <link rel="stylesheet" href="/css/productCreate.css">
+  <link rel="stylesheet" href="/product/css/productCreate.css">
 </head>
 <body>
 
@@ -17,9 +17,19 @@
   </div>
 
   <div>
-    <label for="categoryName">*카테고리</label>
-    <input type="text" id="categoryName" name="categoryName" placeholder="카테고리를 입력하세요">
-    <span class="error-message" id="categoryNameError"></span>
+    <label for="mainCategory">*메인 카테고리</label>
+    <select id="mainCategory" name="mainCategory">
+      <option value="">메인 카테고리를 선택하세요</option>
+    </select>
+    <span class="error-message" id="mainCategoryError"></span>
+  </div>
+
+  <div>
+    <label for="subCategory">*서브 카테고리</label>
+    <select id="subCategory" name="subCategory" disabled>
+      <option value="">서브 카테고리를 선택하세요</option>
+    </select>
+    <span class="error-message" id="subCategoryError"></span>
   </div>
 
   <div id="sizeColorStockContainer">
@@ -70,8 +80,8 @@
     <button type="button" class="cancel-button" onclick="history.back()">취소</button>
   </div>
 </form>
-<script src="/js/productCreate.js"></script>
-<script src="/js/productCreateValidation.js"></script>
+<script src="/product/js/productCreate.js"></script>
+<script src="/product/js/productCreateValidation.js"></script>
 
 </body>
 </html>

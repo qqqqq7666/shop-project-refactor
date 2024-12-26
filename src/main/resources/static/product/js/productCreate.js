@@ -1,3 +1,51 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const mainCategorySelect = document.getElementById("mainCategory");
+    const subCategorySelect = document.getElementById("subCategory");
+
+    // 서버에서 카테고리 데이터 가져오기
+    fetch("/categories/api")
+        .then((response) => response.json())
+        .then((categories) => {
+            // 메인 카테고리 추가
+            categories.forEach((category) => {
+                const option = document.createElement("option");
+                option.value = category.categoryId;
+                option.textContent = category.categoryName;
+                mainCategorySelect.appendChild(option);
+            });
+
+            // 메인 카테고리 선택 시 서브 카테고리 필터링
+            mainCategorySelect.addEventListener("change", () => {
+                const selectedCategoryId = parseInt(mainCategorySelect.value);
+                subCategorySelect.innerHTML = `<option value="">서브 카테고리를 선택하세요</option>`;
+                subCategorySelect.disabled = true;
+
+                if (selectedCategoryId) {
+                    // 선택된 메인 카테고리의 서브 카테고리 추가
+                    const selectedCategory = categories.find(
+                        (category) => category.categoryId === selectedCategoryId
+                    );
+                    if (selectedCategory && selectedCategory.subCategories) {
+                        selectedCategory.subCategories.forEach((subCategory) => {
+                            const option = document.createElement("option");
+                            option.value = subCategory.categoryId;
+                            option.textContent = subCategory.categoryName;
+                            subCategorySelect.appendChild(option);
+                        });
+
+                        subCategorySelect.disabled = false;
+                    }
+                }
+            });
+        })
+        .catch((error) => {
+            console.error("Error loading categories:", error);
+            alert("카테고리를 불러오는 중 오류가 발생했습니다.");
+        });
+});
+
+
+
 document.getElementById('addSizeColorStock').addEventListener('click', function () {
     const container = document.getElementById('sizeColorStockContainer');
 
@@ -140,7 +188,7 @@ document.getElementById('productForm').addEventListener('submit', function (even
 
     // ProductRequestDto 생성
     const productRequestDto = {
-        categoryName: document.getElementById('categoryName').value,
+        categoryId: document.getElementById('subCategory').value, // 선택한 서브 카테고리 ID
         productName: document.getElementById('productName').value,
         description: document.getElementById('description').value,
         price : document.getElementById('price').value,

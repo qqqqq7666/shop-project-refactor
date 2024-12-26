@@ -21,8 +21,8 @@ public class Product {
     @Column(name = "product_id")
     private Long productId;
 
-    @Column(nullable = false)
-    private String categoryName;
+    @JoinColumn(name = "category_id", nullable = false)
+    private Long categoryId;
 
     @NotBlank
     @Size(max = 20, message = "상품명은 최대 20자까지 가능합니다.")
@@ -56,5 +56,8 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();
+
+    @JoinColumn(name = "nickname")
+    private String nickname;
 
 }
