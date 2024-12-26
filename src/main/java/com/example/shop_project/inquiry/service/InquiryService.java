@@ -54,6 +54,7 @@ public class InquiryService {
                 inquiry.setTitle("비밀글입니다");
                 inquiry.setContent("비밀글입니다");
             }
+            inquiry.setCommentCount(inquiry.getComments().size());
         }
 
         return inquiries;

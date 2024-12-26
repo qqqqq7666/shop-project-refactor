@@ -47,4 +47,7 @@ public class Inquiry {
 
     @OneToMany(mappedBy = "inquiry", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    @Transient
+    private int commentCount; // 댓글 개수
 }
