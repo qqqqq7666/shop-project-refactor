@@ -153,18 +153,12 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDt
                 })
                     .then(res => {
                         if (res.ok) {
-                            savePoint(savedPointRequestDto);
-                            if(isPaidWithPoint) {
-                                usePoint(usedPointRequestDto)
-                                console.log(usedPointRequestDto);
-                                console.log("포인트 사용함");
-                            }
+                            updatePoint(savedPointRequestDto, usedPointRequestDto, isPaidWithPoint)
                             console.log("결제 데이터 저장 성공");
                             window.removeEventListener("pagehide", checkoutFail);
                             localStorage.removeItem("cart")
                             const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
                             modal.show();
-                            return res.json();
                         }
                     })
             } else {
@@ -199,10 +193,11 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDt
 
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
-        const pointAmount = parseInt(document.getElementById("point-input").value);
+        const useAmount = parseInt(document.getElementById("point-input").value);
         let isPaidWithPoint = false;
-        if(pointAmount > 0)
+        if(useAmount > 0) {
             isPaidWithPoint = true;
+        }
         const orderNoJson = await fetch("/api/v1/orders/recent-order-no");
         const orderNo = await orderNoJson.json() + 1;
         window.addEventListener("beforeunload", async (event) => {
@@ -296,15 +291,17 @@ async function checkout() {
         // 포인트 정보 객체
 
         const savedPointRequestDto = {
+            orderNo,
             email: member.email,
-            saveReason: "PURCHASE",
-            savedPoint: total * 0.01
+            transactionType: "PURCHASE",
+            amount: total * 0.01,
         };
 
         const usedPointRequestDto = {
+            orderNo,
             email: member.email,
-            orderNo: orderNo,
-            amount: pointAmount
+            transactionType: "USED",
+            amount: useAmount * -1
         };
         console.log(isPaidWithPoint);
         console.log(usedPointRequestDto);
@@ -320,7 +317,7 @@ async function checkout() {
             pay_method: "card",
             merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
             name,
-            amount: total - pointAmount,
+            amount: total - useAmount,
             buyer_email: member.email,
             buyer_name: member.name,
             buyer_tel: member.phone, //필수 파라미터 입니다.
@@ -347,7 +344,7 @@ async function checkout() {
         const paymentDto = {
             memberName: member.name,
             payMethod,
-            amount: total - pointAmount,
+            amount: total - useAmount,
             payStatus: "SUCCESS",
         }
 
@@ -377,27 +374,48 @@ async function checkout() {
     }
 }
 
-function usePoint(usedPointRequestDto){
-    fetch("/api/v1/points/use-point", {
+function usePoint(pointHistoryRequestDto){
+    fetch("/api/v1/points/use-point-history", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(usedPointRequestDto)
+        body: JSON.stringify(pointHistoryRequestDto)
     })
 }
 
-function savePoint(savedPointRequestDto){
-    fetch("/api/v1/points/save-point", {
+function savePoint(pointHistoryRequestDto){
+    fetch("/api/v1/points/save-point-history", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(savedPointRequestDto)
+        body: JSON.stringify(pointHistoryRequestDto)
     })
         .then(response => {
             if(!response.ok){
                 console.log("포인트 적립 안됨");
+            }
+        })
+}
+
+async function updatePoint(savedPointRequestDto, usedPointRequestDto, isPaidWithPoint){
+    fetch("/api/v1/points/point-history", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            savedPointRequestDto,
+            usedPointRequestDto,
+            isPaidWithPoint
+        })
+    })
+        .then(response => {
+            if(response.ok){
+                console.log("포인트 적립, 사용 성공")
+                console.log(savedPointRequestDto);
+                console.log(usedPointRequestDto);
             }
         })
 }

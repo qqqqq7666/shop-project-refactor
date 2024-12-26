@@ -24,6 +24,7 @@ public class PointHistory {
     @Column(nullable = false)
     private Integer amount;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
     @CreatedDate
@@ -33,7 +34,7 @@ public class PointHistory {
     @JoinColumn(name = "point_id", nullable = false)
     private Point point;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "order_no")
     private Order order;
 

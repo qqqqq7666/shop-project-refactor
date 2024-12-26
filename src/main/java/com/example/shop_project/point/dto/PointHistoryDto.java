@@ -1,17 +1,16 @@
 package com.example.shop_project.point.dto;
 
-import com.example.shop_project.point.entity.SaveReason;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class SavedPointRequestDto {
+public class PointHistoryDto {
     @NotNull
-    private String email;
+    private PointHistoryRequestDto savedPointRequestDto;
     @NotNull
-    private SaveReason saveReason;
+    private PointHistoryRequestDto usedPointRequestDto;
     @NotNull
-    private Integer savedPoint;
+    private Boolean isPaidWithPoint;
 }

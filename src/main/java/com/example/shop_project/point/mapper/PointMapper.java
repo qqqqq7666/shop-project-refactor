@@ -5,9 +5,6 @@ import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.point.dto.*;
 import com.example.shop_project.point.entity.Point;
 import com.example.shop_project.point.entity.PointHistory;
-import com.example.shop_project.point.entity.SavedPoint;
-import com.example.shop_project.point.entity.UsedPoint;
-import com.example.shop_project.point.repository.PointRepository;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -16,16 +13,8 @@ import java.util.List;
 public interface PointMapper {
     PointDto toDto(Point point);
 
-//    @Mapping(target = "point", source = "pointId", qualifiedByName = "pointMapper")
-//    SavedPoint toEntity(SavedPointRequestDto savedPointRequestDto);
-//    SavedPointResponseDto toResponseDto(SavedPoint savedPoint);
-//
-//    @Mapping(target = "order", source = "orderNo", qualifiedByName = "orderMapper")
-//    UsedPoint toEntity(UsedPointRequestDto usedPointRequestDto, @Context OrderRepository orderRepository);
-//    UsedPointResponseDto toResponseDto(UsedPoint usedPoint);
-
     @Mapping(target = "order", source = "orderNo", qualifiedByName = "orderMapper")
-    PointHistory toEntity(PointHistoryRequestDto pointHistoryRequestDto, OrderRepository orderRepository);
+    PointHistory toEntity(PointHistoryRequestDto pointHistoryRequestDto, @Context OrderRepository orderRepository);
     List<PointHistoryResponseDto> toResponseDto(List<PointHistory> pointHistoryList);
 
     @Named("orderMapper")

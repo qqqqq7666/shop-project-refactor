@@ -41,7 +41,7 @@ public class Point extends BaseEntity {
     public void updatePoint(PointHistory pointHistory){
         pointHistory.assignPointToCreate(this);
         balance += pointHistory.getAmount();
-        if(pointHistory.getTransactionType() == TransactionType.USE)
+        if(pointHistory.getTransactionType() == TransactionType.USED)
             totalUsedPoint -= pointHistory.getAmount();
         else
             totalSavedPoint += pointHistory.getAmount();

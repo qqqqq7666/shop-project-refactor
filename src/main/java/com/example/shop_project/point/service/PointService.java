@@ -3,17 +3,15 @@ package com.example.shop_project.point.service;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.order.repository.OrderRepository;
-import com.example.shop_project.point.dto.*;
+import com.example.shop_project.point.dto.PointDto;
+import com.example.shop_project.point.dto.PointHistoryDto;
 import com.example.shop_project.point.entity.Point;
-import com.example.shop_project.point.entity.SavedPoint;
 import com.example.shop_project.point.mapper.PointMapper;
 import com.example.shop_project.point.repository.PointRepository;
-import com.example.shop_project.point.repository.SavedPointRepository;
-import com.example.shop_project.point.repository.UsedPointRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -21,17 +19,11 @@ public class PointService {
     @Autowired
     private PointRepository pointRepository;
     @Autowired
-    private SavedPointRepository savedPointRepository;
-    @Autowired
-    private UsedPointRepository usedPointRepository;
-    @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private PointMapper pointMapper;
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     // 회원가입할 때 같이 생성
     public void createPoint(Long memberId){
@@ -46,34 +38,15 @@ public class PointService {
         return pointMapper.toDto(point);
     }
 
-//    public PointDto createSavedPoint(SavedPointRequestDto requestDto){
-//        Point point = findPointByEmail(requestDto.getEmail());
-//        SavedPoint savedPoint = pointMapper.toEntity(requestDto);
-//        try {
-//            log.warn("savedPoint = {}", objectMapper.writeValueAsString(savedPoint));
-//        } catch (Exception e){
-//            e.getStackTrace();
-//        }
-//        point.savePoint(pointMapper.toEntity(requestDto));
-//        return pointMapper.toDto(pointRepository.save(point));
-//    }
-//
-//    public PointDto createUsedPoint(UsedPointRequestDto requestDto){
-//        try {
-//            log.warn("usedPointDto = {}", objectMapper.writeValueAsString(requestDto));
-//        } catch (Exception e){
-//            e.getStackTrace();
-//        }
-//        Point point = findPointByEmail(requestDto.getEmail());
-//        point.usePoint(pointMapper.toEntity(requestDto, orderRepository));
-//        return pointMapper.toDto(pointRepository.save(point));
-//    }
+    @Transactional
+    public PointDto createPointHistory(PointHistoryDto pointHistoryDto){
+        Point point = findPointByEmail(pointHistoryDto.getSavedPointRequestDto().getEmail());
+        point.updatePoint(pointMapper.toEntity(pointHistoryDto.getSavedPointRequestDto(), orderRepository));
 
-    public PointDto createPointHistory(PointHistoryRequestDto pointHistoryRequestDto){
-        Point point = findPointByEmail(pointHistoryRequestDto.getEmail());
-        point.updatePoint(pointMapper.toEntity(pointHistoryRequestDto, orderRepository));
+        if(pointHistoryDto.getIsPaidWithPoint())
+            point.updatePoint(pointMapper.toEntity(pointHistoryDto.getUsedPointRequestDto(), orderRepository));
 
-        return pointMapper.toDto(point);
+        return pointMapper.toDto(pointRepository.save(point));
     }
 
     public Point findPointByEmail(String email){
