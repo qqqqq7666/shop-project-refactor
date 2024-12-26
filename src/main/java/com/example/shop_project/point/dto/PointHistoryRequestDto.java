@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class PointHistoryDto {
+public class PointHistoryRequestDto {
     @NotNull
     private String email;
     @NotNull

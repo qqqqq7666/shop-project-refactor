@@ -23,5 +23,5 @@ public class PointDto {
     @Positive
     private Integer totalUsedPoint;
     @NotNull
-    private List<PointHistory> pointHistoryList;
+    private List<PointHistoryResponseDto> pointHistoryList;
 }
