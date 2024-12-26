@@ -44,7 +44,7 @@ public class MemberAPIControllerTest {
 	    when(memberRepository.existsByEmail(existingEmail)).thenReturn(true);
 
 	    // then
-	    mockMvc.perform(get("/api/member/check-email")
+	    mockMvc.perform(get("/api/v1/members/check-email")
 	            .param("email", existingEmail)) 
 	            .andExpect(status().isConflict()) 
 	            .andExpect(jsonPath("$.exists").value(true)); 
@@ -59,7 +59,7 @@ public class MemberAPIControllerTest {
 	    when(memberRepository.existsByEmail(nonExistingEmail)).thenReturn(false);
 
 	    // then
-	    mockMvc.perform(get("/api/member/check-email")
+	    mockMvc.perform(get("/api/v1/members/check-email")
 	            .param("email", nonExistingEmail)) 
 	            .andExpect(status().isOk()) 
 	            .andExpect(jsonPath("$.exists").value(false)); 
@@ -74,7 +74,7 @@ public class MemberAPIControllerTest {
         when(memberRepository.existsByNickname(nickname)).thenReturn(true);
 
         // then
-        mockMvc.perform(get("/api/member/check-nickname")
+        mockMvc.perform(get("/api/v1/members/check-nickname")
                 .param("nickname", nickname))
                 .andExpect(status().isConflict()) 
                 .andExpect(jsonPath("$.exists").value(true)); 
@@ -89,7 +89,7 @@ public class MemberAPIControllerTest {
         when(memberRepository.existsByNickname(nickname)).thenReturn(false);
 
         // then
-        mockMvc.perform(get("/api/member/check-nickname")
+        mockMvc.perform(get("/api/v1/members/check-nickname")
                 .param("nickname", nickname))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.exists").value(false));
@@ -102,7 +102,7 @@ public class MemberAPIControllerTest {
         String currentNickname = "현재닉네임";
 
         // then
-        mockMvc.perform(get("/api/member/check-nickname")
+        mockMvc.perform(get("/api/v1/members/check-nickname")
                 .param("nickname", nickname)
                 .param("currentNickname", currentNickname))
                 .andExpect(status().isOk())
@@ -117,7 +117,7 @@ public class MemberAPIControllerTest {
         when(memberRepository.existsByNickname(nickname)).thenReturn(true);
 
         // then
-        mockMvc.perform(get("/api/member/check-nickname")
+        mockMvc.perform(get("/api/v1/members/check-nickname")
                 .param("nickname", nickname)
                 .param("currentNickname", currentNickname))
                 .andExpect(status().isConflict()) 

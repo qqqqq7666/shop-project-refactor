@@ -310,4 +310,8 @@ public class ProductService {
                 .map(image -> "http://localhost:8080" + image.getImageUrl()) // 각 파일 이름에 URL 경로 추가
                 .collect(Collectors.toList());
     }
+
+    public ProductResponseDto getProductById(Long productId){
+        return mapToResponseDto(productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다.")));
+    }
 }
