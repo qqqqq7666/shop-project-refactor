@@ -4,7 +4,7 @@ function onRoleChange(selectElement) {
     const previousRole = selectElement.getAttribute("data-previous-value");
 
     if (confirm(`권한을 '${newRole}'(으)로 변경하시겠습니까?`)) {
-        fetch(`/api/admin/members/role/${memberId}`, {
+        fetch(`/api/v1/admin/members/role/${memberId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -36,7 +36,7 @@ document.querySelectorAll(".delete-member-btn").forEach(button => {
         const memberId = this.getAttribute("data-id");
 
         if (confirm("탈퇴 처리하시겠습니까?")) {
-            fetch(`/api/admin/members/withdraw/${memberId}`, {
+            fetch(`/api/v1/admin/members/withdraw/${memberId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"

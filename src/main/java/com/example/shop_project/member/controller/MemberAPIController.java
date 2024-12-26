@@ -5,20 +5,29 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.shop_project.jwt.dto.JwtTokenDto;
+import com.example.shop_project.jwt.dto.JwtTokenResponse;
 import com.example.shop_project.member.repository.MemberRepository;
+import com.example.shop_project.member.service.MemberService;
+import com.example.shop_project.oauth2.GoogleUserInfoDto;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/member")
-public class MemberRestController {
+@RequestMapping("/api/v1/members")
+public class MemberAPIController {
 	private final MemberRepository memberRepository;
+	private final MemberService memberService;
 	
 	@GetMapping("/check-email")
 	public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam("email") String email) {
@@ -50,4 +59,5 @@ public class MemberRestController {
             return ResponseEntity.ok(response);
         }
     }
+	
 }

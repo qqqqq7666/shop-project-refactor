@@ -1,0 +1,79 @@
+/* 전체 레이아웃 */
+.mypage-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 상단 정보 */
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-info img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+
+.profile-text {
+    font-size: 1.5rem;
+}
+
+.membership {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.membership span {
+    font-weight: normal;
+    font-size: 0.9rem;
+}
+
+.profile-button {
+    display: flex;
+    align-items: center;
+}
+
+.profile-button button {
+    background-color: #6f42c1;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+/* 정보 테이블 */
+.info-table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+.info-table th, .info-table td {
+    border: 1px solid #ddd;
+    padding: 15px;
+}
+
+.info-table th {
+    background-color: #f4f4f4;
+}
+
+.info-table td {
+    font-size: 1.2rem;
+    color: #6c757d;
+}

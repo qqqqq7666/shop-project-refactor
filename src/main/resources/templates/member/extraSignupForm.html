@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>추가 정보 입력</title>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <link rel="stylesheet" href="/member/css/joinStyle.css">
+</head>
+<body>
+<div class="register-container">
+    <div class="register-header">추가 정보 입력</div>
+
+    <form th:action="@{/signup/extra}" method="post">
+        <!-- 이메일 (readonly) -->
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="text" id="email" name="email" th:value="${email}" readonly />
+        </div>
+
+        <!-- 이름 (readonly) -->
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" th:value="${name}" readonly />
+        </div>
+
+        <!-- 닉네임 입력 -->
+        <div class="form-group">
+            <label for="nickname">닉네임</label>
+            <div class="form-group-inline">
+                <input type="text" id="nickname" name="nickname" maxlength="20" required>
+                <button type="button" class="check-btn" id="nicknameCheckBtn">중복확인</button>
+            </div>
+            <span id="nicknameError" class="form-message"></span>
+        </div>
+
+        <!-- 전화번호 -->
+        <div class="form-group">
+            <label for="phone">전화번호</label>
+            <input type="text" id="phone" name="phone" required>
+            <span id="phoneError" class="form-message"></span>
+        </div>
+
+        <!-- 우편번호, 주소 -->
+        <div class="form-group">
+            <label for="postNo">우편번호</label>
+            <div class="form-group-inline">
+                <input type="text" id="postNo" name="postNo" readonly>
+                <button type="button" class="btn-find" onclick="openPostcodePopup()">우편번호 찾기</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="address">주소</label>
+            <input type="text" id="address" name="address" readonly>
+        </div>
+        <div class="form-group">
+            <label for="addressDetail">상세 주소</label>
+            <input type="text" id="addressDetail" name="addressDetail">
+        </div>
+
+        <button type="submit" class="btn-purple">가입 완료</button>
+    </form>
+</div>
+
+<script type="module" src="/member/js/extraSignupCheck.js"></script>
+<script src="/member/js/joinPostInput.js"></script>
+</body>
+</html>

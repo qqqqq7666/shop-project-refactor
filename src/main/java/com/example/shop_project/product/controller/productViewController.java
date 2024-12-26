@@ -64,7 +64,7 @@ public class productViewController {
     }
 
     @GetMapping("/detail/{productId}")
-    public String getProductDetail(@PathVariable Long productId, Model model) {
+    public String getProductDetail(@PathVariable("productId") Long productId, Model model) {
         // 상품 정보를 조회
         ProductResponseDto product = productService.getProductDetails(productId);
 

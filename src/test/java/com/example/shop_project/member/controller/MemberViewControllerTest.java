@@ -37,12 +37,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import static org.mockito.Mockito.*;
 
-public class MemberControllerTest {
+public class MemberViewControllerTest {
 	@Autowired
     private MockMvc mockMvc;
 	
 	@InjectMocks
-    private MemberController memberController;
+    private MemberViewController memberController;
 	
     private MemberService memberService = mock(MemberService.class);
     private MemberRepository memberRepository = mock(MemberRepository.class);

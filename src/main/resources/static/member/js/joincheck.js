@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        return;
 	    }
 		
-        fetch('/api/member/check-email?email=' + email)
+        fetch('/api/v1/members/check-email?email=' + email)
 		.then(response => {
             if (response.status === 409) {
                 emailErrorElement.textContent = '이미 사용중인 이메일입니다.';
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        return;
 	    }
 		
-        fetch('/api/member/check-nickname?nickname=' + nickname)
+        fetch('/api/v1/members/check-nickname?nickname=' + nickname)
         .then(response => response.json())
         .then(data => {
             if (data.exists) {

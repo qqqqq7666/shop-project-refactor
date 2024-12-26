@@ -21,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/admin/members")
-public class AdminMemberRestController {
+@RequestMapping("/api/v1/admin/members")
+public class AdminMemberAPIController {
 	private final MemberRepository memberRepository;
 	
 	@PutMapping(value = "/role/{id}", produces = MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8")

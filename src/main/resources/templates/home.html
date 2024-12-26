@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<button onclick="location.href = '/login'">로그인</button>
+<button onclick="location.href = '/mypage'">마이페이지</button>
+<button onclick="location.href = '/admin'">관리자페이지</button>
+<button onclick="location.href = '/products/productList'">상품목록</button>
+<button onclick="location.href = '/order/cart'">장바구니</button>
 
-<main layout:fragment="content">
-    <button onclick="location.href = '/login'">로그인</button>
-    <button onclick="location.href = '/mypage'">마이페이지</button>
-    <button onclick="location.href = '/admin'">관리자페이지</button>
-    <button onclick="location.href = '/products/productList'">상품목록</button>
-    <button onclick="location.href = '/order/cart'">장바구니</button>
-    <button onclick="location.href = '/mypage'">마이페이지</button>
-</main>
+<!-- 임시 로그아웃 버튼 -->
+<button onclick="logout()">로그아웃</button>
+<script src="/member/js/logout.js"></script>
 </body>
 </html>

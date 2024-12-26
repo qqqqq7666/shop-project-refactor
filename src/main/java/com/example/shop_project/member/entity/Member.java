@@ -5,6 +5,7 @@ import org.hibernate.annotations.processing.Pattern;
 
 import com.example.shop_project.BaseEntity;
 import com.example.shop_project.member.Membership;
+import com.example.shop_project.member.Provider;
 import com.example.shop_project.member.Role;
 
 import jakarta.persistence.Column;
@@ -41,17 +42,17 @@ public class Member extends BaseEntity {
 	
 	@Column(name = "name", nullable = false)
 	private String name;
-	
+	 
 	@Column(name = "phone", nullable = false)
 	private String phone;
 	
-	@Column(name = "post_no", nullable = false)
+	@Column(name = "post_no", nullable = true)
 	private String postNo;
 	
-	@Column(name = "address", nullable = false)
+	@Column(name = "address", nullable = true)
 	private String address;
 
-	@Column(name = "address_detail", nullable = false)
+	@Column(name = "address_detail", nullable = true)
 	private String addressDetail;
 	
 	@Column(name = "nickname", nullable = false)
@@ -80,7 +81,12 @@ public class Member extends BaseEntity {
     
     @Column(name = "withdraw", nullable = false)
     private Boolean withdraw;
-	
+    
+    // OAuth2를 사용하는 경우 provider 저장
+    @Column(name = "provider")
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+   
 	@PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
@@ -94,6 +100,9 @@ public class Member extends BaseEntity {
         
         if (this.membership == null) 
             this.membership = Membership.BRONZE;
+        
+        if (this.provider == null) 
+            this.provider = Provider.NONE;
         
         withdraw = false;
     }

@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/admin/members")
 @RequiredArgsConstructor
-public class AdminMemberController {
+public class AdminMemberViewController {
 	 private final MemberRepository memberRepository;
 	
 	
