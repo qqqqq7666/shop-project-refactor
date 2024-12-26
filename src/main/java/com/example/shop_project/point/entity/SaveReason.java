@@ -1,7 +1,7 @@
 package com.example.shop_project.point.entity;
 
 public enum SaveReason {
-    MONTHLY_GIVE("매월 적립 혜택"), REFUND("주문 취소"), PURCHASE("구매 혜택"), RATE("리뷰 혜택");
+    MONTHLY_GIVE("매월 적립 혜택"), REFUND("주문 취소"), PURCHASE("구매 적립"), RATE("리뷰 적립");
 
     private final String value;
 

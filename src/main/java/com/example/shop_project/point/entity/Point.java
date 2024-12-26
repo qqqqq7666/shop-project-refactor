@@ -3,7 +3,6 @@ package com.example.shop_project.point.entity;
 import com.example.shop_project.BaseEntity;
 import com.example.shop_project.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -37,22 +36,35 @@ public class Point extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SavedPoint> savedPointList = new ArrayList<>();
+    private List<PointHistory> pointHistoryList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UsedPoint> usedPointList = new ArrayList<>();
-
-    public void usePoint(UsedPoint usedPoint){
-        usedPoint.assignPointToCreate(this);
-        usedPointList.add(usedPoint);
-        balance -= usedPoint.getAmount();
-        totalUsedPoint += usedPoint.getAmount();
+    public void updatePoint(PointHistory pointHistory){
+        pointHistory.assignPointToCreate(this);
+        balance += pointHistory.getAmount();
+        if(pointHistory.getTransactionType() == TransactionType.USE)
+            totalUsedPoint -= pointHistory.getAmount();
+        else
+            totalSavedPoint += pointHistory.getAmount();
+        pointHistoryList.add(pointHistory);
     }
 
-    public void savePoint(SavedPoint savedPoint){
-        savedPoint.assignPointToCreate(this);
-        savedPointList.add(savedPoint);
-        balance += savedPoint.getSavedPoint();
-        totalSavedPoint += savedPoint.getSavedPoint();
-    }
+//    @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<SavedPoint> savedPointList = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<UsedPoint> usedPointList = new ArrayList<>();
+
+//    public void usePoint(UsedPoint usedPoint){
+//        usedPoint.assignPointToCreate(this);
+//        usedPointList.add(usedPoint);
+//        balance -= usedPoint.getAmount();
+//        totalUsedPoint += usedPoint.getAmount();
+//    }
+//
+//    public void savePoint(SavedPoint savedPoint){
+//        savedPoint.assignPointToCreate(this);
+//        savedPointList.add(savedPoint);
+//        balance += savedPoint.getSavedPoint();
+//        totalSavedPoint += savedPoint.getSavedPoint();
+//    }
 }

@@ -347,7 +347,7 @@ async function checkout() {
         const paymentDto = {
             memberName: member.name,
             payMethod,
-            amount: total,
+            amount: total - pointAmount,
             payStatus: "SUCCESS",
         }
 
