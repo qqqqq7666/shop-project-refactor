@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.shop_project.jwt.JwtProviderImpl;
 import com.example.shop_project.member.Provider;
 import com.example.shop_project.member.Role;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.member.service.MemberService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -25,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class ExtraSignupViewController {
 
     private final MemberRepository memberRepository;
+    private final JwtProviderImpl jwtProvider;
 
     @GetMapping("/confirm")
     public String confirmSignup(
@@ -77,7 +81,8 @@ public class ExtraSignupViewController {
         @RequestParam(name="phone") String phone,
         @RequestParam(name="address") String address,
         @RequestParam(name="addressDetail") String addressDetail,
-        @RequestParam(name="postNo") String postNo
+        @RequestParam(name="postNo") String postNo,
+        HttpServletResponse response
     ) {
         if (principal == null) {
             return "redirect:/login?error=noPrincipal";
@@ -107,6 +112,26 @@ public class ExtraSignupViewController {
         // DB insert
         memberRepository.save(member);
 
+     // AccessToken 및 RefreshToken 생성
+        String accessToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole(), null).getToken();
+        String refreshToken = jwtProvider.createRefreshToken(member.getEmail(), member.getRole(), null).getToken();
+
+        // RefreshToken 쿠키에 저장
+        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(false); // HTTPS 사용 시
+        refreshCookie.setPath("/");
+        refreshCookie.setMaxAge((int) (jwtProvider.getRefreshExpires() / 1000)); // 밀리초를 초로 변환
+        response.addCookie(refreshCookie);
+
+        // AccessToken 쿠키에 저장
+        Cookie accessCookie = new Cookie("accessToken", accessToken);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(false); // HTTPS 사용 시
+        accessCookie.setPath("/");
+        accessCookie.setMaxAge((int) (jwtProvider.getAccessExpires() / 1000)); // 밀리초를 초로 변환
+        response.addCookie(accessCookie);
+        
         // 가입 완료 후 /으로 이동
         return "redirect:/";
     }

@@ -25,7 +25,9 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 	private final JwtFilter jwtFilter;
 	private final CustomOAuth2UserService customOAuth2UserService;
-
+	private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+	private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -58,10 +60,18 @@ public class SecurityConfig {
         		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
         		.oauth2Login(oauth2 -> oauth2
         			    .loginPage("/login")
-        			    .defaultSuccessUrl("/signup/confirm") // 수정!
+        			    //.defaultSuccessUrl("/signup/confirm") 
+        			    .successHandler(customAuthenticationSuccessHandler)
         			    .failureUrl("/login?error=true")
         			    .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-        			);
+        			)
+		        .logout(logout -> logout
+		                .logoutUrl("/logout")
+		                .logoutSuccessHandler(customLogoutSuccessHandler) 
+		                .deleteCookies("accessToken", "refreshToken", "JSESSIONID") // 관련 쿠키 삭제
+		                .invalidateHttpSession(true)
+		                .permitAll()
+		          );
         
         return http.build();
     }

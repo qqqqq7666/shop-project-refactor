@@ -14,15 +14,17 @@ import org.springframework.stereotype.Service;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
+import com.example.shop_project.jwt.JwtProvider;
 import com.example.shop_project.member.Provider;
 import com.example.shop_project.member.Role;
 import com.example.shop_project.member.service.MemberService;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-    
+	private final JwtProvider jwtProvider;
+	
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) 
            throws OAuth2AuthenticationException {

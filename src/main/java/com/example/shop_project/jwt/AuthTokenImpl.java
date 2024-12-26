@@ -71,7 +71,7 @@ public class AuthTokenImpl implements AuthToken<Claims> {
         try {
             return Jwts
                     .parserBuilder()
-                    .setSigningKey(key) // 🔑 key를 직접 사용 (HMAC 키는 .getEncoded() 필요 없음)
+                    .setSigningKey(key) 
                     .build()
                     .parseClaimsJws(token)
                     .getBody();

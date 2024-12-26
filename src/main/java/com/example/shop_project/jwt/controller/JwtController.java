@@ -63,7 +63,6 @@ public class JwtController {
     
     @PostMapping("/jwt-logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        log.info("🔑 로그아웃 요청 시작");
 
         Cookie accessTokenCookie = new Cookie("accessToken", null);
         accessTokenCookie.setMaxAge(0);
@@ -80,10 +79,7 @@ public class JwtController {
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 
-        log.info("✅ AccessToken 및 RefreshToken 쿠키 삭제 요청 완료");
-
         SecurityContextHolder.clearContext();
-        log.info("✅ SecurityContext 초기화 완료");
 
         return ResponseEntity.ok("로그아웃 성공");
     }

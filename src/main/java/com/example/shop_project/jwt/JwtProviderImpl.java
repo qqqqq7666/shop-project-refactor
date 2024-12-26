@@ -141,4 +141,12 @@ public class JwtProviderImpl implements JwtProvider<AuthTokenImpl> {
             new Date(System.currentTimeMillis() + refreshExpires)
         );
     }
+    
+    public long getAccessExpires() {
+        return accessExpires;
+    }
+
+    public long getRefreshExpires() {
+        return refreshExpires;
+    }
 }
