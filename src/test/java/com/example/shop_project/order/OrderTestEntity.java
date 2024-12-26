@@ -1,6 +1,7 @@
 package com.example.shop_project.order;
 
 import com.example.shop_project.member.Membership;
+import com.example.shop_project.member.Provider;
 import com.example.shop_project.member.Role;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.dto.OrderDetailDto;
@@ -20,6 +21,43 @@ import java.util.Locale;
 
 public class OrderTestEntity {
     Order order(){
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        OrderDetail orderDetail = OrderDetail.builder()
+                .orderDetailId(1L)
+                .price(3000L)
+                .product(product())
+                .quantity(3000L)
+                .build();
+        orderDetailList.add(orderDetail);
+        Order order = Order.builder()
+                .orderNo(1L)
+                .totalPrice(3000L)
+                .postNo("12345")
+                .requirement("test 요청사항")
+                .orderStatus(OrderStatus.NEW)
+                .address("test 주소")
+                .member(member())
+                .addressDetail("test addressDetail")
+                .contact("test contact")
+                .addressee("test addressee")
+                .createdDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
+                .orderDetailList(orderDetailList)
+                .build();
+        order.assignOrderToOrderDetail();
+        return order;
+    }
+
+    Order anotherOrder(){
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        OrderDetail orderDetail = OrderDetail.builder()
+                .orderDetailId(1L)
+                .order(order())
+                .price(3000L)
+                .product(product())
+                .quantity(3000L)
+                .build();
+        orderDetailList.add(orderDetail);
         return Order.builder()
                 .orderNo(1L)
                 .totalPrice(3000L)
@@ -33,6 +71,7 @@ public class OrderTestEntity {
                 .addressee("test addressee")
                 .createdDate(LocalDateTime.now())
                 .updatedDate(LocalDateTime.now())
+                .orderDetailList(orderDetailList)
                 .build();
     }
 
@@ -47,9 +86,10 @@ public class OrderTestEntity {
                 .address("test 주소")
                 .member(member())
                 .addressDetail("test addressDetail")
-                .detailDtoList(detailDtoList)
+                .orderDetailDtoList(detailDtoList)
                 .contact("test contact")
                 .addressee("test addressee")
+                .isPaidWithPoint(false)
                 .build();
     }
 
@@ -72,12 +112,13 @@ public class OrderTestEntity {
     OrderDetailDto detailDto(){
         return OrderDetailDto.builder()
                 .price(3000L)
-                .productId(1L)
+                .productId(2L)
                 .quantity(1L)
                 .build();
     }
 
     OrderDetail orderDetail(){
+        Order order = order();
         return OrderDetail.builder()
                 .orderDetailId(1L)
                 .order(order())
@@ -103,7 +144,7 @@ public class OrderTestEntity {
                 "testProfileImage",
                 Role.USER,
                 Membership.BRONZE,
-                false);
+                false, Provider.NONE);
     }
 
     PaymentDto paymentDto() {
@@ -128,9 +169,8 @@ public class OrderTestEntity {
 
     Product product(){
         return Product.builder()
-                .productId(1L)
+                .productId(2L)
                 .productName("test productName")
-                .categoryName("test categoryName")
                 .description("test description")
                 .build();
     }
