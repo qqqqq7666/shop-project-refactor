@@ -17,14 +17,14 @@ document.getElementById('productForm').addEventListener('submit', function (even
     }
 
     // 카테고리 검증
-    const categoryName = document.getElementById('categoryName');
+    /* const categoryName = document.getElementById('categoryName');
     const categoryNameError = document.getElementById('categoryNameError');
     if (!categoryName.value) {
         categoryNameError.textContent = "카테고리는 필수 입력 항목입니다.";
         isValid = false;
     } else {
         categoryNameError.textContent = "";
-    }
+    } */
 
     // 상세 설명 검증
     const description = document.getElementById('description');

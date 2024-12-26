@@ -1,6 +1,6 @@
 function deleteSubCategory(categoryId) {
     console.log("categoryId: " + categoryId);
-    fetch('/admin/category/delete', {
+    fetch('/api/v1/categories/delete', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

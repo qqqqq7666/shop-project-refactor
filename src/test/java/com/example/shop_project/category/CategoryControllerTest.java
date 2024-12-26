@@ -3,7 +3,7 @@ package com.example.shop_project.category;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.example.shop_project.category.controller.CategoryController;
+import com.example.shop_project.category.controller.CategoryAPIController;
 import com.example.shop_project.category.dto.CategoryDeleteResDto;
 import com.example.shop_project.category.dto.CategoryResDto;
 import com.example.shop_project.category.dto.CategoryUpdateReqDto;
@@ -35,7 +35,7 @@ public class CategoryControllerTest {
 
     // CategoryController에 Mock 객체를 주입
     @InjectMocks
-    private CategoryController categoryController;
+    private CategoryAPIController categoryController;
 
     private ObjectMapper objectMapper;
 

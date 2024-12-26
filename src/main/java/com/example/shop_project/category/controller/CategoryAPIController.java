@@ -10,30 +10,27 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/admin/category")
-public class CategoryController {
+@RequestMapping("/api/v1/categories")
+public class CategoryAPIController {
 
     private final CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryService categoryService) {
+    public CategoryAPIController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    // 카테고리 목록 페이지
+    // 카테고리 목록(헤더)
     @GetMapping("/categoryList")
-    public ModelAndView getCategoryList() {
+    public ResponseEntity<List<CategoryResDto>> getCategoryList() {
         List<CategoryResDto> categories = categoryService.getAllCategories();
-        ModelAndView mav = new ModelAndView("category/categoryList");
-        mav.addObject("categories", categories);
-        return mav;
+        return ResponseEntity.ok(categories);
     }
 
     // 카테고리 추가
@@ -65,4 +62,24 @@ public class CategoryController {
         CategoryDeleteResDto categoryDeleteResDto = categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok(categoryDeleteResDto);
     }
+
+    // 메인 카테고리 ID로 서브 카테고리 목록 조회
+    @GetMapping("/{mainCategoryId}/sub")
+    public List<CategoryResDto> getSubCategories(@PathVariable Long mainCategoryId) {
+        return categoryService.getSubCategoriesByParentId(mainCategoryId);
+    }
+
+    // 메인 카테고리 목록 조회
+    @GetMapping("/main")
+    public List<CategoryResDto> getMainCategories() {
+        return categoryService.getMainCategories();
+    }
+
+    @GetMapping("/api")
+    public List<CategoryResDto> getCategoryLists() {
+        return categoryService.getAllCategories();
+    }
+
+
+
 }

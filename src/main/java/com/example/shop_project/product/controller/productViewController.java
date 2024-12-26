@@ -1,7 +1,10 @@
 package com.example.shop_project.product.controller;
 
+import com.example.shop_project.category.dto.CategoryResDto;
+import com.example.shop_project.category.service.CategoryService;
 import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +17,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/products")
 public class productViewController {
 
     private final ProductService productService;
+    private final CategoryService categoryService;
 
-    public productViewController(ProductService productService) {
+    public productViewController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/create")
@@ -59,7 +66,7 @@ public class productViewController {
     @GetMapping("/detail/{productId}")
     public String getProductDetail(@PathVariable("productId") Long productId, Model model) {
         // 상품 정보를 조회
-        ProductResponseDto product = productService.getProductDetail(productId);
+        ProductResponseDto product = productService.getProductDetails(productId);
 
         // 모델에 상품 데이터 추가
         model.addAttribute("product", product);
@@ -70,14 +77,25 @@ public class productViewController {
     // 수정 페이지 요청 처리
     @GetMapping("/edit/{productId}")
     public String editProductPage(@PathVariable Long productId, Model model) {
-        // 상품 정보를 가져옵니다
+        // 상품 정보를 가져오기
         ProductResponseDto product = productService.getProductDetail(productId);
 
-        // 모델에 상품 데이터를 추가하여 수정 페이지에 전달
+        // categoryId를 사용해 메인/서브 카테고리 정보 가져오기
+        Map<String, CategoryResDto> categories = categoryService.getMainAndSubCategoryById(product.getCategoryId());
+
+        // 메인 카테고리 목록 가져오기
+        List<CategoryResDto> mainCategories = categoryService.getMainCategories();
+
+        // 모델에 데이터 추가
         model.addAttribute("product", product);
+        model.addAttribute("mainCategories", mainCategories);
+        model.addAttribute("selectedMainCategory", categories.get("mainCategory"));
+        model.addAttribute("selectedSubCategory", categories.get("subCategory"));
+
         return "products/editProduct"; // 수정 페이지 템플릿
     }
 
+    // 이미지 url을 불러오기 위한 함수
     @GetMapping("/edit/{productId}/images")
     public ResponseEntity<List<String>> getProductImages(@PathVariable Long productId) {
         List<String> imageUrls = productService.getProductImageUrls(productId); // 이미지 URL 리스트 반환

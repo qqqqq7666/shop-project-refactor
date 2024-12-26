@@ -27,11 +27,13 @@ public class OrderRequestDto {
     @Pattern(regexp = "^[0-9]*$")
     private String postNo;
     @NotNull
-    private List<OrderDetailDto> detailDtoList;
+    private List<OrderDetailDto> orderDetailDtoList;
     @NotNull
     private Member member;
     @NotBlank
     private String contact;
     @NotBlank
     private String addressee;
+    @NotNull
+    private Boolean isPaidWithPoint;
 }

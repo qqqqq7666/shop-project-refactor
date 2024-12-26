@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/order/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h6 class="mb-3">현재 적립 포인트</h6>
+    <h3 class="mb-3" th:text="|${#numbers.formatInteger(point.getBalance(), 0, 'COMMA')}.pt|"></h3>
+    <table>
+        <thead>
+        <tr>
+            <td>전체</td>
+            <td>적립</td>
+            <td>사용</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script src="/order/js/bootstrap.bundle.min.js"></script>
+</html>
