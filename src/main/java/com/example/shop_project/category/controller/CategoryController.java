@@ -65,4 +65,24 @@ public class CategoryController {
         CategoryDeleteResDto categoryDeleteResDto = categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok(categoryDeleteResDto);
     }
+
+    // 메인 카테고리 ID로 서브 카테고리 목록 조회
+    @GetMapping("/{mainCategoryId}/sub")
+    public List<CategoryResDto> getSubCategories(@PathVariable Long mainCategoryId) {
+        return categoryService.getSubCategoriesByParentId(mainCategoryId);
+    }
+
+    // 메인 카테고리 목록 조회
+    @GetMapping("/main")
+    public List<CategoryResDto> getMainCategories() {
+        return categoryService.getMainCategories();
+    }
+
+    @GetMapping("/api")
+    public List<CategoryResDto> getCategoryLists() {
+        return categoryService.getAllCategories();
+    }
+
+
+
 }

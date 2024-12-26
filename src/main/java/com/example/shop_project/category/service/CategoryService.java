@@ -13,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -163,5 +161,41 @@ public class CategoryService {
                 .collect(Collectors.toList());
 
         return new CategoryResDto(category.getCategoryId(), category.getCategoryName(), category.getDepth(), subCategoryDtos);
+    }
+
+
+
+    public Map<String, CategoryResDto> getMainAndSubCategoryById(Long categoryId) {
+        // categoryId로 카테고리 조회
+        Category subCategory = categoryRepository.findByCategoryIdWithParent(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid categoryId"));
+
+        // 메인 카테고리는 subCategory의 parentCategory
+        Category mainCategory = subCategory.getParentCategory();
+
+        // 결과를 Map으로 반환
+        Map<String, CategoryResDto> categoryMap = new HashMap<>();
+        categoryMap.put("mainCategory", toCategoryResDto(mainCategory));
+        categoryMap.put("subCategory", toCategoryResDto(subCategory));
+
+        return categoryMap;
+    }
+
+
+    // 메인 카테고리 목록 조회
+    public List<CategoryResDto> getMainCategories() {
+        List<Category> mainCategories = categoryRepository.findByParentCategoryIsNull();
+        return mainCategories.stream()
+                .distinct() // 중복 제거
+                .map(this::toCategoryResDto)
+                .collect(Collectors.toList());
+    }
+
+    // 서브 카테고리 목록 조회
+    public List<CategoryResDto> getSubCategoriesByParentId(Long parentId) {
+        List<Category> subCategories = categoryRepository.findByParentCategory_CategoryId(parentId);
+        return subCategories.stream()
+                .map(this::toCategoryResDto)
+                .collect(Collectors.toList());
     }
 }
