@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 목록</title>
+    <link rel="stylesheet" href="/order/style/bootstrap.min.css">
+</head>
+<body>
+<div>
+    <div id="review-list">
+        <div th:each="review : ${reviews}" class="review-item">
+            <p>
+                <span th:text="${review.nickname}"></span>
+                <span th:text="${review.date}"></span>
+            </p>
+            <p><span th:each="i : ${#numbers.sequence(1, review.stars)}">★</span></p>
+            <p>
+                <span th:text="|${review.color} / |"></span>
+                <span th:text="${review.size}"></span>
+            </p>
+            <p th:text="${review.content}"></p>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
