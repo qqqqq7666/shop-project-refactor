@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문 내역</title>
-    <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/order/style/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5 d-flex flex-column align-items-center">
@@ -33,6 +33,14 @@
                         Size/Quantity</p>
                     <p class="card-text" th:text="|${detail.getPrice()}원|">Price: <strong>price</strong></p>
                 </div>
+                <!-- review button -->
+                <div>
+                    <button type="button" class="review-btn btn btn-outline-dark" style="margin-left: 15px;"
+                            th:data-order-detail-id="${detail.getOrderDetailId()}"
+                            th:data-product-name="${detail.getProduct().getProductName()}"
+                            th:data-product-color="${detail.getColor()}"
+                            th:data-product-size="${detail.getSize()}">후기 작성</button>
+                </div>
             </div>
             <hr>
         </div>
@@ -55,6 +63,6 @@
         </ul>
     </nav>
 </div>
-<script src="/common/js/bootstrap.bundle.min.js"></script>
+<script src="/order/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
