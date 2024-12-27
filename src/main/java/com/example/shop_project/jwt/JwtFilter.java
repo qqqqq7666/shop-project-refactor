@@ -35,9 +35,20 @@ public class JwtFilter extends OncePerRequestFilter {
         HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
+    	String path = request.getRequestURI().substring(request.getContextPath().length());
+    	log.info("JwtFilter - request path: {}", path);
+    	
+    	// /chatbot 경로는 JWT 검증을 건너뜀
+        if (path.equals("/chatbot")) {
+        	log.info("/chatbot detected. Skipping JWT check.");
+            filterChain.doFilter(request, response);
+            return;
+        }
+    	
         // 1) 쿠키에서 Access Token 추출
         Optional<String> accessToken = getAccessTokenFromCookie(request);
-
+        log.info("AccessToken from cookie: {}", accessToken.orElse("EMPTY"));
+        
         // 2) 토큰 검증 및 SecurityContext 설정
         if (accessToken.isPresent()) {
             AuthTokenImpl jwtToken = tokenProvider.convertAuthToken(accessToken.get());

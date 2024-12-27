@@ -5,6 +5,8 @@
     <title>마이페이지</title>
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/member/css/mypageStyle.css">
+	<link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
+
 </head>
 <body>
     <div class="mypage-container">
@@ -46,6 +48,17 @@
             </tbody>
         </table>
     </div>
+    
+    <!-- 챗봇 위젯 HTML -->
+    <div id="chatbot-widget">
+        <div id="chatbot-header">챗봇</div>
+        <div id="chatbot-content"></div>
+        <div id="chatbot-input">
+            <input type="text" id="chatbot-user-input" placeholder="메시지를 입력하세요">
+            <button id="chatbot-send-btn">전송</button>
+        </div>
+    </div>
+	<script src="/chatbot/js/chatbotWork.js"></script>
 </body>
 </html>
 

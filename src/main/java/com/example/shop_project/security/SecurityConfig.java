@@ -2,6 +2,7 @@ package com.example.shop_project.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -50,7 +51,8 @@ public class SecurityConfig {
                                 "/",
                                 "/api/**",
                                 "/oauth2/**",
-                                "/signup/**"
+                                "/signup/**",
+                                "/chatbot"
                         ).permitAll()
                         .requestMatchers("/mypage").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
@@ -58,6 +60,7 @@ public class SecurityConfig {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
         		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
+        		//.debug(true)
         		.oauth2Login(oauth2 -> oauth2
         			    .loginPage("/login")
         			    //.defaultSuccessUrl("/signup/confirm") 
