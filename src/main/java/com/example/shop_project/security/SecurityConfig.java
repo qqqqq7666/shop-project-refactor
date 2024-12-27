@@ -51,7 +51,7 @@ public class SecurityConfig {
                                 "/api/**",
                                 "/oauth2/**",
                                 "/signup/**",
-								"/products/**"
+								"/products/**",
                                 "/signup/**",
                                 "/chatbot"
                         ).permitAll()
