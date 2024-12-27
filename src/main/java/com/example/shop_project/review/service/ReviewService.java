@@ -41,5 +41,22 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
+    public List<ReviewResponseDto> getReviewsByProductId(Long productId) {
+        List<Review> reviews = reviewRepository.findByProductId(productId);
+        return toReviewResponseDtoList(reviews);
+    }
 
+    private List<ReviewResponseDto> toReviewResponseDtoList(List<Review> reviews) {
+        return reviews.stream()
+                .map(entity -> ReviewResponseDto.builder()
+                        .reviewId(entity.getReviewId())
+                        .stars(entity.getStars())
+                        .content(entity.getContent())
+                        .date(entity.getDate())
+                        .nickname(entity.getMember().getNickname())
+                        .color(entity.getOrderDetail().getColor())
+                        .size(entity.getOrderDetail().getSize())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
