@@ -44,9 +44,8 @@ public class InquiryController {
             @PathVariable Long productId,
             @Valid @ModelAttribute InquiryRequestDto dto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-
         inquiryService.createInquiry(productId, dto, userEmail);
-        System.out.println("isSecret: " + dto.getIsSecret());
+
         return "redirect:/products/" + productId + "/inquiries";
     }
 
@@ -77,6 +76,7 @@ public class InquiryController {
     public ResponseEntity<Void> deleteInquiry(@PathVariable Long productId, @PathVariable Long inquiryId) {
         System.out.println("productId: " + productId + ", inquiryId: " + inquiryId);
         inquiryService.deleteInquiry(inquiryId);
+
         return ResponseEntity.noContent().build();
     }
 }
