@@ -11,7 +11,7 @@ public class SavedPointRequestDto {
     @NotNull
     private String email;
     @NotNull
-    private SaveReason saveReason;
+    private String saveReason;
     @NotNull
     private Integer savedPoint;
 }

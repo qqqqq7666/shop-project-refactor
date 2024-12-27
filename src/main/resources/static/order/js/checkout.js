@@ -1,5 +1,3 @@
-checkout
-
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 let formChecked = false;
 let requirement;
@@ -349,7 +347,7 @@ async function checkout() {
         const paymentDto = {
             memberName: member.name,
             payMethod,
-            amount: total,
+            amount: total - pointAmount,
             payStatus: "SUCCESS",
         }
 

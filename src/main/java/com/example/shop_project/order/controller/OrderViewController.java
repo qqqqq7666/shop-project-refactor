@@ -38,8 +38,9 @@ public class OrderViewController {
     public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model, Principal principal){
         model.addAttribute("detailList", orderService.getOrderDetailList(orderNo));
         model.addAttribute("order", orderService.getOrderByOrderNo(orderNo));
-        model.addAttribute("member", memberService.findByEmail(principal.getName()));
+//        model.addAttribute("member", memberService.findByEmail(principal.getName()));
         model.addAttribute("payment", paymentService.getPaymentByOrderNo(orderNo));
+        model.addAttribute("point", pointService.getPointByOrderNo(orderNo));
         return "order/order_detail";
     }
 

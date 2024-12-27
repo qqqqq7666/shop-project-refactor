@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class SavedPointResponseDto {
-    private SaveReason saveReason;
+    private String saveReason;
     private Integer savedPoint;
     private LocalDateTime createdDate;
 }
