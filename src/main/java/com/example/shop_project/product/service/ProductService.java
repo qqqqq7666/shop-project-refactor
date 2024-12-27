@@ -311,7 +311,13 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public ProductResponseDto getProductById(Long productId){
         return mapToResponseDto(productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다.")));
+    }
+
+    @Transactional
+    public void incrementViewCount(Long productId, int viewCount) {
+        productRepository.incrementViewCount(productId, viewCount);
     }
 }

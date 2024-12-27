@@ -214,12 +214,12 @@ function submitPartialUpdate() {
 
     // 수정할 데이터 수집
     const updates = {};
-    const categoryName = document.getElementById("categoryName").value;
+    const categoryId = document.getElementById("subCategory").value;
     const productName = document.getElementById("productName").value;
     const description = document.getElementById("description").value;
     const price = document.getElementById("price").value;
 
-    if (categoryName) updates.categoryName = categoryName;
+    if (categoryId) updates.categoryId = categoryId;
     if (productName) updates.productName = productName;
     if (description) updates.description = description;
     if (price) updates.price = parseInt(price, 10);
