@@ -25,4 +25,7 @@ public class ProductResponseDto {
     private LocalDateTime updatedAt;
     private String nickname;
 
+    public ProductResponseDto() {
+
+    }
 }

@@ -46,6 +46,7 @@ public class ProductAPIController {
             bindingResult.getFieldErrors().forEach(error ->
                     errors.put(error.getField(), error.getDefaultMessage())
             );
+            log.debug("### erros : {}", errors);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
 
@@ -61,7 +62,7 @@ public class ProductAPIController {
 
         // JSON 형식의 응답 반환
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Product created successfully!");
+        response.put("message", "상품 등록 성공");
         return ResponseEntity.ok(response);
     }
 
@@ -73,13 +74,6 @@ public class ProductAPIController {
             @RequestPart(value = "images", required = false) List<MultipartFile> images
             /* @RequestParam("existingImageUrls") List<String> existingImageUrls */
             ) {
-
-        for (MultipartFile file : images) {
-            log.debug("파일 이름: " + file.getOriginalFilename());
-            log.debug("파일 타입: " + file.getContentType());
-        }
-
-
         // JSON 문자열을 Map으로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> updates = null;

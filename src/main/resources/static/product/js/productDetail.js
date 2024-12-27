@@ -1,3 +1,18 @@
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        fetch('/products/detail/${productId}/confirm-view', {
+            method: "POST"
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log("View count incremented");
+                } else {
+                    console.log("View count not incremented");
+                }
+            });
+    }, 5000); // 5초 대기
+});
+
 // 선택된 상품 옵션 목록
 const selectedOptions = [];
 
