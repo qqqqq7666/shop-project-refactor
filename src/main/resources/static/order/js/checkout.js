@@ -444,5 +444,4 @@ contact.addEventListener('input', () => {
 
     contact.value = value;
 });
-
 renderProduct();
