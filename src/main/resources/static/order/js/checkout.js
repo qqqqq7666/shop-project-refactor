@@ -266,8 +266,6 @@ async function checkout() {
                 total += option.quantity * item.price;
             })
         })
-        if(total < 50000)
-            total += 3000;
 
         if (flag === "true") {
             address = member.address;
@@ -310,6 +308,9 @@ async function checkout() {
         console.log(usedPointRequestDto);
 
         // 결제 정보
+        if(total < 50000)
+            total += 3000;
+
         let name;
         if (cart.length === 1)
             name = cart[0].name;

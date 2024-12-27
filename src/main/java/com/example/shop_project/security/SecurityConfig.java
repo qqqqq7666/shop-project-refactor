@@ -50,7 +50,9 @@ public class SecurityConfig {
                                 "/",
                                 "/api/**",
                                 "/oauth2/**",
-                                "/signup/**"
+                                "/signup/**",
+								"/common/**",
+								"/**"
                         ).permitAll()
                         .requestMatchers("/mypage").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")

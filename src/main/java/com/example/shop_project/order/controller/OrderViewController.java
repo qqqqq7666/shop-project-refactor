@@ -1,6 +1,7 @@
 package com.example.shop_project.order.controller;
 
 import com.example.shop_project.member.service.MemberService;
+import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.order.service.PaymentService;
 import com.example.shop_project.point.dto.PointDto;
@@ -38,9 +39,10 @@ public class OrderViewController {
     public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model, Principal principal){
         model.addAttribute("detailList", orderService.getOrderDetailList(orderNo));
         model.addAttribute("order", orderService.getOrderByOrderNo(orderNo));
-//        model.addAttribute("member", memberService.findByEmail(principal.getName()));
+        model.addAttribute("member", memberService.findByEmail(principal.getName()));
         model.addAttribute("payment", paymentService.getPaymentByOrderNo(orderNo));
         model.addAttribute("point", pointService.getPointByOrderNo(orderNo));
+        model.addAttribute("isConfirmed", OrderStatus.CONFIRMED);
         return "order/order_detail";
     }
 
