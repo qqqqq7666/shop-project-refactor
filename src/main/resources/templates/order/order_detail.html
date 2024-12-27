@@ -30,8 +30,7 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-sm-start" th:each="detail : ${detailList}">
                     <div>
-                        <img src="https://via.placeholder.com/150" class="img-fluid rounded" alt="Product Image"
-                             width="100px">
+                        <img th:src="|http://localhost:8080${detail.getProduct().getImages().getFirst().getImageUrl()}|" class="img-fluid rounded-start" alt="Product Image" width="100px">
                     </div>
                     <div class="flex-column">
                         <span th:text="${detail.getProduct().getProductName()}">Product Name (M / 2 pcs)</span><br>
@@ -51,7 +50,7 @@
         </div>
         <div class="d-flex justify-content-between">
             <p>포인트 사용</p>
-            <p th:text="|${point.getAmount()}포인트|"></p>
+            <p th:text="|-${point.getAmount()}P|"></p>
         </div>
         <div class="d-flex justify-content-between">
             <p>배송비</p>

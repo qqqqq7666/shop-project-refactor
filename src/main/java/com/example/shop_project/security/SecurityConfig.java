@@ -53,7 +53,9 @@ public class SecurityConfig {
                                 "/signup/**",
 								"/products/**",
                                 "/signup/**",
-                                "/chatbot"
+                                "/chatbot",
+								"/common/**",
+								"/**"
                         ).permitAll()
                         .requestMatchers("/mypage").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
