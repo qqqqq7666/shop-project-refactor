@@ -292,13 +292,6 @@ async function checkout() {
         }
 
         // 포인트 정보 객체
-
-        // const savedPointRequestDto = {
-        //     email: member.email,
-        //     saveReason: "PURCHASE",
-        //     savedPoint: total * 0.01
-        // };
-
         const usedPointRequestDto = {
             email: member.email,
             orderNo: orderNo,

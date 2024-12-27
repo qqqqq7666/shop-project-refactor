@@ -41,7 +41,7 @@
                     <td><a href="/order">주문개수</td>
                     <td>리뷰개수</td>
                     <td><a href="/my-inquiries">문의개수</a></td>
-                    <td>0원</td>
+                    <td><a th:text="${point.getBalance()}" href="/point"></a></td>
                 </tr>
             </tbody>
         </table>

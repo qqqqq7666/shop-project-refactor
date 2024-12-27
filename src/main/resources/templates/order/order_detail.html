@@ -86,9 +86,9 @@
         const confirmed = confirm("구매확정을 하시겠습니까?");
         let saveReason
         if([[${detailList.size() - 1}]] === 1)
-            saveReason = `[[${detailList.get(0).getProduct().getProductName()}]] 구매 적립`
+            saveReason = `[[${detailList.get(0).getProduct().getProductName()}]] 구매 확정`
         else
-            saveReason = `[[${detailList.get(0).getProduct().getProductName()}]] 외 [[${detailList.size() - 1}]] 개 구매 적립`;
+            saveReason = `[[${detailList.get(0).getProduct().getProductName()}]] 외 [[${detailList.size() - 1}]] 개 구매 확정`;
         if (confirmed){
             fetch(`/api/v1/orders/${window.location.pathname.split("/").pop()}/update-status`, {
                 method: "PATCH",
