@@ -52,6 +52,8 @@ public class SecurityConfig {
                                 "/oauth2/**",
                                 "/signup/**",
 								"/products/**"
+                                "/signup/**",
+                                "/chatbot"
                         ).permitAll()
                         .requestMatchers("/mypage").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
@@ -59,6 +61,7 @@ public class SecurityConfig {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
         		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
+        		//.debug(true)
         		.oauth2Login(oauth2 -> oauth2
         			    .loginPage("/login")
         			    //.defaultSuccessUrl("/signup/confirm") 

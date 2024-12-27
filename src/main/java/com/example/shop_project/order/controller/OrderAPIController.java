@@ -85,8 +85,8 @@ public class OrderAPIController {
         return ResponseEntity.ok(orderNo);
     }
 
-    @GetMapping("/product-option/{productId}")
-    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId){
-        return ResponseEntity.ok(productService.getProductById(productId));
-    }
+//    @GetMapping("/product-option/{productId}")
+//    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId){
+//        return ResponseEntity.ok(productService.getProductById(productId));
+//    }
 }
