@@ -54,7 +54,7 @@ public class ReviewService {
         return averageStars;
     }
 
-    // entity -> dto 변환 메서드
+    // Entity -> ReviewResponseDto 변환 메서드
     private List<ReviewResponseDto> toReviewResponseDtoList(List<Review> reviews) {
         return reviews.stream()
                 .map(entity -> ReviewResponseDto.builder()
@@ -63,6 +63,7 @@ public class ReviewService {
                         .content(entity.getContent())
                         .date(entity.getDate())
                         .nickname(entity.getMember().getNickname())
+                        .productId(entity.getProductId())
                         .color(entity.getOrderDetail().getColor())
                         .size(entity.getOrderDetail().getSize())
                         .build())
