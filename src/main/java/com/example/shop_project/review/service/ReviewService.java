@@ -22,6 +22,7 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final OrderDetailRepository orderDetailRepository;
 
+    // 리뷰 저장
     public Review saveReview(ReviewRequestDto reviewRequestDto, String memberEmail) {
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원 정보를 찾을 수 없습니다: " + memberEmail));
@@ -41,11 +42,19 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
+    // 상품 별 리뷰 조회
     public List<ReviewResponseDto> getReviewsByProductId(Long productId) {
         List<Review> reviews = reviewRepository.findByProductId(productId);
         return toReviewResponseDtoList(reviews);
     }
 
+    // 상품 별 별점 평균 조회
+    public Double getAverageStarsByProductId(Long productId) {
+        Double averageStars = reviewRepository.averageStarsByProductId(productId);
+        return averageStars;
+    }
+
+    // entity -> dto 변환 메서드
     private List<ReviewResponseDto> toReviewResponseDtoList(List<Review> reviews) {
         return reviews.stream()
                 .map(entity -> ReviewResponseDto.builder()

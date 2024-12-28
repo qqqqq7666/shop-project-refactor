@@ -35,7 +35,9 @@ public class ReviewViewController {
     @GetMapping("/products/{productId}/reviews")
     public String reviewList(@PathVariable Long productId, Model model){
         List<ReviewResponseDto> reviews = reviewService.getReviewsByProductId(productId);
+        Double averageStars = reviewService.getAverageStarsByProductId(productId);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("averageStars", averageStars);
         return "review/reviewList";
     }
 }
