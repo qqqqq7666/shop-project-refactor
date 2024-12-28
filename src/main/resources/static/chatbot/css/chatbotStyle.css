@@ -9,9 +9,9 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     background-color: #fff;
-    display: flex; /* 초기에는 숨김 */
+    display: flex;
     flex-direction: column;
-    z-index: 1000; /* 다른 요소보다 위에 표시 */
+    z-index: 1000;
     overflow: hidden;
 }
 
@@ -71,17 +71,16 @@
     color: green;
 }
 
+/* 질문 버튼 스타일 */
 #chatbot-questions {
     display: flex;
-    flex-direction: column; /* 버튼을 세로로 정렬 */
-    gap: 5px; /* 버튼 사이 간격 */
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    background-color: #f1f1f1;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
 }
 
 .chatbot-question-btn {
-    width: 100%; /* 버튼이 부모 컨테이너의 전체 너비를 차지 */
+    width: 100%;
     padding: 10px;
     border: none;
     border-radius: 5px;
