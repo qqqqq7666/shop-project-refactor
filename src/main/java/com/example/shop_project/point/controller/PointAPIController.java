@@ -1,9 +1,8 @@
 package com.example.shop_project.point.controller;
 
 import com.example.shop_project.point.dto.*;
+import com.example.shop_project.point.entity.UsedPoint;
 import com.example.shop_project.point.service.PointService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.security.Principal;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/points")
 public class PointAPIController {
     @Autowired
-    private PointService pointService;
-    @Autowired
-    private ObjectMapper objectMapper;
+    PointService pointService;
 
     @PostMapping("/create/{memberId}")
     public ResponseEntity<Void> test(@PathVariable Long memberId){
@@ -31,10 +27,18 @@ public class PointAPIController {
         return ResponseEntity.ok(pointService.getPointByMember(principal.getName()));
     }
 
-    @PostMapping("/point-history")
-    public ResponseEntity<PointDto> savePoint(@RequestBody PointHistoryDto pointHistoryDto) {
-        PointDto response = pointService.createPointHistory(pointHistoryDto);
-
-        return ResponseEntity.created(URI.create("/api/v1/points")).body(response);
+    @PostMapping("/save-point")
+    public ResponseEntity<PointDto> savePoint(@RequestBody SavedPointRequestDto requestDto){
+        PointDto response = pointService.createSavedPoint(requestDto);
+        return ResponseEntity.created(URI.create("/mypage")).body(response);
     }
+
+    @PostMapping("/use-point")
+    public ResponseEntity<PointDto> usePoint(@RequestBody UsedPointRequestDto responseDto){
+        PointDto response = pointService.createUsedPoint(responseDto);
+        return ResponseEntity.created(URI.create("/mypage")).body(response);
+    }
+
+//    @PostMapping("/use-point")
+//    public ResponseEntity<PointDto> usePoint(@RequestBody)
 }

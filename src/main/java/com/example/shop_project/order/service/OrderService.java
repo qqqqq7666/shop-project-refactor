@@ -54,7 +54,8 @@ public class OrderService {
         return detailList;
     }
 
-    public Page<OrderResponseDto> getOrderAndDetailMap(Principal principal, Pageable pageable) {
+    @Transactional(readOnly = true)
+    public Page<OrderResponseDto> getOrderPageList(Principal principal, Pageable pageable) {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         Page<Order> orderPage = orderRepository.findAllByMemberAndOrderStatusNotOrderByOrderNoDesc(member, pageable, OrderStatus.FAIL);
         Page<OrderResponseDto> orderResponseDtoPage = orderPage.map(order -> orderMapper.toResponseDto(order));

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="auto" xmlns:th="http://www.thymeleaf.org">
 <head>
     <script src="/order/js/color-modes.js"></script>
@@ -304,11 +304,11 @@
                             </div>
                             <br>
                         <div class="input-group mb-3">
-                            <input id="point-input" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username"
+                            <input id="point-input" class="form-control" aria-label="Recipient's username"
                                    aria-describedby="button-addon2" pattern="[0-9]+" style="text-align: right;"
                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                            <span class="input-group-text">원</span>
-                            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+                            <span class="input-group-text">P</span>
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2">최대 포인트</button>
                         </div>
                         </div>
                     </div>
@@ -379,5 +379,21 @@
 <script src="/order/js/checkout.js"></script>
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    const pointInput = document.getElementById("point-input");
+    pointInput.addEventListener("input", () => {
+        if(pointInput.value === null)
+            pointInput.value = 0;
+
+        if(pointInput.value > [[${point.getBalance()}]]){
+            alert("보유 포인트보다 높은 금액을 입력할 수 없습니다.");
+            pointInput.value = [[${point.getBalance()}]];
+        }
+    })
+
+    document.getElementById("button-addon2").addEventListener("click", () => {
+        pointInput.value = [[${point.getBalance()}]];
+    })
+</script>
 </body>
 </html>

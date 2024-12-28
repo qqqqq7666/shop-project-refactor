@@ -3,6 +3,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Base64;
 
+import com.example.shop_project.point.service.PointService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,8 @@ import org.springframework.security.core.Authentication;
 @Controller
 public class MemberViewController {
 	private final MemberService memberService;
-	private final MemberRepository memberRepository; 
+	private final MemberRepository memberRepository;
+	private final PointService pointService;
 
 	@GetMapping("/join")
 	public String Join() {
@@ -69,6 +71,7 @@ public class MemberViewController {
 		String email = principal.getName();
         Member member = memberService.findByEmail(email);
         model.addAttribute("member", member);
+		model.addAttribute("point", pointService.getPointByMember(email));
 		return "member/mypage";
 	}
 	

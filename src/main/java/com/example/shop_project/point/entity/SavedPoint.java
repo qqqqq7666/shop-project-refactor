@@ -1,6 +1,5 @@
 package com.example.shop_project.point.entity;
 
-import com.example.shop_project.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,26 +16,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class PointHistory {
+public class SavedPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointHistoryId;
+    private Long savedPointId;
     @Column(nullable = false)
-    private Integer amount;
+    private Integer savedPoint;
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;
-
+    private String saveReason;
     @CreatedDate
     private LocalDateTime createdDate;
 
     @ManyToOne
     @JoinColumn(name = "point_id", nullable = false)
     private Point point;
-
-    @ManyToOne
-    @JoinColumn(name = "order_no")
-    private Order order;
 
     public void assignPointToCreate(Point point){
         this.point = point;

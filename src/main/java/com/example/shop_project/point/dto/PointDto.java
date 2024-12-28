@@ -5,8 +5,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @Builder
 public class PointDto {
@@ -19,6 +17,4 @@ public class PointDto {
     @NotNull
     @Positive
     private Integer totalUsedPoint;
-    @NotNull
-    private List<PointHistoryResponseDto> pointHistoryList;
 }

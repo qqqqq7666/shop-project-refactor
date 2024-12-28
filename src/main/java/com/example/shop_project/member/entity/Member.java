@@ -1,8 +1,6 @@
 package com.example.shop_project.member.entity;
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.processing.Pattern;
-
 import com.example.shop_project.BaseEntity;
 import com.example.shop_project.member.Membership;
 import com.example.shop_project.member.Provider;
@@ -21,7 +19,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
 @SuperBuilder
 @AllArgsConstructor

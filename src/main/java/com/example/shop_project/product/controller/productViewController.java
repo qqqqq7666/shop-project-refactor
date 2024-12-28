@@ -4,20 +4,21 @@ import com.example.shop_project.category.dto.CategoryResDto;
 import com.example.shop_project.category.service.CategoryService;
 import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -26,10 +27,12 @@ public class productViewController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    public productViewController(ProductService productService, CategoryService categoryService) {
+    public productViewController(ProductService productService, CategoryService categoryService, RedisTemplate<String, String> redisTemplate) {
         this.productService = productService;
         this.categoryService = categoryService;
+        this.redisTemplate = redisTemplate;
     }
 
     @GetMapping("/create")
@@ -64,14 +67,74 @@ public class productViewController {
     }
 
     @GetMapping("/detail/{productId}")
-    public String getProductDetail(@PathVariable("productId") Long productId, Model model) {
-        // 상품 정보를 조회
-        ProductResponseDto product = productService.getProductDetails(productId);
-
-        // 모델에 상품 데이터 추가
+    public String getProductDetail(@PathVariable("productId") Long productId, Model model, HttpSession session) {
+        // 상품 정보 로드
+        ProductResponseDto product = productService.getProductDetail(productId);
         model.addAttribute("product", product);
+
+        // Redis에 상품 ID 저장 (TTL: 5초)
+        redisTemplate.opsForValue().set("view:" + productId, "0", Duration.ofSeconds(70));
+
+
         return "products/productDetail";
     }
+
+    // 조회수 증가 API
+    @PostMapping("/detail/{productId}/confirm-view")
+    public ResponseEntity<String> confirmView(@PathVariable("productId") Long productId) {
+        log.debug("### API 요청 들어오는지 확인");
+        // Redis에서 키 확인
+        String key = "view:" + productId;
+        if (redisTemplate.hasKey(key)) {
+            // 조회수 증가
+            // productService.incrementViewCount(productId);
+
+            // Redis 키 삭제
+            redisTemplate.delete(key);
+
+            return ResponseEntity.ok("조회수 증가");
+        }
+
+        return ResponseEntity.badRequest().body("조회수 증가 X");
+    }
+
+    @Transactional
+    @Scheduled(fixedRate = 6000) // 1분마다 실행
+    public void syncViewCountsToDB() {
+        log.debug("### syncViewCountsToDB 진입");
+        Set<String> keys = redisTemplate.keys("view:*");
+        if (keys != null) {
+            for (String key : keys) {
+                try {
+                    Long productId = Long.valueOf(key.split(":")[1]);
+                    String viewCountStr = redisTemplate.opsForValue().get(key);
+
+                    // 값 검증
+                    if (viewCountStr == null || !viewCountStr.matches("\\d+")) {
+                        log.error("Redis key '{}' has invalid or missing value: {}", key, viewCountStr);
+                        continue;
+                    }
+
+                    int viewCount = Integer.parseInt(viewCountStr);
+
+                    // DB 업데이트
+                    productService.incrementViewCount(productId, viewCount);
+                    log.debug("Product {} view count incremented by {}", productId, viewCount);
+
+                    // Redis 키 삭제
+                    boolean deleted = Boolean.TRUE.equals(redisTemplate.delete(key));
+                    log.debug("Redis key '{}' deleted: {}", key, deleted);
+
+                } catch (Exception e) {
+                    log.error("Failed to sync view count for key '{}'", key, e);
+                }
+            }
+        } else {
+            log.debug("No keys found in Redis for view counts.");
+        }
+    }
+
+
 
 
     // 수정 페이지 요청 처리
@@ -92,7 +155,7 @@ public class productViewController {
         model.addAttribute("selectedMainCategory", categories.get("mainCategory"));
         model.addAttribute("selectedSubCategory", categories.get("subCategory"));
 
-        return "products/editProduct"; // 수정 페이지 템플릿
+        return "products/editProduct";
     }
 
     // 이미지 url을 불러오기 위한 함수

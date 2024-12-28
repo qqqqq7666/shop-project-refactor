@@ -137,7 +137,7 @@ function renderProduct() {
     document.getElementById("total").innerText = `${total.toLocaleString()}원`;
 }
 
-function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDto, usedPointRequestDto, isPaidWithPoint) {
+function requestPay(payInfo, paymentDto, orderDetailDtoLIst, usedPointRequestDto, isPaidWithPoint) {
     IMP.init("imp31477127");
     IMP.request_pay(payInfo,
         async function (rsp) {
@@ -153,12 +153,18 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDt
                 })
                     .then(res => {
                         if (res.ok) {
-                            updatePoint(savedPointRequestDto, usedPointRequestDto, isPaidWithPoint)
+                            // savePoint(savedPointRequestDto);
+                            if(isPaidWithPoint) {
+                                usePoint(usedPointRequestDto)
+                                console.log(usedPointRequestDto);
+                                console.log("포인트 사용함");
+                            }
                             console.log("결제 데이터 저장 성공");
                             window.removeEventListener("pagehide", checkoutFail);
                             localStorage.removeItem("cart")
                             const modal = new bootstrap.Modal(document.getElementById("orderCompleteModal"));
                             modal.show();
+                            return res.json();
                         }
                     })
             } else {
@@ -193,11 +199,10 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, savedPointRequestDt
 
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
-        const useAmount = parseInt(document.getElementById("point-input").value);
+        const pointAmount = parseInt(document.getElementById("point-input").value);
         let isPaidWithPoint = false;
-        if(useAmount > 0) {
+        if(pointAmount > 0)
             isPaidWithPoint = true;
-        }
         const orderNoJson = await fetch("/api/v1/orders/recent-order-no");
         const orderNo = await orderNoJson.json() + 1;
         window.addEventListener("beforeunload", async (event) => {
@@ -261,8 +266,6 @@ async function checkout() {
                 total += option.quantity * item.price;
             })
         })
-        if(total < 50000)
-            total += 3000;
 
         if (flag === "true") {
             address = member.address;
@@ -289,24 +292,18 @@ async function checkout() {
         }
 
         // 포인트 정보 객체
-
-        const savedPointRequestDto = {
-            orderNo,
-            email: member.email,
-            transactionType: "PURCHASE",
-            amount: total * 0.01,
-        };
-
         const usedPointRequestDto = {
-            orderNo,
             email: member.email,
-            transactionType: "USED",
-            amount: useAmount * -1
+            orderNo: orderNo,
+            amount: pointAmount
         };
         console.log(isPaidWithPoint);
         console.log(usedPointRequestDto);
 
         // 결제 정보
+        if(total < 50000)
+            total += 3000;
+
         let name;
         if (cart.length === 1)
             name = cart[0].name;
@@ -317,7 +314,7 @@ async function checkout() {
             pay_method: "card",
             merchant_uid: `payment-${crypto.randomUUID()}`, //상점에서 생성한 고유 주문번호
             name,
-            amount: total - useAmount,
+            amount: total - pointAmount,
             buyer_email: member.email,
             buyer_name: member.name,
             buyer_tel: member.phone, //필수 파라미터 입니다.
@@ -344,7 +341,7 @@ async function checkout() {
         const paymentDto = {
             memberName: member.name,
             payMethod,
-            amount: total - useAmount,
+            amount: total - pointAmount,
             payStatus: "SUCCESS",
         }
 
@@ -358,7 +355,7 @@ async function checkout() {
             .then(async (response) => {
                 if (response.ok) {
                     // 주문 성공시 결제 요청
-                    requestPay(payInfo, paymentDto, orderDetailDtoList, savedPointRequestDto, usedPointRequestDto, isPaidWithPoint)
+                    requestPay(payInfo, paymentDto, orderDetailDtoList, usedPointRequestDto, isPaidWithPoint)
 
                     return response.json();
 
@@ -374,51 +371,30 @@ async function checkout() {
     }
 }
 
-function usePoint(pointHistoryRequestDto){
-    fetch("/api/v1/points/use-point-history", {
+function usePoint(usedPointRequestDto){
+    fetch("/api/v1/points/use-point", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(pointHistoryRequestDto)
+        body: JSON.stringify(usedPointRequestDto)
     })
 }
 
-function savePoint(pointHistoryRequestDto){
-    fetch("/api/v1/points/save-point-history", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(pointHistoryRequestDto)
-    })
-        .then(response => {
-            if(!response.ok){
-                console.log("포인트 적립 안됨");
-            }
-        })
-}
-
-async function updatePoint(savedPointRequestDto, usedPointRequestDto, isPaidWithPoint){
-    fetch("/api/v1/points/point-history", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            savedPointRequestDto,
-            usedPointRequestDto,
-            isPaidWithPoint
-        })
-    })
-        .then(response => {
-            if(response.ok){
-                console.log("포인트 적립, 사용 성공")
-                console.log(savedPointRequestDto);
-                console.log(usedPointRequestDto);
-            }
-        })
-}
+// function savePoint(savedPointRequestDto){
+//     fetch("/api/v1/points/save-point", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(savedPointRequestDto)
+//     })
+//         .then(response => {
+//             if(!response.ok){
+//                 console.log("포인트 적립 안됨");
+//             }
+//         })
+// }
 
 function checkoutFail(orderNo){
     fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
@@ -468,5 +444,4 @@ contact.addEventListener('input', () => {
 
     contact.value = value;
 });
-
 renderProduct();

@@ -103,9 +103,9 @@ public class OrderServiceTest {
         OrderDetailDto orderDetailDto = testEntity.detailDto();
         OrderResponseDto responseDto = testEntity.orderResponseDto();
 
-        when(orderMapper.toEntity(any(OrderRequestDto.class))).thenReturn(order);
+        when(orderMapper.toEntity(any(OrderRequestDto.class), productRepository)).thenReturn(order);
         when(orderRepository.save(order)).thenReturn(order);
-        when(orderMapper.toEntity(any(OrderDetailDto.class))).thenReturn(orderDetail);
+        when(orderMapper.toEntity(any(OrderDetailDto.class), productRepository)).thenReturn(orderDetail);
         when(productRepository.findById(orderDetailDto.getProductId())).thenReturn(Optional.of(testEntity.product()));
         when(orderMapper.toResponseDto(order)).thenReturn(responseDto);
 

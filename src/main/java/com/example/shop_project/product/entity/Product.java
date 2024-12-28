@@ -47,6 +47,7 @@ public class Product {
     @Column(nullable = false)
     private int price;
 
+    @Column(name = "view_count")
     private int viewCount;
     private int salesCount;
 

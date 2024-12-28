@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const subCategorySelect = document.getElementById("subCategory");
 
     // 서버에서 카테고리 데이터 가져오기
-    fetch("/categories/api")
+    fetch("/api/v1/categories/list")
         .then((response) => response.json())
         .then((categories) => {
             // 메인 카테고리 추가

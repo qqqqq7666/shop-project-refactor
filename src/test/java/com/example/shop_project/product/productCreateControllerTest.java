@@ -56,7 +56,6 @@ class ProductCreateControllerTest {
         // Mock Product Request DTO
         ProductRequestDto requestDto = new ProductRequestDto();
         requestDto.setProductName("Test Product");
-        requestDto.setCategoryName("Test Category");
         requestDto.setDescription("This is a test product.");
         requestDto.setPrice(1000);
         requestDto.setOptions(Collections.singletonList(optionDto));
@@ -84,7 +83,6 @@ class ProductCreateControllerTest {
         // Mock Service Response
         ProductResponseDto responseDto = ProductResponseDto.builder()
                 .productId(1L)
-                .categoryName("Test Category")
                 .productName("Test Product")
                 .description("This is a test product.")
                 .price(1000)

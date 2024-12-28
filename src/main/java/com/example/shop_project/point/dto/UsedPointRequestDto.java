@@ -1,19 +1,18 @@
 package com.example.shop_project.point.dto;
 
-import com.example.shop_project.point.entity.TransactionType;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class PointHistoryRequestDto {
+public class UsedPointRequestDto {
     @NotNull
     private String email;
     @NotNull
-    private TransactionType transactionType;
-    @NotNull
-    private Integer amount;
-    @NotNull
     private Long orderNo;
+    @NotNull
+    @Positive
+    private Integer amount;
 }

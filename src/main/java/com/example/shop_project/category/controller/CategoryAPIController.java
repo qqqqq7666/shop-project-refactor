@@ -75,7 +75,7 @@ public class CategoryAPIController {
         return categoryService.getMainCategories();
     }
 
-    @GetMapping("/api")
+    @GetMapping("/list")
     public List<CategoryResDto> getCategoryLists() {
         return categoryService.getAllCategories();
     }
