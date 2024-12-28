@@ -16,6 +16,28 @@ document.getElementById('chatbot-user-input').addEventListener('keypress', funct
     }
 });
 
+// 추천 질문 버튼 클릭 이벤트
+document.querySelectorAll('.chatbot-question-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const question = this.textContent;
+        appendMessage(question, 'user');
+
+        fetch('/api/v1/chatbot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'message=' + encodeURIComponent(question)
+        })
+        .then(response => response.json())
+        .then(data => {
+            appendMessage(data.response, 'bot');
+        })
+        .catch(error => {
+            appendMessage("에러가 발생했습니다.", 'bot');
+            console.error('Error:', error);
+        });
+    });
+});
+
 function sendMessage() {
     var userInput = document.getElementById('chatbot-user-input').value.trim();
     if(userInput === "") return;

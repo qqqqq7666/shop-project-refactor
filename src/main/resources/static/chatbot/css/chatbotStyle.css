@@ -70,3 +70,27 @@
     text-align: left;
     color: green;
 }
+
+#chatbot-questions {
+    display: flex;
+    flex-direction: column; /* 버튼을 세로로 정렬 */
+    gap: 5px; /* 버튼 사이 간격 */
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+.chatbot-question-btn {
+    width: 100%; /* 버튼이 부모 컨테이너의 전체 너비를 차지 */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e7e7e7;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+}
+
+.chatbot-question-btn:hover {
+    background-color: #d7d7d7;
+}
