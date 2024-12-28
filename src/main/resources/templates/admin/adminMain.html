@@ -24,7 +24,35 @@
         h1 {
             text-align: center;
         }
+        
+        /* 아래는 채팅 화면용 임시 스타일 */
+        #chat-section {
+            margin-top: 20px;
+        }
+        #chat-content {
+            width: 400px; 
+            height: 300px; 
+            border: 1px solid #ccc; 
+            overflow-y: auto; 
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        .message {
+            margin: 5px 0;
+        }
+        .message.USER123 {
+            text-align: right;
+            color: blue;
+        }
+        .message.ADMIN001 {
+            text-align: left;
+            color: green;
+        }
     </style>
+    
+        <!-- SockJS, StompJS (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -35,6 +63,30 @@
             <a th:href="@{/admin/categories}">카테고리 수정</a>
             <a th:href="@{/admin/products}">상품 등록</a>
         </nav>
+        
+        
+        <!-- 상담 채팅 화면 -->
+        <hr>
+        <h2>상담 채팅 관리</h2>
+        
+        <!-- 현재 대기/진행중인 방 목록 -->
+        <div>
+            <h3>대기/진행중 방 목록</h3>
+            <div th:each="room : ${rooms}">
+                <!-- 예: 방 정보 표시 -->
+                <p th:text="'RoomID: ' + ${room.roomId} + ', User: ' + ${room.userId} + ', Status: ' + ${room.status}"></p>
+                <button th:attr="onclick=|joinRoom('${room.roomId}')|">연결</button>
+            </div>
+        </div>
+
+		<!-- 실시간 채팅 UI -->
+		<div id="chat-section" style="display:none;">
+		    <h2>채팅방 <span id="room-id-span"></span></h2>
+		    <div id="chat-content" style="border:1px solid #ccc; width:400px; height:200px; overflow-y:auto;"></div>
+		    <input type="text" id="adminMsg" placeholder="메시지...">
+		    <button onclick="sendAdminMsg()">전송</button>
+		</div>
     </div>
+<script src="/admin/js/adminChat.js"></script>
 </body>
 </html>

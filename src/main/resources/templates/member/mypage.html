@@ -7,6 +7,11 @@
 	<link rel="stylesheet" href="/member/css/mypageStyle.css">
 	<link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
 
+    <!-- SockJS, StompJS (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+	<script src="/chatbot/js/chatbotWork.js"></script>
+	
 </head>
 <body>
     <div class="mypage-container">
@@ -58,6 +63,7 @@
 	        <button class="chatbot-question-btn">배송 기간은 얼마나 되나요?</button>
 	        <button class="chatbot-question-btn">환불 정책은 어떻게 되나요?</button>
 	        <button class="chatbot-question-btn">감사합니다</button>
+	        <button id="connect-admin-btn" class="chatbot-question-btn">상담사 연결</button>
 	    </div>
 	    <!-- 대화 내용 -->
 	    <div id="chatbot-content"></div>
@@ -67,7 +73,10 @@
 		    <button id="chatbot-send-btn" disabled>전송</button>
 		</div>
 	</div>
-	<script src="/chatbot/js/chatbotWork.js"></script>
+	
+	<script src="/chatbot/js/userChat.js"></script>
+	
+	
+	
 </body>
 </html>
-

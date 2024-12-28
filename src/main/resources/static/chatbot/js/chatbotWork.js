@@ -52,3 +52,28 @@ function enableUserInput() {
     sendBtn.disabled = false;
     console.log("입력창과 전송 버튼이 활성화되었습니다.");
 }
+
+document.getElementById('connect-admin-btn').addEventListener('click', function() {
+    // 1) 서버로 상담사 연결 요청(채팅방 생성 or 상담 가능 여부 확인)
+    fetch('/api/v1/chat/connection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request: 'connectAdmin' })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('상담사 연결에 실패했습니다.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 2) 서버로부터 연결 성공 응답을 받으면, 사용자 입력창 활성화
+        enableUserInput(); 
+        // 3) 안내 메시지
+        appendMessage("상담사 연결이 완료되었습니다. 궁금한 점을 입력하세요.", 'bot');
+    })
+    .catch(error => {
+        console.error(error);
+        appendMessage("현재 상담 가능하지 않습니다. 잠시 후 다시 시도해주세요.", 'bot');
+    });
+});
