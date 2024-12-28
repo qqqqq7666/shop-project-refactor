@@ -13,9 +13,9 @@
     <p>이 상품 어떠셨나요?</p>
     <div class="product-info"></div>
     <hr>
-    <form id="review-form" action="/review/create" method="post">
-        <fieldset>
-            <span id="star-message">별점을 선택해주세요</span>
+    <form id="review-form" action="/review/create" method="post" novalidate>
+        <fieldset class="mb-3">
+            <span id="star-message" class="form-text text-danger d-none">별점을 선택해주세요</span>
             <input type="radio" name="stars" value="5" id="rate1">
             <label for="rate1">★</label>
             <input type="radio" name="stars" value="4" id="rate2">
@@ -28,7 +28,16 @@
             <label for="rate5">★</label>
         </fieldset>
 
-        <textarea type="text" name="content" id="review-contents" placeholder="구매하신 상품에 대한 후기를 20자 이상 남겨주세요." required></textarea>
+        <div class="mb-3">
+            <textarea class="form-control" type="text" name="content" id="review-contents" rows="5"
+                      placeholder="구매하신 상품에 대한 후기를 20자 이상 500자 이하로 남겨주세요." required></textarea>
+            <div class="char-count">
+                <span id="current-count">0</span>/500
+            </div>
+            <div id="content-error" class="form-text text-danger d-none">
+                글자 수는 20자 이상 500자 이하여야 합니다.
+            </div>
+        </div>
 
         <div class="review-btn d-grid gap-2 d-md-flex justify-content-md-end">
             <button type="submit" class="btn btn-dark">작성 완료</button>
