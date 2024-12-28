@@ -4,23 +4,38 @@
     <meta charset="UTF-8">
     <title>리뷰 목록</title>
     <link rel="stylesheet" href="/order/style/bootstrap.min.css">
+    <link rel="stylesheet" href="/review/css/reviewList.css">
+    <script src="/review/js/toggleTextVisibility.js" defer></script>
 </head>
 <body>
-<div>
+<div class="container mt-5 d-flex flex-column align-items-center">
+    <div id="review-header" class="d-flex align-items-end mb-3">
+        <h2 class="mr-3 mb-0 ">전체 리뷰</h2>
+        <p id="average-stars" class="d-flex align-items-end mb-0">
+            <span id="star">★</span>
+            <span th:text="${averageStars}"></span>
+        </p>
+    </div>
     <div id="review-list">
-        <div th:each="review : ${reviews}" class="review-item">
-            <p>
-                <span th:text="${review.nickname}"></span>
-                <span th:text="${review.date}"></span>
+        <div class="review" th:each="review : ${reviews}">
+            <p class="review-info">
+                <span class="nickname" th:text="${review.nickname}"></span>
+                <span class="create-date" th:text="${review.date}"></span>
             </p>
-            <p><span th:each="i : ${#numbers.sequence(1, review.stars)}">★</span></p>
-            <p>
+            <p class="review-info"><span th:each="i : ${#numbers.sequence(1, review.stars)}">★</span></p>
+            <p class="review-info">
                 <span th:text="|${review.color} / |"></span>
                 <span th:text="${review.size}"></span>
             </p>
-            <p th:text="${review.content}"></p>
+            <div class="content-wrapper mt-4">
+                <p class="review-content mb-0" th:text="${review.content}"></p>
+                <span class="more-text">더보기</span>
+                <span class="less-text">줄이기</span>
+            </div>
         </div>
-
+    </div>
+    <div id="review-btns">
+        <a class="btn btn-secondary" th:href="@{/products/detail/{productId}(productId=${reviews[0].productId})}">상품 페이지로 돌아가기</a>
     </div>
 </div>
 </body>
