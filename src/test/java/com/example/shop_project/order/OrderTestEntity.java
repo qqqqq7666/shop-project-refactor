@@ -1,6 +1,7 @@
 package com.example.shop_project.order;
 
 import com.example.shop_project.member.Membership;
+import com.example.shop_project.member.Provider;
 import com.example.shop_project.member.Role;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.dto.OrderDetailDto;
@@ -103,7 +104,8 @@ public class OrderTestEntity {
                 "testProfileImage",
                 Role.USER,
                 Membership.BRONZE,
-                false);
+                false,
+                Provider.NONE);
     }
 
     PaymentDto paymentDto() {
