@@ -3,8 +3,8 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 300px;
-    height: 400px;
+    width: 350px;
+    height: 500px;
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -15,17 +15,41 @@
     overflow: hidden;
 }
 
+/* 챗봇 헤더 */
 #chatbot-header {
     background-color: #007bff;
     color: #fff;
     padding: 10px;
-    cursor: pointer;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
     text-align: center;
     font-weight: bold;
 }
 
+/* 질문 리스트 (상단 고정) */
+#chatbot-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f1f1f1;
+    overflow-y: auto;
+    max-height: 150px;
+}
+
+.chatbot-question-btn {
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e7e7e7;
+    cursor: pointer;
+    text-align: center;
+}
+
+.chatbot-question-btn:hover {
+    background-color: #d7d7d7;
+}
+
+/* 대화 내용 */
 #chatbot-content {
     flex: 1;
     padding: 10px;
@@ -33,6 +57,7 @@
     background-color: #f9f9f9;
 }
 
+/* 입력 영역 */
 #chatbot-input {
     display: flex;
     padding: 10px;
@@ -58,7 +83,7 @@
 }
 
 .message {
-    margin: 10px 0;
+    margin: 5px 0;
 }
 
 .user {
@@ -71,25 +96,15 @@
     color: green;
 }
 
-/* 질문 버튼 스타일 */
-#chatbot-questions {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-top: 10px;
+/* 입력 영역 비활성화 상태 스타일 */
+#chatbot-input input:disabled {
+    background-color: #f1f1f1;
+    color: #999;
+    cursor: not-allowed;
 }
 
-.chatbot-question-btn {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #e7e7e7;
-    cursor: pointer;
-    text-align: center;
-    font-size: 14px;
-}
-
-.chatbot-question-btn:hover {
-    background-color: #d7d7d7;
+#chatbot-input button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
 }

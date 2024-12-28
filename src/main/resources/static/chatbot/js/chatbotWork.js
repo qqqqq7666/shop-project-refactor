@@ -1,87 +1,54 @@
-// 챗봇 위젯 토글 기능
-document.getElementById('chatbot-header').addEventListener('click', function() {
-    var widget = document.getElementById('chatbot-widget');
-    if (widget.style.display === 'none' || widget.style.display === '') {
-        widget.style.display = 'flex';
-    } else {
-        widget.style.display = 'none';
-    }
-});
+// 초기 상태: 입력창과 전송 버튼 비활성화
+document.getElementById('chatbot-user-input').disabled = true;
+document.getElementById('chatbot-send-btn').disabled = true;
 
-// 메시지 전송 기능
-document.getElementById('chatbot-send-btn').addEventListener('click', sendMessage);
-document.getElementById('chatbot-user-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
-});
-
-// 사용자 메시지 및 답변 처리
+// 메시지 전송 기능 제거
 function sendMessage() {
-    var userInput = document.getElementById('chatbot-user-input').value.trim();
-    if (userInput === "") return;
-
-    appendMessage(userInput, 'user');
-    document.getElementById('chatbot-user-input').value = '';
-
-    fetch('/api/v1/chatbot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'message=' + encodeURIComponent(userInput)
-    })
-    .then(response => response.json())
-    .then(data => {
-        appendMessage(data.response, 'bot');
-        moveQuestionButtonsToBottom(); // 답변 후 질문 버튼 다시 아래로 이동
-    })
-    .catch(error => {
-        appendMessage("에러가 발생했습니다.", 'bot');
-        console.error('Error:', error);
-        moveQuestionButtonsToBottom();
-    });
+    console.warn("현재는 버튼으로만 질문할 수 있습니다.");
 }
 
 // 추천 질문 버튼 클릭 이벤트
 document.querySelectorAll('.chatbot-question-btn').forEach(button => {
     button.addEventListener('click', function() {
-        const question = this.textContent;
-        appendMessage(question, 'user');
-
-        fetch('/api/v1/chatbot', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'message=' + encodeURIComponent(question)
-        })
-        .then(response => response.json())
-        .then(data => {
-            appendMessage(data.response, 'bot');
-            moveQuestionButtonsToBottom(); // 답변 후 질문 버튼 다시 아래로 이동
-        })
-        .catch(error => {
-            appendMessage("에러가 발생했습니다.", 'bot');
-            console.error('Error:', error);
-            moveQuestionButtonsToBottom();
-        });
+        processMessage(this.textContent);
     });
 });
 
-// 메시지 추가 기능
+// 메시지 및 응답 처리
+function processMessage(message) {
+    appendMessage(message, 'user');
+    fetch('/api/v1/chatbot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `message=${encodeURIComponent(message)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        appendMessage(data.response, 'bot');
+    })
+    .catch(error => {
+        appendMessage("에러가 발생했습니다.", 'bot');
+        console.error('Error:', error);
+    });
+}
+
+// 메시지 추가
 function appendMessage(message, sender) {
-    var chatbox = document.getElementById('chatbot-content');
-    var messageDiv = document.createElement('div');
-    messageDiv.className = 'message ' + sender;
+    const chatbox = document.getElementById('chatbot-content');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
     messageDiv.textContent = message;
     chatbox.appendChild(messageDiv);
     chatbox.scrollTop = chatbox.scrollHeight;
 }
 
-// 질문 버튼을 대화창 맨 아래로 이동
-function moveQuestionButtonsToBottom() {
-    const chatbox = document.getElementById('chatbot-content');
-    const questionContainer = document.getElementById('chatbot-questions');
+// 입력창 활성화 함수 (나중에 상담사 기능을 위한 준비)
+function enableUserInput() {
+    const userInput = document.getElementById('chatbot-user-input');
+    const sendBtn = document.getElementById('chatbot-send-btn');
     
-    if (questionContainer) {
-        chatbox.appendChild(questionContainer); // 질문 버튼을 대화창 맨 아래로 이동
-        chatbox.scrollTop = chatbox.scrollHeight; // 스크롤 맨 아래로 이동
-    }
+    userInput.disabled = false;
+    userInput.placeholder = "상담사와 채팅을 시작하세요";
+    sendBtn.disabled = false;
+    console.log("입력창과 전송 버튼이 활성화되었습니다.");
 }
