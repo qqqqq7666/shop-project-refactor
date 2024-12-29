@@ -31,9 +31,16 @@ public class PaymentService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Transactional
     public Payment createPayment(PaymentDto paymentDto){
         Payment newPayment = orderMapper.toEntity(paymentDto);
-        newPayment.assignOrderToCreate(orderRepository.findFirstByOrderByOrderNoDesc().orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다.")));
+        Order order = orderRepository.findFirstByOrderByOrderNoDesc().orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다."));
+        newPayment.assignOrderToCreate(order);
+        order.getOrderDetailList().forEach(orderDetail -> {
+            Product product = orderDetail.getProduct();
+            product.setSalesCount((int) (product.getSalesCount() + orderDetail.getQuantity()));
+            productRepository.save(product);
+        });
         return paymentRepository.save(newPayment);
     }
 
@@ -69,7 +76,6 @@ public class PaymentService {
             for(ProductOption option : product.getOptions()){
                 if(option.getSize() == orderDetailDto.getSize() && Objects.equals(option.getColor(), orderDetailDto.getColor())) {
                     int updatedStock = (int) (option.getStockQuantity() + orderDetailDto.getQuantity());
-                    log.warn("updatedStock : {}", updatedStock);
                     option.setStockQuantity(updatedStock);
                     break;
                 }
