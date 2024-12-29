@@ -9,7 +9,11 @@
 <body>
 <div class="container mt-5 d-flex flex-column align-items-center">
     <h2 class="mb-4">주문내역</h2>
-
+    <form method="get" action="/order">
+        <input placeholder="상품명으로 주문을 검색하세요" style="width: 450px" name="search">
+        <button type="submit">검색</button>
+    </form>
+    <br>
     <!-- Card Example -->
     <div class="card mb-3 w-100" style="max-width: 540px;" id="product-card"
          th:each="order : ${orderPage}">
