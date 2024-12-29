@@ -47,8 +47,8 @@ public class OrderViewController {
     }
 
     @GetMapping
-    public String orderList(Model model, Principal principal, @RequestParam(defaultValue = "0") int page){
-        model.addAttribute("orderPage", orderService.getOrderPageList(principal, PageRequest.of(page, 10)));
+    public String orderList(Model model, Principal principal, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search){
+        model.addAttribute("orderPage", orderService.getOrderPageList(principal, PageRequest.of(page, 10), search));
         model.addAttribute("currentPage", page);
         return "order/order_list";
     }
