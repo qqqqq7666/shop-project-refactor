@@ -16,6 +16,7 @@
         <div>
             <h4 th:text="${#temporals.format(order.getCreatedDate(), 'yy.MM.dd')}"></h4>
         </div>
+        <div th:text="${order.getOrderStatus()}"></div>
         <div class="row g-0" th:each="detail, i : ${order.getOrderDetailList()}">
             <!-- Image Section -->
             <div class="col-md-4">
@@ -42,7 +43,7 @@
                             th:data-product-size="${detail.getSize()}">후기 작성</button>
                 </div>
             </div>
-            <hr>
+            <br>
         </div>
     </div>
     <nav aria-label="Page navigation example">

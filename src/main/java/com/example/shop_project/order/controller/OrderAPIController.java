@@ -5,6 +5,7 @@ import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.dto.PaymentDto;
+import com.example.shop_project.order.entity.CanceledOrder;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.service.OrderService;
@@ -85,8 +86,10 @@ public class OrderAPIController {
         return ResponseEntity.ok(orderNo);
     }
 
-//    @GetMapping("/product-option/{productId}")
-//    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId){
-//        return ResponseEntity.ok(productService.getProductById(productId));
-//    }
+    @PostMapping("/{orderNo}/canceled-order")
+    public ResponseEntity<CanceledOrder> cancelOrder(@PathVariable Long orderNo, String reason, OrderStatus orderStatus){
+        CanceledOrder response = orderService.createCanceledOrder(orderNo, reason);
+        orderService.updateOrderStatus(orderNo, orderStatus);
+        return ResponseEntity.created(URI.create("/" + response.getOrder().getOrderNo())).body(response);
+    }
 }

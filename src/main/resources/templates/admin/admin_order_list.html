@@ -41,7 +41,7 @@
             <td th:text="${order.getMember().getEmail()}">Mark</td>
             <td th:text="${order.getTotalPrice()}">Otto</td>
             <td th:text="${order.getOrderStatus()}">@mdo</td>
-            <td><form id="cancel-form" th:action="|/api/admin/order/${order.getOrderNo()}/delete|" method="post">
+            <td><form id="cancel-form" th:action="|/api/v1/admin/orders/${order.getOrderNo()}/delete|" method="post">
                 <input type="hidden" name="_method" value="delete">
                 <button type="submit" class="">주문 취소</button>
             </form>

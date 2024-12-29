@@ -4,10 +4,12 @@ import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
+import com.example.shop_project.order.entity.CanceledOrder;
 import com.example.shop_project.order.entity.Order;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.mapper.OrderMapper;
+import com.example.shop_project.order.repository.CanceledOrderRepository;
 import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.order.repository.PaymentRepository;
@@ -39,6 +41,8 @@ public class OrderService {
     private MemberRepository memberRepository;
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private CanceledOrderRepository canceledOrderRepository;
 
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
@@ -99,5 +103,13 @@ public class OrderService {
 
     public Order getRecentOrder() {
         return orderRepository.findFirstByOrderByOrderNoDesc().orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다."));
+    }
+
+    public CanceledOrder createCanceledOrder(Long orderNo, String reason) {
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        return canceledOrderRepository.save(CanceledOrder.builder()
+                .order(order)
+                .reason(reason)
+                .build());
     }
 }

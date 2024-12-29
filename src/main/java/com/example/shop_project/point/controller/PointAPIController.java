@@ -14,7 +14,7 @@ import java.security.Principal;
 @RequestMapping("/api/v1/points")
 public class PointAPIController {
     @Autowired
-    PointService pointService;
+    private PointService pointService;
 
     @PostMapping("/create/{memberId}")
     public ResponseEntity<Void> test(@PathVariable Long memberId){

@@ -25,7 +25,7 @@ public class AdminOrderViewController {
     public String orderList(Model model){
         model.addAttribute("orderList", orderService.getOrderList());
 
-        return "admin_order_list";
+        return "admin/admin_order_list";
     }
 
     @GetMapping("/{orderNo}")
@@ -33,6 +33,6 @@ public class AdminOrderViewController {
         model.addAttribute("detailList", orderService.getOrderDetailList(orderNo));
         model.addAttribute("order", orderService.getOrderByOrderNo(orderNo));
         model.addAttribute("payment", paymentService.getPaymentByOrderNo(orderNo));
-        return "admin_order_detail";
+        return "admin/admin_order_detail";
     }
 }

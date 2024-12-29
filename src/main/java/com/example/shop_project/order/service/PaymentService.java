@@ -39,8 +39,8 @@ public class PaymentService {
 
     @Transactional
     public Payment getPaymentByOrderNo(Long orderNo){
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
-        return paymentRepository.findByOrder(order).orElseThrow();
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+        return paymentRepository.findByOrder(order).orElseThrow(() -> new IllegalArgumentException("주문에 대한 결제가 존재하지 않습니다."));
     }
 
     @Transactional

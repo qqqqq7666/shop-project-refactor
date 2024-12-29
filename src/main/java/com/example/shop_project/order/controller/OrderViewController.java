@@ -41,7 +41,7 @@ public class OrderViewController {
         model.addAttribute("order", orderService.getOrderByOrderNo(orderNo));
         model.addAttribute("member", memberService.findByEmail(principal.getName()));
         model.addAttribute("payment", paymentService.getPaymentByOrderNo(orderNo));
-        model.addAttribute("point", pointService.getPointByOrderNo(orderNo));
+        model.addAttribute("point", pointService.getUsedPointByOrderNo(orderNo));
         model.addAttribute("isConfirmed", OrderStatus.CONFIRMED);
         return "order/order_detail";
     }

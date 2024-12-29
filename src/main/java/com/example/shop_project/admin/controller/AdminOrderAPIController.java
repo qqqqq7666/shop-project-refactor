@@ -13,7 +13,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/order")
+@RequestMapping("/api/v1/admin/orders")
 public class AdminOrderAPIController {
     @Autowired
     OrderService orderService;
