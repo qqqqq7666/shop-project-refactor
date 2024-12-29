@@ -13,7 +13,7 @@
   </style>
 </head>
 <body>
-<form th:action="|/api/order/${orderNo}/update|" method="post">
+<form th:action="|/api/v1/orders/${orderNo}/update|" method="post">
   <input type="hidden" name="_method" value="patch">
   <input type="text" id="sample4_postcode" placeholder="우편번호" name="postNo" class="readonly">
   <input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원가입 확인</title>
+</head>
+<body>
+<h2>회원가입 확인</h2>
+
+<!-- 
+   if exists == true => 이미 회원이 있으므로 바로 home 이동 
+   else => alert("가입하시겠습니까?") 후 /signup/extra 로 이동 
+-->
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    let exists = /*[[${exists}]]*/ false;
+    if (exists) {
+        // 이미 가입되어 있으므로 home 이동
+        window.location.href = '/';
+    } else {
+        // DB에 없음 -> 안내 후 이동
+        let r = confirm("회원 정보가 없습니다. Google 정보로 가입하시겠습니까?");
+        if (r) {
+            // Yes -> 추가정보 입력 페이지
+            window.location.href = '/signup/extra';
+        } else {
+            // No -> 로그인 페이지 or 메인
+            window.location.href = '/';
+        }
+    }
+/*]]>*/
+</script>
+
+</body>
+</html>

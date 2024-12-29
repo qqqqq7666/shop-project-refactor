@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,15 +38,17 @@ public class Order extends BaseEntity {
     private String contact;
     @Column(nullable = false)
     private String addressee;
+    @Column(nullable = false)
+    private Boolean isPaidWithPoint;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<OrderDetail> orderDetailList;
+    private List<OrderDetail> orderDetailList = new ArrayList<>();
 
-    public void updateOrder(OrderRequestDto orderRequestDto){
+    public void updateOrder(OrderRequestDto orderRequestDto) {
         totalPrice = orderRequestDto.getTotalPrice();
         orderStatus = orderRequestDto.getOrderStatus();
         address = orderRequestDto.getAddress();
@@ -53,7 +56,14 @@ public class Order extends BaseEntity {
         postNo = orderRequestDto.getPostNo();
     }
 
-    public void updateStatus(OrderStatus status){
+    public void updateStatus(OrderStatus status) {
         orderStatus = status;
+    }
+
+
+    public void assignOrderToOrderDetail() {
+        orderDetailList.forEach(orderDetail -> {
+            orderDetail.assignOrderToCreate(this);
+        });
     }
 }

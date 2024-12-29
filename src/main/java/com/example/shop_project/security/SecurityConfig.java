@@ -8,10 +8,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-//import com.example.shop_project.jwt.JwtAuthenticationFilter;
+import com.example.shop_project.jwt.JwtFilter;
+import com.example.shop_project.oauth2.CustomOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,41 +23,62 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	//private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtFilter jwtFilter;
+	private final CustomOAuth2UserService customOAuth2UserService;
+	private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+	private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
 	
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//        		.sessionManagement(session -> session
-//        				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)		// 서버에서 세션 사용 x 인증 정보는 클라이언트에서 관리
-//        		)
                 .authorizeHttpRequests(auth -> auth
-                		.requestMatchers("/admin/**").hasAuthority("ADMIN") // 관리자만 접근 허용
-                		.requestMatchers("/mypage/**").authenticated() // 인증 필요
-                        .requestMatchers("/**").permitAll()		// 후에 접근 허용 경로 수정 필요
+                        .requestMatchers(
+                        		"/login", 
+                                "/join", 
+                                "/jwt-login", 
+                                "/css/**", 
+                                "/js/**", 
+                                "/images/**", 
+                                "/order/**", 
+                                "/member/**",
+                                "/",
+                                "/api/**",
+                                "/oauth2/**",
+                                "/signup/**",
+								"/products/**",
+                                "/signup/**",
+                                "/chatbot",
+								"/common/**",
+								"/**"
+                        ).permitAll()
+                        .requestMatchers("/mypage").authenticated()
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().authenticated()
                 )
-                //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
-                .formLogin(form -> form
-                        .loginPage("/login") // 커스텀 로그인 페이지
-                        .loginProcessingUrl("/perform_login") // 폼 액션 URL
-                        .defaultSuccessUrl("/", true) // 로그인 성공시 메인페이지로 이동
-                        .failureUrl("/login?error=true") // 실패 시 이동 경로
-                        .usernameParameter("email") // 이메일 필드
-                        .passwordParameter("password") // 비밀번호 필드
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")               // 로그아웃 처리 URL
-                        .logoutSuccessUrl("/login")         // 로그아웃 성공 후 이동할 URL
-                        .invalidateHttpSession(true)        // 세션 무효화
-                        .deleteCookies("JSESSIONID")        // 쿠키 삭제
-                )
-                .csrf(AbstractHttpConfigurer::disable);		// 후에 csrf
-
+                .csrf(AbstractHttpConfigurer::disable)
+        		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
+        		//.debug(true)
+        		.oauth2Login(oauth2 -> oauth2
+        			    .loginPage("/login")
+        			    //.defaultSuccessUrl("/signup/confirm") 
+        			    .successHandler(customAuthenticationSuccessHandler)
+        			    .failureUrl("/login?error=true")
+        			    .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+        			)
+		        .logout(logout -> logout
+		                .logoutUrl("/logout")
+		                .logoutSuccessHandler(customLogoutSuccessHandler) 
+		                .deleteCookies("accessToken", "refreshToken", "JSESSIONID") // 관련 쿠키 삭제
+		                .invalidateHttpSession(true)
+		                .permitAll()
+		          );
+        
         return http.build();
     }
 }

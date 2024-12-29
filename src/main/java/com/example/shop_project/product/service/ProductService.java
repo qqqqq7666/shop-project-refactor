@@ -38,10 +38,11 @@ public class ProductService {
         validateProductRequest(productRequestDto);
 
         Product product = Product.builder()
-                .categoryName(productRequestDto.getCategoryName())
+                .categoryId(productRequestDto.getCategoryId())
                 .productName(productRequestDto.getProductName())
                 .price(productRequestDto.getPrice())
                 .description(productRequestDto.getDescription())
+                .nickname(productRequestDto.getNickname())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -74,10 +75,10 @@ public class ProductService {
         return mapToResponseDto(savedProduct);
     }
 
-    private ProductResponseDto mapToResponseDto(Product product) {
+    public ProductResponseDto mapToResponseDto(Product product) {
         return ProductResponseDto.builder()
                 .productId(product.getProductId())
-                .categoryName(product.getCategoryName())
+                .categoryId(product.getCategoryId())
                 .productName(product.getProductName())
                 .price(product.getPrice())
                 .description(product.getDescription())
@@ -99,7 +100,8 @@ public class ProductService {
                 .build();
     }
 
-    private void validateProductRequest(ProductRequestDto productRequestDto) {
+    @Transactional
+    public void validateProductRequest(ProductRequestDto productRequestDto) {
         // 제품 이름 검증
         if (productRequestDto.getProductName() == null || productRequestDto.getProductName().isBlank()) {
             throw new InvalidProductException("제품 이름은 필수 입력 항목입니다.");
@@ -109,7 +111,7 @@ public class ProductService {
         }
 
         // 카테고리 검증
-        if (productRequestDto.getCategoryName() == null || productRequestDto.getCategoryName().isBlank()) {
+        if (productRequestDto.getCategoryId() == null) {
             throw new InvalidProductException("카테고리는 필수 입력 항목입니다.");
         }
 
@@ -136,20 +138,7 @@ public class ProductService {
     }
 
 
-    public List<ProductResponseDto> getProductListSortedBy(String sortBy) {
-        List<Product> products;
-        if ("viewCount".equalsIgnoreCase(sortBy)) {
-            products = productRepository.findAll(Sort.by(Sort.Direction.DESC, "viewCount"));
-        } else {
-            products = productRepository.findAll(Sort.by(Sort.Direction.DESC, "salesCount"));
-        }
-
-        // Product -> ProductResponseDto 변환
-        return products.stream()
-                .map(this::mapToResponseDto)
-                .collect(Collectors.toList());
-    }
-
+    @Transactional
     public Page<ProductResponseDto> getProductList(String search, String sort, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort));
 
@@ -161,6 +150,7 @@ public class ProductService {
                 .productId(product.getProductId())
                 .productName(product.getProductName())
                 .price(product.getPrice())
+                .nickname(product.getNickname())
                 .viewCount(product.getViewCount())
                 .salesCount(product.getSalesCount())
                 .createdAt(product.getCreatedAt())
@@ -171,28 +161,8 @@ public class ProductService {
                 .build());
     }
 
-    // 상품 목록 불러오기(키워드로 불러오기)
-    public Page<ProductResponseDto> getProductList(String keyword, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
 
-        // 검색 기능 적용
-        Page<Product> products = productRepository.findByProductNameContaining(keyword, pageable);
-
-        // Product -> ProductResponseDto로 변환
-        return products.map(product -> ProductResponseDto.builder()
-                .productId(product.getProductId())
-                .productName(product.getProductName())
-                .price(product.getPrice())
-                .viewCount(product.getViewCount())
-                .salesCount(product.getSalesCount())
-                .createdAt(product.getCreatedAt())
-                .updatedAt(product.getUpdatedAt())
-                .imageUrls(product.getImages().stream()
-                        .map(ProductImage::getImageUrl)
-                        .toList())
-                .build());
-    }
-
+    @Transactional
     public ProductResponseDto getProductDetail(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다. ID: " + productId));
@@ -200,21 +170,31 @@ public class ProductService {
         return mapToResponseDto(product);
     }
 
-    // 상품 상세 정보 불러오기
-    public ProductResponseDto getProductById(Long productId) {
+    // 상세페이지에서 호출할 때 (조회수 증가)
+    @Transactional
+    public ProductResponseDto getProductDetails(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다. ID: " + productId));
+
+        // 조회수 증가
+        product.setViewCount(product.getViewCount() + 1);
+
+        // 변경 사항 저장
+        productRepository.save(product);
+
         return mapToResponseDto(product);
     }
-    
+
 
     // 상품 삭제
+    @Transactional
     public void deleteProduct(Long productId) {
         productRepository.deleteById(productId);
     }
 
     // 부분 업데이트
-    public ProductResponseDto partialUpdateProduct(Long productId, Map<String, Object> updates, List<MultipartFile> images) {
+    @Transactional
+    public ProductResponseDto partialUpdateProduct(Long productId, Map<String, Object> updates, List<MultipartFile> images/* List<String> existingImageUrls */) {
         // 상품 조회
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
@@ -227,9 +207,9 @@ public class ProductService {
                         product.setProductName((String) value);
                     }
                     break;
-                case "categoryName":
-                    if (value instanceof String) {
-                        product.setCategoryName((String) value);
+                case "categoryId":
+                    if (value instanceof Number) {
+                        product.setCategoryId((long) ((Number) value).intValue());
                     }
                     break;
                 case "description":
@@ -267,28 +247,59 @@ public class ProductService {
             }
         });
 
+        /*
         // 이미지 업데이트 로직
-        if (images != null && !images.isEmpty()) {
+        if ((existingImageUrls != null && !existingImageUrls.isEmpty()) || (images != null && !images.isEmpty())) {
+            // 기존 이미지 순서 업데이트
+            if (existingImageUrls != null) {
+                for (int i = 0; i < existingImageUrls.size(); i++) {
+                    String imageUrl = existingImageUrls.get(i);
+                    ProductImage existingImage = product.getImages().stream()
+                            .filter(img -> img.getImageUrl().equals(imageUrl))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (existingImage != null) {
+                        existingImage.setSortOrder(i + 1);
+                    }
+                }
+            }
+
+
+            // 불필요한 기존 이미지 삭제
+            List<String> updatedUrls = new ArrayList<>();
+            if (existingImageUrls != null) updatedUrls.addAll(existingImageUrls);
+        }
+
+         */
+
+
+        // 새로운 이미지 추가
+        if (images != null) {
+            product.getImages().clear(); // 기존 이미지 제거
             for (int i = 0; i < images.size(); i++) {
                 MultipartFile image = images.get(i);
                 String imagePath = imageService.uploadImage("products", image);
-                ProductImage productImage = new ProductImage();
-                productImage.setImageUrl(imagePath);
-                productImage.setSortOrder(i + 1);
-                productImage.setProduct(product);
-                product.getImages().add(productImage);
+
+                ProductImage newImage = new ProductImage();
+                newImage.setImageUrl(imagePath);
+                newImage.setSortOrder(i + 1);
+                newImage.setProduct(product);
+                product.getImages().add(newImage);
             }
         }
 
-        product.setUpdatedAt(LocalDateTime.now());
+            product.setUpdatedAt(LocalDateTime.now());
 
-        // 변경된 상품 저장
-        Product updatedProduct = productRepository.save(product);
+            // 변경된 상품 저장
+            Product updatedProduct = productRepository.save(product);
 
-        // 수정된 상품 정보 반환
-        return mapToResponseDto(updatedProduct);
-    }
+            // 수정된 상품 정보 반환
+            return mapToResponseDto(updatedProduct);
+        }
 
+
+    @Transactional
     public List<String> getProductImageUrls(Long productId) {
         // 상품을 데이터베이스에서 조회
         Product product = productRepository.findById(productId)
@@ -296,7 +307,17 @@ public class ProductService {
 
         // 상품 이미지 경로 리스트를 반환
         return product.getImages().stream() // 상품의 이미지 리스트를 스트림으로 변환
-                .map(image -> "http://localhost:8080" + image.getImageUrl()) // 각 파일 이름에 URL 경로를 추가
+                .map(image -> "http://localhost:8080" + image.getImageUrl()) // 각 파일 이름에 URL 경로 추가
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ProductResponseDto getProductById(Long productId){
+        return mapToResponseDto(productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다.")));
+    }
+
+    @Transactional
+    public void incrementViewCount(Long productId, int viewCount) {
+        productRepository.incrementViewCount(productId, viewCount);
     }
 }

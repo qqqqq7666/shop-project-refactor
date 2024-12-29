@@ -1,27 +1,64 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>마이페이지</title>
+    <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/member/css/mypageStyle.css">
+	<link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
+
 </head>
 <body>
-    <h1>마이페이지</h1>
+    <div class="mypage-container">
+        <!-- 상단 프로필 섹션 -->
+        <div class="profile-header">
+            <div class="profile-info">
+                <img src="/member/tempimage.png" alt="Profile">
+                <div>
+                    <div class="profile-text"><strong th:text="${member.nickname}"></strong>님, 안녕하세요!</div>
+                    <div class="membership">
+                        <span th:text="${member.membership}"></span> 등급
+                    </div>
+                </div>
+            </div>
+            <div class="profile-button">
+                <a href="/mypage/edit">
+                    <button>회원정보 수정</button>
+                </a>
+            </div>
+        </div>
 
-    <p><strong>이메일:</strong> <span th:text="${member.email}"></span></p>
-    <p><strong>닉네임:</strong> <span th:text="${member.nickname}"></span></p>
-    <p><strong>멤버십:</strong> <span th:text="${member.membership}"></span></p>
-    <p><strong>휴대폰 번호:</strong> <span th:text="${member.phone}"></span></p>
-    <p><strong>주소:</strong> <span th:text="${member.address}"></span></p>
-    <p><strong>가입일:</strong> <span th:text="${member.createdAt}"></span></p>
-
+        <!-- 정보 테이블 -->
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>주문내역</th>
+                    <th>리뷰</th>
+                    <th>문의</th>
+                    <th>포인트</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="/order">주문개수</td>
+                    <td>리뷰개수</td>
+                    <td><a href="/my-inquiries">문의개수</a></td>
+                    <td><a th:text="${point.getBalance()}" href="/point"></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     
-    <!-- 로그아웃 버튼 -->
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">로그아웃</button>
-    </form>
-    <!-- 회원정보 수정 버튼 -->
-    <a href="/mypage/edit" class="button">회원정보 수정</a>
-    <button type="button" id="withdrawBtn">회원 탈퇴</button>
-    
-    <script src="/member/js/withdraw.js"></script>
+    <!-- 챗봇 위젯 HTML -->
+    <div id="chatbot-widget">
+        <div id="chatbot-header">챗봇</div>
+        <div id="chatbot-content"></div>
+        <div id="chatbot-input">
+            <input type="text" id="chatbot-user-input" placeholder="메시지를 입력하세요">
+            <button id="chatbot-send-btn">전송</button>
+        </div>
+    </div>
+	<script src="/chatbot/js/chatbotWork.js"></script>
 </body>
 </html>
+

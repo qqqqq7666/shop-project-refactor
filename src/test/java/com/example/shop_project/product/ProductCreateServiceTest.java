@@ -37,7 +37,6 @@ class ProductServiceTest {
     void testCreateProduct() {
         // 1. 데이터 준비
         ProductRequestDto productRequestDto = new ProductRequestDto();
-        productRequestDto.setCategoryName("상의");
         productRequestDto.setProductName("테스트 제품");
         productRequestDto.setPrice(10000);
         productRequestDto.setDescription("테스트 설명");

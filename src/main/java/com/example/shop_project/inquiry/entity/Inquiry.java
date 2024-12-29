@@ -1,11 +1,13 @@
 package com.example.shop_project.inquiry.entity;
 
+import com.example.shop_project.comment.entity.Comment;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "inquiries")
@@ -42,4 +44,10 @@ public class Inquiry {
 
     @Column(nullable = false)
     private boolean isSecret; // 비밀글 여부
+
+    @OneToMany(mappedBy = "inquiry", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
+    @Transient
+    private int commentCount; // 댓글 개수
 }
