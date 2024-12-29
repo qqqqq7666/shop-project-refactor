@@ -10,11 +10,14 @@
 <body>
 <div class="container mt-5 d-flex flex-column align-items-center">
     <div id="review-header" class="d-flex align-items-end mb-3">
-        <h2 class="mr-3 mb-0 ">전체 리뷰</h2>
         <p id="average-stars" class="d-flex align-items-end mb-0">
             <span id="star">★</span>
             <span th:text="${averageStars}"></span>
         </p>
+        <h2 class="mr-3 mb-0 ">전체 리뷰</h2>
+        <div class="review-btn">
+            <a class="btn btn-secondary" th:href="@{/products/detail/{productId}(productId=${reviews[0].productId})}">상품 페이지</a>
+        </div>
     </div>
     <div id="review-list">
         <div class="review" th:each="review : ${reviews}">
@@ -34,9 +37,27 @@
             </div>
         </div>
     </div>
-    <div id="review-btns">
-        <a class="btn btn-secondary" th:href="@{/products/detail/{productId}(productId=${reviews[0].productId})}">상품 페이지로 돌아가기</a>
-    </div>
+    <nav id="pagination" aria-label="Page navigaion">
+        <ul class="pagination">
+            <li class="page-item" th:if="${currentPage > 0}" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/products/{productId}/reviews(productId=${productId}, page=${currentPage - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/products/{productId}/reviews(productId=${productId}, page=${pageNum})}"
+                   th:text="${pageNum + 1}"></a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage + 1 < totalPages}" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/products/{productId}/reviews(productId=${productId}, page=${currentPage + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 </body>
 </html>
