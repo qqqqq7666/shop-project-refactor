@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductResponseDto {
     private Long productId;
-    private String categoryName;
+    private Long categoryId;
     private String productName;
     private String description;
     private int price;
@@ -23,5 +23,9 @@ public class ProductResponseDto {
     private List<ProductOptionDto> options;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String nickname;
 
+    public ProductResponseDto() {
+
+    }
 }

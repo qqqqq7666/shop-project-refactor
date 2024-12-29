@@ -2,7 +2,6 @@ package com.example.shop_project.order.service;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
-import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.Order;
@@ -14,16 +13,16 @@ import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.order.repository.PaymentRepository;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -43,19 +42,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
-        Order newOrder = orderRepository.save(orderMapper.toEntity(orderRequestDto));
-        createOrderDetail(newOrder, orderRequestDto.getDetailDtoList());
+        Order order = orderMapper.toEntity(orderRequestDto, productRepository);
+        order.assignOrderToOrderDetail();
+        Order newOrder = orderRepository.save(order);
         return orderMapper.toResponseDto(newOrder);
-    }
-
-    @Transactional
-    public void createOrderDetail(Order order, List<OrderDetailDto> dtoList) {
-        for (OrderDetailDto dto : dtoList) {
-            OrderDetail orderDetail = orderMapper.toEntity(dto);
-            orderDetail.assignOrderToCreate(order, productRepository.findById(dto.getProductId()).orElseThrow(() -> new NoSuchElementException("상품이 존재하지 않습니다.")));
-
-            orderDetailRepository.save(orderDetail);
-        }
     }
 
     public List<OrderDetail> getOrderDetailList(Long orderNo) {
@@ -64,7 +54,8 @@ public class OrderService {
         return detailList;
     }
 
-    public Page<OrderResponseDto> getOrderAndDetailMap(Principal principal, Pageable pageable) {
+    @Transactional(readOnly = true)
+    public Page<OrderResponseDto> getOrderPageList(Principal principal, Pageable pageable) {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         Page<Order> orderPage = orderRepository.findAllByMemberAndOrderStatusNotOrderByOrderNoDesc(member, pageable, OrderStatus.FAIL);
         Page<OrderResponseDto> orderResponseDtoPage = orderPage.map(order -> orderMapper.toResponseDto(order));
@@ -106,7 +97,7 @@ public class OrderService {
         orderRepository.deleteByOrderNo(orderNo);
     }
 
-    public Order getRecentOrder(){
+    public Order getRecentOrder() {
         return orderRepository.findFirstByOrderByOrderNoDesc().orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다."));
     }
 }

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-		const url = `/api/member/check-nickname?nickname=${nickname}&currentNickname=${currentNickname}`;
+		const url = `/api/v1/members/check-nickname?nickname=${nickname}&currentNickname=${currentNickname}`;
 
 	    fetch(url)
 	        .then(response => {
