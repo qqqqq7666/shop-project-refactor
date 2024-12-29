@@ -21,7 +21,7 @@ public class ReviewViewController {
     // 리뷰 작성 페이지
     @GetMapping("/review/create")
     public String createReview() {
-        return "review/create";
+        return "review/reviewCreate";
     }
 
     // 리뷰 저장
