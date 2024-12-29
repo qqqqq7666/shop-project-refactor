@@ -1,5 +1,6 @@
 package com.example.shop_project.point.service;
 
+import com.example.shop_project.member.Membership;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.order.entity.Order;
@@ -14,7 +15,9 @@ import com.example.shop_project.point.repository.SavedPointRepository;
 import com.example.shop_project.point.repository.UsedPointRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -111,5 +114,28 @@ public class PointService {
             return usedPointHistoryDtoList.reversed();
 
         return null;
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void monthlyPointSave() {
+        memberRepository.findAllByMembership(Membership.DIAMOND).forEach(member -> {
+            findPointByEmail(member.getEmail()).savePoint(SavedPoint.builder()
+                    .savedPoint(50000)
+                    .saveReason("매월 맴버십 DIAMOND 등급 혜택")
+                    .build());
+        });
+        memberRepository.findAllByMembership(Membership.GOLD).forEach(member -> {
+            findPointByEmail(member.getEmail()).savePoint(SavedPoint.builder()
+                    .savedPoint(10000)
+                    .saveReason("매월 맴버십 GOLD 등급 혜택")
+                    .build());
+        });
+        memberRepository.findAllByMembership(Membership.SILVER).forEach(member -> {
+            findPointByEmail(member.getEmail()).savePoint(SavedPoint.builder()
+                    .savedPoint(5000)
+                    .saveReason("매월 맴버십 SILVER 등급 혜택")
+                    .build());
+        });
     }
 }

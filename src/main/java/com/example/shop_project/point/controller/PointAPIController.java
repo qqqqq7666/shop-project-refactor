@@ -38,7 +38,4 @@ public class PointAPIController {
         PointDto response = pointService.createUsedPoint(responseDto);
         return ResponseEntity.created(URI.create("/mypage")).body(response);
     }
-
-//    @PostMapping("/use-point")
-//    public ResponseEntity<PointDto> usePoint(@RequestBody)
 }
