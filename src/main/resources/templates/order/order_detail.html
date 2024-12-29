@@ -68,14 +68,22 @@
             <p th:text="${payment.getPayMethod()}">결제 수단</p>
         </div>
         <div th:if="${order.getOrderStatus() != isConfirmed}">
+            <br>
+            <div align="center">
+                구매확정시 상품금액 1% 포인트 적립
+            </div>
             <div class= "mt-4 d-flex justify-content-around">
                 <button id="confirm-button" class="btn custom-button" name="orderStatus" value="CONFIRMED" onclick="">구매 확정</button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    교환/환불 신청
-                </button>
-            </div>
-            <div>
-                구매확정시 상품금액 1% 포인트 적립
+                <div th:if="${order.getOrderStatus() != orderStatusArray[5] && order.getOrderStatus() != orderStatusArray[6]}">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        교환/환불 요청
+                    </button>
+                </div>
+                <div th:if="${order.getOrderStatus() == orderStatusArray[5] || order.getOrderStatus() == orderStatusArray[6]}">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        교환/환불 요청 취소
+                    </button>
+                </div>
             </div>
         </div>
     </div>

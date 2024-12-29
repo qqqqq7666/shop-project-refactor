@@ -68,7 +68,6 @@ public class OrderAPIController {
 
     @PatchMapping("/{orderNo}/update-status")
     public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long orderNo, @RequestBody OrderStatus orderStatus){
-        log.info("orderStatus = {}", orderStatus.toString());
         OrderResponseDto response = orderService.updateOrderStatus(orderNo, orderStatus);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
