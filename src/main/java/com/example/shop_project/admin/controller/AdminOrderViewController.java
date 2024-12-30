@@ -30,6 +30,7 @@ public class AdminOrderViewController {
         model.addAttribute("detailList", orderService.getOrderDetailList(orderNo));
         model.addAttribute("order", orderService.getOrderByOrderNo(orderNo));
         model.addAttribute("payment", paymentService.getPaymentByOrderNo(orderNo));
+        model.addAttribute("canceledOrder", orderService.getCanceledOrder(orderNo));
         return "admin/admin_order_detail";
     }
 }

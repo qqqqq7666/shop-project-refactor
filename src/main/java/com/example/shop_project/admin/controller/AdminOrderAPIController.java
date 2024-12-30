@@ -35,4 +35,10 @@ public class AdminOrderAPIController {
     public ResponseEntity<List<OrderDetail>> orderDetail(@PathVariable Long orderNo){
         return ResponseEntity.ok(orderService.getOrderDetailList(orderNo));
     }
+
+    @PatchMapping("/refund")
+    public ResponseEntity<Void> refund(@RequestParam Long orderNo){
+        orderService.refund(orderNo);
+        return ResponseEntity.ok().build();
+    }
 }

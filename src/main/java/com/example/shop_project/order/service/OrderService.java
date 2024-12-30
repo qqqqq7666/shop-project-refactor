@@ -13,6 +13,9 @@ import com.example.shop_project.order.repository.CanceledOrderRepository;
 import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.order.repository.PaymentRepository;
+import com.example.shop_project.point.entity.UsedPoint;
+import com.example.shop_project.point.repository.UsedPointRepository;
+import com.example.shop_project.point.service.PointService;
 import com.example.shop_project.product.entity.Product;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +48,10 @@ public class OrderService {
     private PaymentRepository paymentRepository;
     @Autowired
     private CanceledOrderRepository canceledOrderRepository;
+    @Autowired
+    private PointService pointService;
+    @Autowired
+    private UsedPointRepository usedPointRepository;
 
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
@@ -115,6 +122,25 @@ public class OrderService {
                 .order(order)
                 .reason(reason)
                 .build());
+    }
+
+    public CanceledOrder getCanceledOrder(Long orderNo){
+        return canceledOrderRepository.findById(orderNo).orElseGet(() -> null);
+    }
+
+    @Transactional
+    public void refund(Long orderNo){
+        CanceledOrder canceledOrder = canceledOrderRepository.findById(orderNo).orElseThrow();
+        Order order = canceledOrder.getOrder();
+        canceledOrder.confirmRequire();
+        if(order.getIsPaidWithPoint()){
+            UsedPoint usedPoint = usedPointRepository.findByOrder(order).orElseThrow();
+            usedPoint.getPoint().rollbackBalance(-usedPoint.getAmount());
+            usedPointRepository.delete(usedPoint);
+        }
+        canceledOrderRepository.save(canceledOrder);
+        order.updateStatus(OrderStatus.REFUND);
+        orderRepository.save(order);
     }
 
     //mypage
