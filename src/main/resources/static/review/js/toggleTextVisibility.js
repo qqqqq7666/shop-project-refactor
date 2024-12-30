@@ -1,9 +1,9 @@
 const reviews = document.querySelectorAll('.content-wrapper');
 
 reviews.forEach(review => {
-    const text = document.querySelector('.review-content');
-    const moreText = document.querySelector('.more-text');
-    const lessText = document.querySelector('.less-text');
+    const text = review.querySelector('.review-content');
+    const moreText = review.querySelector('.more-text');
+    const lessText = review.querySelector('.less-text');
 
     const lineHeight = parseInt(window.getComputedStyle(text).lineHeight, 10);
     const maxHeight = lineHeight * 3;
