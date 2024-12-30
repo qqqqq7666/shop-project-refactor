@@ -83,12 +83,26 @@
 }
 
 .message {
+    display: block;
     margin: 5px 0;
+    clear: both; /* 양쪽 정렬 시 레이아웃 충돌 방지 */
+    width: fit-content;
+    max-width: 60%;
+    padding: 8px 12px;
+    border-radius: 10px;
 }
 
 .user {
-    text-align: right;
-    color: blue;
+    float: right; 
+    background-color: #cce5ff; /* 연한 파랑 */
+    text-align: left;         /* 텍스트 정렬은 왼쪽, 말풍선 자체는 오른쪽 */
+}
+
+/* 관리자 메시지: 왼쪽 정렬, 배경색 등 */
+.admin {
+    float: left;
+    background-color: #d4edda; /* 연한 초록 */
+    text-align: left;
 }
 
 .bot {

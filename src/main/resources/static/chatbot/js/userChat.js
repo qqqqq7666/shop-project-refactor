@@ -86,11 +86,26 @@ function sendMessage() {
 }
 
 function appendMessage(content, sender) {
-    const div = document.getElementById('chatbot-content');
-    const p = document.createElement('p');
-    p.textContent = sender + ": " + content;
-    div.appendChild(p);
-    div.scrollTop = div.scrollHeight;
+	const div = document.getElementById('chatbot-content');
+	const messageDiv = document.createElement('div');
+
+	// 공통 클래스: 'message'
+	messageDiv.classList.add('message');
+
+	// 발신자가 나(유저)인지 확인 (기존 userId === "USER_123" 등)
+	if (sender === userId) {
+	    // 내 메시지는 오른쪽
+	    messageDiv.classList.add('user');
+	} else {
+	    // 관리자 메시지는 왼쪽
+	    messageDiv.classList.add('admin');
+	}
+
+	// 이름 표시 제거 → 내용만
+	messageDiv.textContent = content;
+
+	div.appendChild(messageDiv);
+	div.scrollTop = div.scrollHeight;
 }
 
 // 이미 chatbotWork.js에 있는 함수
