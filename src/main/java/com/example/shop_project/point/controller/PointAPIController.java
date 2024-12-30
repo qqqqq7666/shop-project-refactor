@@ -14,7 +14,7 @@ import java.security.Principal;
 @RequestMapping("/api/v1/points")
 public class PointAPIController {
     @Autowired
-    PointService pointService;
+    private PointService pointService;
 
     @PostMapping("/create/{memberId}")
     public ResponseEntity<Void> test(@PathVariable Long memberId){
@@ -38,7 +38,4 @@ public class PointAPIController {
         PointDto response = pointService.createUsedPoint(responseDto);
         return ResponseEntity.created(URI.create("/mypage")).body(response);
     }
-
-//    @PostMapping("/use-point")
-//    public ResponseEntity<PointDto> usePoint(@RequestBody)
 }

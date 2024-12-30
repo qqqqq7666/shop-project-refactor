@@ -9,9 +9,14 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(23)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
+
+tasks.withType(JavaCompile).configureEach {
+  options.compilerArgs.add("-parameters")
+}
+
 
 configurations {
     compileOnly {
@@ -70,7 +75,6 @@ dependencies {
 
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
 }
 
 tasks.named('test') {

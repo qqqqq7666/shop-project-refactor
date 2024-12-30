@@ -9,11 +9,14 @@ import com.example.shop_project.review.dto.ReviewResponseDto;
 import com.example.shop_project.review.entity.Review;
 import com.example.shop_project.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,8 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final OrderDetailRepository orderDetailRepository;
 
+    // 리뷰 저장
+    @Transactional
     public Review saveReview(ReviewRequestDto reviewRequestDto, String memberEmail) {
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원 정보를 찾을 수 없습니다: " + memberEmail));
@@ -41,22 +46,56 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
-    public List<ReviewResponseDto> getReviewsByProductId(Long productId) {
-        List<Review> reviews = reviewRepository.findByProductId(productId);
-        return toReviewResponseDtoList(reviews);
+    // 회원별 리뷰 조회
+    public Page<ReviewResponseDto> getReviewsByMember(String memberEmail, int page) {
+        Member member = memberRepository.findByEmail(memberEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원 정보를 찾을 수 없습니다: " + memberEmail));
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("date").descending());
+        Page<Review> reviews = reviewRepository.findByMember(member, pageable);
+        return reviews.map(this::toReviewResponseDto);
     }
 
-    private List<ReviewResponseDto> toReviewResponseDtoList(List<Review> reviews) {
-        return reviews.stream()
-                .map(entity -> ReviewResponseDto.builder()
-                        .reviewId(entity.getReviewId())
-                        .stars(entity.getStars())
-                        .content(entity.getContent())
-                        .date(entity.getDate())
-                        .nickname(entity.getMember().getNickname())
-                        .color(entity.getOrderDetail().getColor())
-                        .size(entity.getOrderDetail().getSize())
-                        .build())
-                .collect(Collectors.toList());
+    // 회원별 리뷰 수 조회
+    public int getReviewCountByMember(Member member) {
+        return reviewRepository.countByMember(member);
+    }
+
+    // 상품별 리뷰 조회
+    public Page<ReviewResponseDto> getReviewsByProductId(Long productId, String sort, int page) {
+        Sort sortOrder = Sort.by("date").descending(); // 최신순 정렬(기본값)
+        if ("highRating".equals(sort)) {
+            sortOrder = Sort.by("stars").descending();  // 높은 평점순 정렬
+        } else if ("lowRating".equals(sort)) {
+            sortOrder = Sort.by("stars").ascending();  // 낮은 평점순 정렬
+        }
+        Pageable pageable = PageRequest.of(page, 10, sortOrder);
+
+        Page<Review> reviews = reviewRepository.findByProductId(productId, pageable);
+        return reviews.map(this::toReviewResponseDto);
+    }
+
+    // 상품별 별점 평균 조회
+    public Double getAverageStarsByProductId(Long productId) {
+        Double averageStars = reviewRepository.averageStarsByProductId(productId);
+        if (averageStars == null) {
+            return 0.0;
+        }
+        return averageStars;
+    }
+
+    // Entity -> ReviewResponseDto 변환 메서드
+    private ReviewResponseDto toReviewResponseDto(Review review) {
+        return ReviewResponseDto.builder()
+                .reviewId(review.getReviewId())
+                .stars(review.getStars())
+                .content(review.getContent())
+                .date(review.getDate())
+                .nickname(review.getMember().getNickname())
+                .productId(review.getProductId())
+                .productName(review.getOrderDetail().getProduct().getProductName())
+                .color(review.getOrderDetail().getColor())
+                .size(review.getOrderDetail().getSize())
+                .build();
     }
 }

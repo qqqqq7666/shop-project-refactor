@@ -15,10 +15,10 @@ public class ChatbotService {
                 return "보통 주문 후 3-5일 이내에 배송됩니다.";
             case "환불 정책은 어떻게 되나요?":
                 return "제품 수령 후 7일 이내에 환불 요청이 가능합니다.";
-            case "감사합니다":
-                return "언제든지 도와드릴게요!";
             default:
                 return "죄송합니다. 해당 질문에 대한 답변을 준비하지 못했습니다.";
         }
     }
+    
+
 }

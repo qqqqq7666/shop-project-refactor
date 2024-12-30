@@ -1,5 +1,6 @@
 package com.example.shop_project.point.service;
 
+import com.example.shop_project.member.Membership;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.order.entity.Order;
@@ -14,7 +15,9 @@ import com.example.shop_project.point.repository.SavedPointRepository;
 import com.example.shop_project.point.repository.UsedPointRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -67,9 +70,9 @@ public class PointService {
         return pointRepository.findByMember(member).orElseThrow(() -> new IllegalArgumentException("포인트가 존재하지 않습니다."));
     }
 
-    public UsedPointResponseDto getPointByOrderNo(Long orderNo) {
+    public UsedPointResponseDto getUsedPointByOrderNo(Long orderNo) {
         Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
-        UsedPoint usedPoint = usedPointRepository.findByOrder(order).orElseThrow(() -> new IllegalArgumentException("사용된 포인트 내역이 존재하지 않습니다."));
+        UsedPoint usedPoint = usedPointRepository.findByOrder(order).orElseGet(() -> UsedPoint.builder().amount(0).build());
 
         return pointMapper.toResponseDto(usedPoint);
     }
@@ -89,15 +92,18 @@ public class PointService {
                     .build());
         });
         usedPointList.forEach(usedPoint -> {
+            String reason = usedPoint.getOrder().getOrderDetailList().getFirst().getProduct().getProductName();
+            if (usedPoint.getOrder().getOrderDetailList().size() > 1)
+                reason += " 외 " + (usedPoint.getOrder().getOrderDetailList().size() - 1) + "개";
             usedPointHistoryDtoList.add(PointHistoryDto.builder()
                     .amount(usedPoint.getAmount())
                     .createdDate(usedPoint.getCreatedDate())
                     .order(usedPoint.getOrder())
-                            .reason(usedPoint.getOrder().getOrderDetailList().getFirst().getProduct().getProductName())
+                    .reason(reason)
                     .isUsed(true)
                     .build());
         });
-        if(category.equals("all")) {
+        if (category.equals("all")) {
             List<PointHistoryDto> pointHistoryDtoList = new ArrayList<>();
             pointHistoryDtoList.addAll(savedPointHistoryDtoList);
             pointHistoryDtoList.addAll(usedPointHistoryDtoList);
@@ -105,11 +111,38 @@ public class PointService {
             return pointHistoryDtoList;
         }
 
-        if(category.equals("save"))
+        if (category.equals("save"))
             return savedPointHistoryDtoList.reversed();
-        if(category.equals("use"))
+        if (category.equals("use"))
             return usedPointHistoryDtoList.reversed();
 
         return null;
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void monthlyPointSave() {
+        memberRepository.findAllByMembership(Membership.DIAMOND).forEach(member -> {
+            findPointByEmail(member.getEmail()).savePoint(SavedPoint.builder()
+                    .savedPoint(50000)
+                    .saveReason("매월 맴버십 DIAMOND 등급 혜택")
+                    .build());
+        });
+        memberRepository.findAllByMembership(Membership.GOLD).forEach(member -> {
+            findPointByEmail(member.getEmail()).savePoint(SavedPoint.builder()
+                    .savedPoint(10000)
+                    .saveReason("매월 맴버십 GOLD 등급 혜택")
+                    .build());
+        });
+        memberRepository.findAllByMembership(Membership.SILVER).forEach(member -> {
+            findPointByEmail(member.getEmail()).savePoint(SavedPoint.builder()
+                    .savedPoint(5000)
+                    .saveReason("매월 맴버십 SILVER 등급 혜택")
+                    .build());
+        });
+    }
+
+    public Integer getTotalSavedPoint(String email) {
+        return savedPointRepository.findTotalSavedPoint(findPointByEmail(email));
     }
 }

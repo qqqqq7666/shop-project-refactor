@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>나의 리뷰</title>
+    <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/review/css/reviewCommon.css">
+    <script src="/review/js/reviewList.js" defer></script>
+</head>
+<body>
+<div class="container mt-5 d-flex flex-column align-items-center">
+    <h2 class="mr-3 mb-3 ">나의 리뷰</h2>
+    <div id="review-list">
+        <div th:if="${#lists.isEmpty(reviews)}">
+            <p class="mb-0">작성한 리뷰가 없습니다.</p>
+        </div>
+        <div class="review" th:each="review : ${reviews}">
+            <p class="review-info d-flex align-items-center">
+                <span class="fs-4" th:text="${review.productName}"></span>
+                <span class="mx-2" th:text="|${review.color} / ${review.size}|"></span>
+            </p>
+            <p class="review-info">
+                <span th:each="i : ${#numbers.sequence(1, review.stars)}">★</span>
+                <span class="create-date" th:text="${review.date}"></span>
+            </p>
+            <div class="content-wrapper mt-3 mb-1">
+                <p class="review-content mb-0" th:text="${review.content}"></p>
+                <span class="more-text">더보기</span>
+                <span class="less-text">줄이기</span>
+            </div>
+        </div>
+    </div>
+    <nav id="pagination" aria-label="Page navigaion" th:if="${!#lists.isEmpty(reviews)}">
+        <ul class="pagination">
+            <li class="page-item" th:if="${currentPage > 0}" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/my-reviews(page=${currentPage - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/my-reviews(page=${pageNum})}"
+                   th:text="${pageNum + 1}"></a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage + 1 < totalPages}" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{my-reviews(page=${currentPage + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>
