@@ -8,6 +8,7 @@ import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.order.service.PaymentService;
 import com.example.shop_project.point.dto.PointDto;
 import com.example.shop_project.point.service.PointService;
+import com.example.shop_project.review.service.ReviewService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/order")
@@ -34,6 +36,8 @@ public class OrderViewController {
     private PaymentService paymentService;
     @Autowired
     private PointService pointService;
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/create")
     public String createOrder(){
@@ -60,6 +64,11 @@ public class OrderViewController {
         Page<OrderResponseDto> orderPage = orderService.getOrderPageList(principal, PageRequest.of(page, 10), search);
         if(orderPage.isEmpty())
             return "order/order_empty";
+
+        // 리뷰 작성 여부
+        Map<Long, Boolean> reviewStatus = reviewService.getReviewStatusMap(orderPage);
+        model.addAttribute("reviewStatus", reviewStatus);
+
         model.addAttribute("orderPage", orderPage);
         model.addAttribute("currentPage", page);
         return "order/order_list";

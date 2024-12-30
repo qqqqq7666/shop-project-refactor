@@ -39,12 +39,16 @@
                     <p class="card-text" th:text="|${detail.getPrice()}원|">Price: <strong>price</strong></p>
                 </div>
                 <!-- review button -->
-                <div>
+                <div class="review-btn-container"
+                     th:if="${#strings.equals(order.getOrderStatus().toString(), '구매 확정')
+                     && T(java.time.temporal.ChronoUnit).DAYS.between(detail.updatedDate.toLocalDate(), T(java.time.LocalDate).now()) <= 30}">
                     <button type="button" class="review-btn btn btn-outline-dark" style="margin-left: 15px;"
+                            th:if="${not reviewStatus.get(detail.getOrderDetailId())}"
                             th:data-order-detail-id="${detail.getOrderDetailId()}"
                             th:data-product-name="${detail.getProduct().getProductName()}"
                             th:data-product-color="${detail.getColor()}"
-                            th:data-product-size="${detail.getSize()}">후기 작성</button>
+                            th:data-product-size="${detail.getSize()}">리뷰 작성</button>
+                    <span th:if="${reviewStatus.get(detail.getOrderDetailId())}" class="text-success" style="margin-left: 15px;">리뷰 작성 완료</span>
                 </div>
                 <br>
                 <br>
