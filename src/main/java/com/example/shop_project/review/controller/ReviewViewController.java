@@ -34,13 +34,18 @@ public class ReviewViewController {
 
     // 리뷰 목록 페이지
     @GetMapping("/products/{productId}/reviews")
-    public String reviewList(@PathVariable Long productId, @RequestParam(defaultValue = "0") int page, Model model){
-        Page<ReviewResponseDto> reviews = reviewService.getReviewsByProductId(productId, page);
+    public String reviewList(@PathVariable Long productId,
+                             @RequestParam(defaultValue = "date") String sort,
+                             @RequestParam(defaultValue = "0") int page, Model model){
+        Page<ReviewResponseDto> reviews = reviewService.getReviewsByProductId(productId, sort, page);
         Double averageStars = reviewService.getAverageStarsByProductId(productId);
+
         model.addAttribute("reviews", reviews.getContent());
         model.addAttribute("totalPages", reviews.getTotalPages());
         model.addAttribute("currentPage", reviews.getNumber());
+        model.addAttribute("sortOption", sort);
         model.addAttribute("averageStars", averageStars);
+
         return "review/reviewList";
     }
 }

@@ -68,3 +68,14 @@
     cursor: pointer;
     display: none;
 }
+
+#pagination {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.review-btn {
+    margin-left: auto;
+    margin-right: 0px;
+}

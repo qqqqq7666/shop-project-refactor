@@ -49,8 +49,15 @@ public class ReviewService {
     }
 
     // 상품 별 리뷰 조회
-    public Page<ReviewResponseDto> getReviewsByProductId(Long productId, int page) {
-        Pageable pageable = PageRequest.of(page, 20, Sort.by("date").descending());
+    public Page<ReviewResponseDto> getReviewsByProductId(Long productId, String sort, int page) {
+        Sort sortOrder = Sort.by("date").descending(); // 최신순 정렬(기본값)
+        if ("highRating".equals(sort)) {
+            sortOrder = Sort.by("stars").descending();  // 높은 평점순 정렬
+        } else if ("lowRating".equals(sort)) {
+            sortOrder = Sort.by("stars").ascending();  // 낮은 평점순 정렬
+        }
+        Pageable pageable = PageRequest.of(page, 10, sortOrder);
+
         Page<Review> reviews = reviewRepository.findByProductId(productId, pageable);
         return reviews.map(this::toReviewResponseDto);
     }

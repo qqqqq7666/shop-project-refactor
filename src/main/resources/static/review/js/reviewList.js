@@ -28,3 +28,9 @@ reviews.forEach(review => {
         text.style.display = '-webkit-box'; // 텍스트의 속성을 다시 -webkit-box로 표시
     });
 });
+
+function changeSortOption() {
+    const sortOption = document.getElementById('sortSelect').value;
+    const currentUrl = window.location.href.split('?')[0]; // URL에서 쿼리스트링 제외
+    window.location.href = `${currentUrl}?sort=${sortOption}&page=0`; // 페이지 0으로
+}
