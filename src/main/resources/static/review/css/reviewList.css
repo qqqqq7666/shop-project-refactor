@@ -20,53 +20,8 @@
     font-size: 1.8rem;
 }
 
-#review-list {
-    margin-bottom: 20px;
-    padding: 30px;
-    width: 80%;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.review {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 10px;
-}
-
-/* 마지막 리뷰는 선 표시 X */
-.review:last-child {
-    border-bottom: none;
-}
-
-.review-info {
-    margin: 0px 0px 8px;
-}
-
 .nickname {
     font-size: 1.5rem;
-}
-
-.create-date {
-    margin-left: 0.5em;
-    font-size: 0.9rem;
-    color: #6c757d;
-}
-
-.review-content {
-    overflow: hidden; /* 요소의 내용이 영역을 벗어날 경우 숨김 처리 */
-    display: -webkit-box; /* 요소의 표시 방법을 -webkit-box로 표시 */
-    -webkit-box-orient: vertical; /* webkit-box로 표시된 자식 요소들 수직 배치 */
-    -webkit-line-clamp: 3; /* 요소 내 텍스트 3줄 제한 */
-    text-align :justify; /* 텍스트 양쪽정렬 */
-}
-
-.more-text, .less-text {
-    font-size: 16px;
-    color: #6610f2;
-    cursor: pointer;
-    display: none;
 }
 
 #pagination {

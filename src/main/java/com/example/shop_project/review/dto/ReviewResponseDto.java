@@ -17,6 +17,7 @@ public class ReviewResponseDto {
     private LocalDate date;
     private String nickname; // 리뷰 작성자의 닉네임
     private Long productId;
+    private String productName;
     private String color;
     private Size size;
 

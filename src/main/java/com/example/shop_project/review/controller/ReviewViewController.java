@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -54,5 +53,19 @@ public class ReviewViewController {
         model.addAttribute("productId", productId);
 
         return "review/reviewList";
+    }
+
+    @GetMapping("/my-reviews")
+    public String myReviewList(@RequestParam(defaultValue = "0") int page, Model model) {
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Page<ReviewResponseDto> reviews = reviewService.getReviewsByMember(memberEmail, page);
+        if (reviews == null || reviews.isEmpty()) {
+            model.addAttribute("reviews", Collections.emptyList());
+        } else {
+            model.addAttribute("reviews", reviews.getContent());
+            model.addAttribute("totalPages", reviews.getTotalPages());
+            model.addAttribute("currentPage", reviews.getNumber());
+        }
+        return "review/myReviewList";
     }
 }
