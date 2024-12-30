@@ -23,7 +23,7 @@ public class AdminPointAPIController {
     }
 
     @DeleteMapping("/usedpoint")
-    public ResponseEntity<Void> cancelUsedPoint(Long usedPointId){
+    public ResponseEntity<Void> cancelUsedPoint(@RequestBody Long usedPointId){
         pointService.cancelUsedPoint(usedPointId);
         return ResponseEntity.noContent().build();
     }

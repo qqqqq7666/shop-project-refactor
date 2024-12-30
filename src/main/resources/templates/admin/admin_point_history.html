@@ -36,7 +36,8 @@
   <div id="all" class="tab-contents">
     <div th:each="pointHistory : ${pointHistoryList}">
         <div align="end" class="my-1">
-            <button type="button" name="savedPointId" th:value="${pointHistory.getPointId()}" class="btn-close point-delete-button"></button>
+            <button th:if="${!pointHistory.getIsUsed()}" type="button" name="savedPointId" th:value="${pointHistory.getPointId()}" class="btn-close savedpoint-delete-button"></button>
+            <button th:if="${pointHistory.getIsUsed()}" type="button" name="savedPointId" th:value="${pointHistory.getPointId()}" class="btn-close usedpoint-delete-button"></button>
         </div>
       <div class="point-item">
         <div class="point-info">
@@ -56,16 +57,17 @@
 <script src="/common/js/bootstrap.bundle.min.js"></script>
 <script>
   // 폼 제출 후 응답이 오면 새로 고침
-  const deleteButton = document.getElementsByClassName("point-delete-button");
-  for(let i = 0; i < deleteButton.length; i++){
-    deleteButton[i].addEventListener("click", () => {
+  const savedDeleteButton = document.getElementsByClassName("savedpoint-delete-button");
+  const usedDeleteButton = document.getElementsByClassName("usedpoint-delete-button");
+  for(let i = 0; i < savedDeleteButton.length; i++){
+    savedDeleteButton[i].addEventListener("click", () => {
       if(confirm("포인트 내역을 삭제하시겠습니까?")){
         fetch("/api/v1/admin/points/savedpoint", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json"
           },
-          body: deleteButton.item(i).value
+          body: savedDeleteButton.item(i).value
         })
                 .then(response => {
                   if(response.ok)
@@ -73,6 +75,24 @@
                 })
       }
     })
+  }
+
+  for(let i = 0; i < usedDeleteButton.length; i++){
+      usedDeleteButton[i].addEventListener("click", () => {
+          if(confirm("포인트 내역을 삭제하시겠습니까?")){
+              fetch("/api/v1/admin/points/usedpoint", {
+                  method: "DELETE",
+                  headers: {
+                      "Content-Type": "application/json"
+                  },
+                  body: usedDeleteButton.item(i).value
+              })
+                  .then(response => {
+                      if(response.ok)
+                          location.reload();
+                  })
+          }
+      })
   }
 </script>
 </body>
