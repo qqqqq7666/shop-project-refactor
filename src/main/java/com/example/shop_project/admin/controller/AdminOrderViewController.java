@@ -6,10 +6,7 @@ import com.example.shop_project.order.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/orders")
@@ -22,7 +19,7 @@ public class AdminOrderViewController {
     PaymentService paymentService;
 
     @GetMapping
-    public String orderList(Model model){
+    public String orderList(Model model, @RequestParam(defaultValue = "date") String sort){
         model.addAttribute("orderList", orderService.getOrderList());
 
         return "admin/admin_order_list";

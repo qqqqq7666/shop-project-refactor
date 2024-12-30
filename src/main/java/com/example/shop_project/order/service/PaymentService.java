@@ -3,6 +3,7 @@ package com.example.shop_project.order.service;
 import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.PaymentDto;
 import com.example.shop_project.order.entity.Order;
+import com.example.shop_project.order.entity.PayStatus;
 import com.example.shop_project.order.entity.Payment;
 import com.example.shop_project.order.mapper.OrderMapper;
 import com.example.shop_project.order.repository.OrderRepository;
@@ -47,7 +48,8 @@ public class PaymentService {
     @Transactional
     public Payment getPaymentByOrderNo(Long orderNo){
         Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
-        return paymentRepository.findByOrder(order).orElseThrow(() -> new IllegalArgumentException("주문에 대한 결제가 존재하지 않습니다."));
+        return paymentRepository.findByOrder(order).orElseGet(() -> Payment.builder()
+                .payStatus(PayStatus.FAIL).build());
     }
 
     @Transactional

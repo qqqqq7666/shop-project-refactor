@@ -22,4 +22,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findFirstByOrderByOrderNoDesc();
 //    Page<Order> findAllByMemberAndOrderDetailListAndOrderStatusNotOrderByOrderNoDesc(Member member, Pageable pageable, OrderStatus orderStatus, List<OrderDetail> orderDetailList);
     Page<Order> findByMemberAndOrderStatusNotAndOrderDetailListProductProductNameContainingOrderByOrderNoDesc(Member member, OrderStatus orderStatus, String productName, Pageable pageable);
+    List<Order> findAllOrderByOrderStatus(OrderStatus orderStatus);
 }
