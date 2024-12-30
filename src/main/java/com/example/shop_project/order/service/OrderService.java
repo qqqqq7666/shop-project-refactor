@@ -155,4 +155,13 @@ public class OrderService {
         order.updateAddress(addressDto);
         orderRepository.save(order);
     }
+
+    @Transactional
+    public void deleteCanceledOrder(Long orderNo){
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        order.updateStatus(OrderStatus.NEW);
+        orderRepository.save(order);
+        CanceledOrder canceledOrder = canceledOrderRepository.findById(orderNo).orElseThrow();
+        canceledOrderRepository.delete(canceledOrder);
+    }
 }

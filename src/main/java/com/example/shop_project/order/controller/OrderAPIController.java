@@ -50,13 +50,6 @@ public class OrderAPIController {
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
     }
 
-    @PatchMapping("/{orderNo}/update")
-    public ResponseEntity<OrderResponseDto> updateOrder(@PathVariable Long orderNo, @Validated OrderRequestDto orderRequestDto){
-        OrderResponseDto response = orderService.updateOrder(orderNo, orderRequestDto);
-
-        return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
-    }
-
     @DeleteMapping("{orderNo}/delete")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderNo){
         orderService.deleteOrder(orderNo);
@@ -97,6 +90,12 @@ public class OrderAPIController {
     @PatchMapping("/address")
     public ResponseEntity<Void> updateAddress(@RequestBody AddressDto addressDto){
         orderService.updateAddress(addressDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/canceled-order")
+    public ResponseEntity<?> deleteCanceledOrder(Long orderNo){
+        orderService.deleteCanceledOrder(orderNo);
         return ResponseEntity.ok().build();
     }
 }

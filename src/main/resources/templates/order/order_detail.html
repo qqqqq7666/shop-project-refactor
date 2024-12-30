@@ -19,7 +19,9 @@
         <div>
             <div class="d-flex justify-content-between">
                 <p th:text="${order.getAddressee()}" style="font-size: 25px"></p>
-                <p><button class="btn btn-dark" th:onclick="|location.href='@{/order/modify-address/{orderNo}(orderNo=${orderNo})}'|">배송지 변경</button></p>
+                <p th:if="${order.getOrderStatus() == order.getOrderStatus().NEW}">
+                    <button class="btn btn-dark" th:onclick="|location.href='@{/order/modify-address/{orderNo}(orderNo=${orderNo})}'|">배송지 변경</button>
+                </p>
             </div>
             <p th:text="${order.getContact()}">010-****-1234</p>
             <p th:text="|(${order.getPostNo()}) ${order.getAddress()} ${order.getAddressDetail()}|"></p>
@@ -85,9 +87,13 @@
                     </button>
                 </div>
                 <div th:if="${order.getOrderStatus() == orderStatusArray[5] || order.getOrderStatus() == orderStatusArray[6]}">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        교환/환불 요청 취소
-                    </button>
+                    <form action="/api/v1/orders/canceled-order" method="post" th:onsubmit="|/order/${orderNo}|">
+                        <input type="hidden" name="orderNo" th:value="${orderNo}">
+                        <input type="hidden" name="_method" value="delete">
+                        <button type="submit" class="btn btn-dark">
+                            교환/환불 요청 취소
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
