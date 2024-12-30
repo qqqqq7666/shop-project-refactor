@@ -1,5 +1,7 @@
 package com.example.shop_project.review.controller;
 
+import com.example.shop_project.point.dto.SavedPointRequestDto;
+import com.example.shop_project.point.service.PointService;
 import com.example.shop_project.review.dto.ReviewRequestDto;
 import com.example.shop_project.review.dto.ReviewResponseDto;
 import com.example.shop_project.review.service.ReviewService;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewViewController {
     private final ReviewService reviewService;
+    private final PointService pointService;
 
     // 리뷰 작성 페이지
     @GetMapping("/review/create")
@@ -29,6 +32,13 @@ public class ReviewViewController {
     public String createReview(@Valid @ModelAttribute ReviewRequestDto reviewRequestDto) {
         String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         reviewService.saveReview(reviewRequestDto, memberEmail);
+
+        pointService.createSavedPoint(SavedPointRequestDto.builder()
+                .savedPoint(500)
+                .saveReason("리뷰 작성 혜택")
+                .email(memberEmail)
+                .build());
+
         return "redirect:/order";
     }
 
