@@ -20,7 +20,7 @@ document.getElementById('connect-admin-btn').addEventListener('click', function(
     .then(chatRoom => {
         currentRoomId = chatRoom.roomId;
         // 1) 여기서는 "방 생성 완료(대기중)" 안내만
-        userappendMessage("상담 요청이 접수되었습니다. 상담사가 연결할 때까지 대기...", 'bot');
+        userappendMessage("상담 요청이 접수되었습니다. 상담사가 연결할 때까지 대기 바랍니다.", 'bot');
 
         // 2) 주기적으로 방 상태 체크
         checkRoomStatusPeriodically();
@@ -144,9 +144,6 @@ function endCounseling() {
 
     // 입력창 비활성화
     disableUserInput();
-
-    // 버튼식 상담 다시 활성화 (이미 isCounseling = false 이므로, chatbotWork.js에서 버튼식 작동)
-    appendMessage("버튼식 상담이 다시 활성화되었습니다.", 'bot');
 
 	if (stompClient) {
 	    stompClient.disconnect(() => {

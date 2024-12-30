@@ -4,11 +4,6 @@
 document.getElementById('chatbot-user-input').disabled = true;
 document.getElementById('chatbot-send-btn').disabled = true;
 
-// 메시지 전송 기능 제거
-/*function sendMessage() {
-    console.warn("현재는 버튼으로만 질문할 수 있습니다.");
-}*/
-
 // 추천 질문 버튼 클릭 이벤트
 document.querySelectorAll('.chatbot-question-btn').forEach(button => {
     button.addEventListener('click', function() {
