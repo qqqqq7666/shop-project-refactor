@@ -82,6 +82,9 @@
             <p>결제 수단</p>
             <p th:text="${payment.getPayMethod()}">결제 수단</p>
         </div>
+            <div th:if="${payment.getPayStatus() == payment.getPayStatus().CANCEL}" align="center">
+                <h3>결제 취소</h3>
+            </div>
         </div>
     </div>
 </div>

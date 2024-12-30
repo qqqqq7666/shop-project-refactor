@@ -85,4 +85,11 @@ public class PaymentService {
             productRepository.save(product);
         });
     }
+
+    @Transactional
+    public void cancelPay(Long orderNo){
+        Payment payment = paymentRepository.findByOrder(orderRepository.findByOrderNo(orderNo).orElseThrow()).orElseThrow();
+        payment.cancelPay();
+        paymentRepository.save(payment);
+    }
 }
