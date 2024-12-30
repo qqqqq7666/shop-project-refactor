@@ -2,6 +2,7 @@ package com.example.shop_project.order.service;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
+import com.example.shop_project.order.dto.AddressDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.CanceledOrder;
@@ -146,5 +147,12 @@ public class OrderService {
     //mypage
     public Integer getOrderCountByEmail(String email){
         return orderRepository.findAllByMember(memberRepository.findByEmail(email).orElseThrow()).size();
+    }
+
+    @Transactional
+    public void updateAddress(AddressDto addressDto){
+        Order order = orderRepository.findByOrderNo(addressDto.getOrderNo()).orElseThrow();
+        order.updateAddress(addressDto);
+        orderRepository.save(order);
     }
 }

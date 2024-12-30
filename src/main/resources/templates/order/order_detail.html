@@ -19,7 +19,7 @@
         <div>
             <div class="d-flex justify-content-between">
                 <p th:text="${order.getAddressee()}" style="font-size: 25px"></p>
-                <p><button class="btn btn-dark">배송지 변경</button></p>
+                <p><button class="btn btn-dark" th:onclick="|location.href='@{/order/modify-address/{orderNo}(orderNo=${orderNo})}'|">배송지 변경</button></p>
             </div>
             <p th:text="${order.getContact()}">010-****-1234</p>
             <p th:text="|(${order.getPostNo()}) ${order.getAddress()} ${order.getAddressDetail()}|"></p>

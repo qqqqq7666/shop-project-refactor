@@ -2,6 +2,7 @@ package com.example.shop_project.order.entity;
 
 import com.example.shop_project.BaseEntity;
 import com.example.shop_project.member.entity.Member;
+import com.example.shop_project.order.dto.AddressDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -65,5 +66,14 @@ public class Order extends BaseEntity {
         orderDetailList.forEach(orderDetail -> {
             orderDetail.assignOrderToCreate(this);
         });
+    }
+
+    public void updateAddress(AddressDto addressDto){
+        addressee = addressDto.getAddressee();
+        contact = addressDto.getContact();
+        postNo = addressDto.getPostNo();
+        address = addressDto.getAddress();
+        addressDetail = addressDto.getAddressDetail();
+        requirement = addressDto.getRequirement();
     }
 }

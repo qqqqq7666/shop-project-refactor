@@ -82,8 +82,9 @@ public class OrderViewController {
         return "/order/cart/cart";
     }
 
-    @GetMapping("modify-address")
-    public String modifyAddress(){
+    @GetMapping("modify-address/{orderNo}")
+    public String modifyAddress(Model model, @PathVariable Long orderNo){
+        model.addAttribute("orderNo", orderNo);
         return "/order/modify_address";
     }
 }

@@ -2,6 +2,7 @@ package com.example.shop_project.order.controller;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.service.MemberService;
+import com.example.shop_project.order.dto.AddressDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.CanceledOrder;
@@ -91,5 +92,11 @@ public class OrderAPIController {
     @GetMapping("/product-option/{productId}")
     public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId){
         return ResponseEntity.ok(productService.getProductById(productId));
+    }
+
+    @PatchMapping("/address")
+    public ResponseEntity<Void> updateAddress(@RequestBody AddressDto addressDto){
+        orderService.updateAddress(addressDto);
+        return ResponseEntity.ok().build();
     }
 }
