@@ -143,7 +143,10 @@ public class PointService {
     }
 
     public Integer getTotalSavedPoint(String email) {
-        return savedPointRepository.findTotalSavedPoint(findPointByEmail(email));
+        Integer totalSavedPoint = savedPointRepository.findTotalSavedPoint(findPointByEmail(email));
+        if(totalSavedPoint == null)
+            return 0;
+        return totalSavedPoint;
     }
 
     public List<Point> getTotalPointList(){
