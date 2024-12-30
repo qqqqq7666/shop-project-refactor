@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.Base64;
 
 import com.example.shop_project.point.service.PointService;
+import com.example.shop_project.review.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ public class MemberViewController {
 	private final MemberService memberService;
 	private final MemberRepository memberRepository;
 	private final PointService pointService;
+	private final ReviewService reviewService;
 
 	@GetMapping("/join")
 	public String Join() {
@@ -72,6 +74,7 @@ public class MemberViewController {
         Member member = memberService.findByEmail(email);
         model.addAttribute("member", member);
 		model.addAttribute("point", pointService.getPointByMember(email));
+		model.addAttribute("reviewCount", reviewService.getReviewCountByMember(member));
 		return "member/mypage";
 	}
 	
