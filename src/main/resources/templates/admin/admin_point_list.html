@@ -32,13 +32,13 @@
         </tr>
         </thead>
         <tbody align="center">
-        <tr th:each="point, index : ${pointList}" id="order-info"
+        <tr th:each="point, index : ${pointList}" id="order-info" th:onclick="|location.href='@{/admin/point/{pointId}(pointId=${point.pointId})}'|"
             style="cursor: pointer;">
             <td th:text="${point.getPointId()}">/td>
             <td th:text="${#temporals.format(point.getCreatedDate(), 'yy-MM-dd')}">1</td>
             <td th:text="${#temporals.format(point.getUpdatedDate(), 'yy-MM-dd')}">Mark</td>
             <td th:text="${point.getMember().getName()}">Mark</td>
-            <td th:text="${point.getMember().getEmail()}">Otto</td>
+            <td class="member-email" th:text="${point.getMember().getEmail()}">Otto</td>
             <td th:text="${point.getBalance()}">@mdo</td>
             <td>
                 <button type="button" class="btn btn-primary point-change" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -80,28 +80,43 @@
 </div>
 <script src="/common/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
-    const pointList = [[${pointList}]];
     const pointChange = document.getElementsByClassName("point-change");
-    for(let i = 0; i < pointChange.length; i++){
+    for(let i = 0; i < pointChange.length; i++) {
         pointChange[i].addEventListener("click", () => {
             document.getElementById("point-save-button").addEventListener("click", async () => {
-                if(document.querySelector("input[name='type']:checked").value === "increase"){
+                if (document.querySelector("input[name='type']:checked").value === "increase") {
                     await fetch("/api/v1/points/save-point", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            email: pointList[i].member.email,
+                            email: document.getElementsByClassName("member-email")[i].textContent,
                             saveReason: document.getElementById("message-textarea").value,
                             savedPoint: document.getElementById("point-input").value
                         })
                     })
 
-                    console.log(pointList[i].member.email);
+                    console.log(document.getElementsByClassName("member-email")[i].textContent);
+                }
+
+                if (document.querySelector("input[name='type']:checked").value === "decrease") {
+                    await fetch("/api/v1/points/use-point", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: document.getElementsByClassName("member-email")[i].textContent,
+                            saveReason: document.getElementById("message-textarea").value,
+                            savedPoint: document.getElementById("point-input").value
+                        })
+                    })
+
+                    console.log(document.getElementsByClassName("member-email")[i].textContent);
                 }
             })
-        })
+        });
     }
 </script>
 </body>
