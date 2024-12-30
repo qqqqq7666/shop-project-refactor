@@ -25,12 +25,6 @@ public class Point extends BaseEntity {
     @Column(nullable = false)
     @ColumnDefault("0")
     private Integer balance;
-    @ColumnDefault("0")
-    @Column(nullable = false)
-    private Integer totalSavedPoint;
-    @ColumnDefault("0")
-    @Column(nullable = false)
-    private Integer totalUsedPoint;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false, unique = true)
@@ -46,13 +40,11 @@ public class Point extends BaseEntity {
         usedPoint.assignPointToCreate(this);
         usedPointList.add(usedPoint);
         balance -= usedPoint.getAmount();
-        totalUsedPoint += usedPoint.getAmount();
     }
 
     public void savePoint(SavedPoint savedPoint){
         savedPoint.assignPointToCreate(this);
         savedPointList.add(savedPoint);
         balance += savedPoint.getSavedPoint();
-        totalSavedPoint += savedPoint.getSavedPoint();
     }
 }

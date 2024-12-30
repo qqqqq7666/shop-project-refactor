@@ -45,7 +45,6 @@
                              width="100px">
                     </div>
                     <div class="flex-column">
-                        <span>브랜드명</span><br>
                         <span th:text="${detail.getProduct().getProductName()}">Product Name (M / 2 pcs)</span><br>
                         <span th:text="|Option:size / ${detail.getQuantity()}개|">옵션 / 개수</span><br>
                         <span th:text="|${detail.getPrice()}원|">가격</span><br>
@@ -68,6 +67,7 @@
             <p th:if="${order.getTotalPrice() >= 50000}">무료</p>
             <p th:if="${order.getTotalPrice() < 50000}">3000원</p>
         </div>
+        <div th:if="${payment.getPayStatus() != payment.getPayStatus().FAIL}">
         <div class="d-flex justify-content-between">
             <p style="font-size: 20px">결제 금액</p>
             <p th:text="|${payment.getAmount()}원|">총 결제 금액</p>
@@ -76,6 +76,7 @@
         <div class="d-flex justify-content-between">
             <p>결제 수단</p>
             <p th:text="${payment.getPayMethod()}">결제 수단</p>
+        </div>
         </div>
     </div>
 </div>

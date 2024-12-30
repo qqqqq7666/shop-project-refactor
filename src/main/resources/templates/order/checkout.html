@@ -266,9 +266,6 @@
                             <input type="text" id="sample6_address" placeholder="주소" name="address"
                                    class="readonly col-8 form-control" required>
                             <span id="guide" style="color:#999;display:none"></span>
-                            <!--                            <div class="col-md-3">-->
-                            <!--                            <input type="text" id="sample6_extraAddress" placeholder="참고항목" class="form-control readonly">-->
-                            <!--                            </div>-->
                         </form>
                         <div class="col-md-5">
                             <input type="text" id="sample6_detailAddress" placeholder="상세주소" name="addressDetail"
@@ -300,7 +297,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>보유 포인트</div>
-                                <div th:text="|${#numbers.formatInteger(point.getBalance(), 0, 'COMMA')} 포인트|">n원</div>
+                                <div th:text="|${#numbers.formatInteger(point.getBalance(), 0, 'COMMA')} P|">n원</div>
                             </div>
                             <br>
                         <div class="input-group mb-3">
