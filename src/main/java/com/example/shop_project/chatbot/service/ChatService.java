@@ -51,6 +51,14 @@ public class ChatService {
         }
     }
     
+    public void endChat(String roomId) {
+        ChatRoom room = rooms.get(roomId);
+        if (room != null) {
+            room.setStatus("CLOSED");
+            System.out.println("Chat room " + roomId + " is closed");
+        }
+    }
+    
     // 메시지 저장 (일단은 미구현)
     public void saveMessage(ChatMessage message) {
         // DB에 저장하거나, 추적이 필요한 경우 rooms에서 꺼내서 처리

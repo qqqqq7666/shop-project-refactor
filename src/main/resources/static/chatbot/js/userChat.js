@@ -1,9 +1,16 @@
+
 let stompClient = null;
 let currentRoomId = null;
 let userId = "USER_123";  // 실제 로그인된 사용자 ID
 
 // 상담사 연결 버튼
 document.getElementById('connect-admin-btn').addEventListener('click', function() {
+	
+	if (window.isCounseling) {
+	    console.log("이미 상담 중입니다.");
+	    return;
+	}
+	
     fetch('/api/v1/chat/connection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -13,14 +20,14 @@ document.getElementById('connect-admin-btn').addEventListener('click', function(
     .then(chatRoom => {
         currentRoomId = chatRoom.roomId;
         // 1) 여기서는 "방 생성 완료(대기중)" 안내만
-        appendMessage("상담 요청이 접수되었습니다. 상담사가 연결할 때까지 대기...", 'bot');
+        userappendMessage("상담 요청이 접수되었습니다. 상담사가 연결할 때까지 대기...", 'bot');
 
         // 2) 주기적으로 방 상태 체크
         checkRoomStatusPeriodically();
     })
     .catch(err => {
         console.error(err);
-        appendMessage("상담사 연결에 실패했습니다.", 'bot');
+        userappendMessage("상담사 연결에 실패했습니다.", 'bot');
     });
 });
 
@@ -34,13 +41,22 @@ function checkRoomStatusPeriodically() {
               if (room.status === 'IN_PROGRESS') {
                   // Admin이 승인(방 상태 변경)하면, 그때 connectWebSocket
                   clearInterval(intervalId); 
-                  connectWebSocket();
+                  startCounseling();
               }
           })
           .catch(err => console.error(err));
     }, 3000);
 }
 
+// 상담 시작
+function startCounseling() {
+    window.isCounseling = true;      // 상담 모드 진입
+    connectWebSocket();       // WebSocket 연결
+    enableUserInput();        // 입력창 활성화(챗봇)
+    userappendMessage("상담사 연결 성공! 메시지를 입력하세요.", 'bot');
+}
+
+// WebSocket 연결
 function connectWebSocket() {
     const socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
@@ -49,13 +65,24 @@ function connectWebSocket() {
 
         stompClient.subscribe('/topic/messages', function(message) {
             const msgBody = JSON.parse(message.body);
+
+			if (msgBody.roomId === currentRoomId) {
+			    console.log('RoomID 일치함, appendMessage 호출!');
+			    userappendMessage(msgBody.content, msgBody.sender);
+			} else {
+			    console.warn('RoomID 불일치: ', msgBody.roomId, currentRoomId);
+			}
+        });
+
+        // (추가) 상담 종료 구독 
+        stompClient.subscribe('/topic/chat/end', function(message) {
+            const msgBody = JSON.parse(message.body);
+            // 방 ID가 내 currentRoomId와 같다면 상담 종료
             if (msgBody.roomId === currentRoomId) {
-                appendMessage(msgBody.content, msgBody.sender);
+                userappendMessage("상담이 종료되었습니다.", 'bot');
+                endCounseling();  // 상담 종료
             }
         });
-        
-        enableUserInput();
-        appendMessage("상담사 연결 성공! 메시지를 입력해주세요.", 'bot');
     });
 }
 
@@ -72,49 +99,58 @@ document.getElementById('chatbot-user-input').addEventListener('keypress', funct
 });
 
 function sendMessage() {
+    // 상담 중일 때만 메시지 전송
+    if (!window.isCounseling) {
+        console.warn("버튼식 상담만 가능합니다. (현재 상담 모드가 아님)");
+        return;
+    }
+
     const msgInput = document.getElementById('chatbot-user-input');
     const content = msgInput.value.trim();
     if (!content || !stompClient) return;
 
-    // WebSocket 전송
     stompClient.send("/app/chat/send", {}, JSON.stringify({
         roomId: currentRoomId,
-        sender: userId,      // 실제 userId
+        sender: userId,
         content: content
     }));
     msgInput.value = "";
 }
 
-function appendMessage(content, sender) {
-	const div = document.getElementById('chatbot-content');
-	const messageDiv = document.createElement('div');
+function userappendMessage(content, sender) {
+    const container = document.getElementById('chatbot-content');
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message');
 
-	// 공통 클래스: 'message'
-	messageDiv.classList.add('message');
+    if (sender === userId) {
+        messageDiv.classList.add('user');  // 유저: 오른쪽 파란색
+    } else {
+        messageDiv.classList.add('bot');   // 어드민: 왼쪽 초록색
+    }
 
-	// 발신자가 나(유저)인지 확인 (기존 userId === "USER_123" 등)
-	if (sender === userId) {
-	    // 내 메시지는 오른쪽
-	    messageDiv.classList.add('user');
-	} else {
-	    // 관리자 메시지는 왼쪽
-	    messageDiv.classList.add('admin');
-	}
-
-	// 이름 표시 제거 → 내용만
-	messageDiv.textContent = content;
-
-	div.appendChild(messageDiv);
-	div.scrollTop = div.scrollHeight;
+    messageDiv.textContent = content;
+    container.appendChild(messageDiv);
+    container.scrollTop = container.scrollHeight;
 }
 
-// 이미 chatbotWork.js에 있는 함수
-function enableUserInput() {
-    const userInput = document.getElementById('chatbot-user-input');
-    const sendBtn = document.getElementById('chatbot-send-btn');
-    
-    userInput.disabled = false;
-    userInput.placeholder = "상담사와 채팅을 시작하세요";
-    sendBtn.disabled = false;
-    console.log("입력창과 전송 버튼이 활성화되었습니다.");
+
+
+
+// 상담 종료 시 처리
+function endCounseling() {
+    // 상담 중단 플래그
+    isCounseling = false;
+    currentRoomId = null;
+
+    // 입력창 비활성화
+    disableUserInput();
+
+    // 버튼식 상담 다시 활성화 (이미 isCounseling = false 이므로, chatbotWork.js에서 버튼식 작동)
+    appendMessage("버튼식 상담이 다시 활성화되었습니다.", 'bot');
+
+	if (stompClient) {
+	    stompClient.disconnect(() => {
+	        console.log("WebSocket 연결이 종료되었습니다.");
+	    });
+	}
 }
