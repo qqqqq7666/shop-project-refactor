@@ -57,12 +57,6 @@ public class InquiryViewController {
         Inquiry inquiry = inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId);
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (inquiry.isSecret() && !inquiry.getMember().getEmail().equals(
-                SecurityContextHolder.getContext().getAuthentication().getName())) {
-            inquiry.setTitle("비밀글입니다");
-            inquiry.setContent("비밀글입니다");
-        }
-
         String nickname = inquiry.getMember().getNickname();
 
         model.addAttribute("inquiry", inquiry);
