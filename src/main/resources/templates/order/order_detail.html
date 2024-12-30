@@ -11,14 +11,16 @@
 <div class="container mt-5">
     <div class="content-container">
         <h2 class="text-center mb-4">주문 상세내역</h2>
-
         <div>
             <h3 th:text="${#temporals.format(order.getCreatedDate(), 'yyyy.MM.dd HH:mm')}"></h3>
             <small th:text="|주문번호 ${orderNo}|"></small>
         </div>
         <hr>
         <div>
-            <p><h5 th:text="${order.getAddressee()}">이름</h5></p>
+            <div class="d-flex justify-content-between">
+                <p th:text="${order.getAddressee()}" style="font-size: 25px"></p>
+                <p><button class="btn btn-dark">배송지 변경</button></p>
+            </div>
             <p th:text="${order.getContact()}">010-****-1234</p>
             <p th:text="|(${order.getPostNo()}) ${order.getAddress()} ${order.getAddressDetail()}|"></p>
             <small th:text="|요청사항: ${order.getRequirement()}|"></small>
@@ -90,8 +92,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Button trigger modal -->
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/common/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="col-md-7 col-lg-8 container" style="padding: 20px; width: 40%;">
+    <h4 class="mb-3">배송지</h4>
+    <div id="checkout-form">
+
+        <div id="post-form-view">
+            <form id="post-form" class="row g-3" novalidate>
+                <div>
+                    <div class="gy-3">
+                        <input type="text" name="addressee" class="form-control" placeholder="수령인"
+                               required pattern=^[가-힣a-zA-Z]+$>
+                    </div>
+                    <br>
+                    <div class="gy-3">
+                        <input type="text" name="contact" class="form-control" placeholder="연락처"
+                               required minlength="11">
+                    </div>
+                    <br>
+                    <div class="md-5" style="width: 40%">
+                        <input type="text" id="sample6_postcode" placeholder="우편번호" name="postNo"
+                               required class="readonly col-3 form-control">
+                        <button>dfddsa</button>
+                        <input type="button" class="btn-light" onclick="sample6_execDaumPostcode()"
+                               value="우편번호 찾기">
+                    </div>
+                </div>
+                <input type="text" id="sample6_address" placeholder="주소" name="address"
+                       class="readonly col-8 form-control" required>
+                <span id="guide" style="color:#999;display:none"></span>
+            </form>
+            <div class="col-md-5">
+                <input type="text" id="sample6_detailAddress" placeholder="상세주소" name="addressDetail"
+                       class="form-control">
+            </div>
+
+            <div class="invalid-feedback">
+                주소를 입력해주세요
+            </div>
+        </div>
+
+        <div>
+            요청사항(선택) <select id="requirement" name="requirement">
+            <option value="문앞에 놔주세요">문앞에 놔주세요</option>
+            <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
+            <option value="택배함에 넣어주세요">택배함에 넣어주세요</option>
+            <option value="배송 전에 연락주세요">배송 전에 연락주세요</option>
+            <option value="직접입력">직접입력</option>
+        </select>
+        </div>
+        <div>
+                            <textarea id="message-textarea"
+                                      style="width: 100%; height: 6.25em; resize: none; display: none"></textarea>
+        </div>
+    </div>
+</div>
+<script src="/common/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -81,4 +81,9 @@ public class OrderViewController {
     public String cart(){
         return "/order/cart/cart";
     }
+
+    @GetMapping("modify-address")
+    public String modifyAddress(){
+        return "/order/modify_address";
+    }
 }
