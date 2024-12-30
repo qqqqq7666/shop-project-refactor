@@ -65,6 +65,9 @@ public class ReviewService {
     // 상품 별 별점 평균 조회
     public Double getAverageStarsByProductId(Long productId) {
         Double averageStars = reviewRepository.averageStarsByProductId(productId);
+        if (averageStars == null) {
+            return 0.0;
+        }
         return averageStars;
     }
 

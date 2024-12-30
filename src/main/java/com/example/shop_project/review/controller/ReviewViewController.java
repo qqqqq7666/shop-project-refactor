@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -38,13 +39,19 @@ public class ReviewViewController {
                              @RequestParam(defaultValue = "date") String sort,
                              @RequestParam(defaultValue = "0") int page, Model model){
         Page<ReviewResponseDto> reviews = reviewService.getReviewsByProductId(productId, sort, page);
+        if (reviews == null || reviews.isEmpty()) {
+            model.addAttribute("reviews", Collections.emptyList());
+        } else {
+            model.addAttribute("reviews", reviews.getContent());
+            model.addAttribute("totalPages", reviews.getTotalPages());
+            model.addAttribute("currentPage", reviews.getNumber());
+        }
+
         Double averageStars = reviewService.getAverageStarsByProductId(productId);
 
-        model.addAttribute("reviews", reviews.getContent());
-        model.addAttribute("totalPages", reviews.getTotalPages());
-        model.addAttribute("currentPage", reviews.getNumber());
-        model.addAttribute("sortOption", sort);
         model.addAttribute("averageStars", averageStars);
+        model.addAttribute("sortOption", sort);
+        model.addAttribute("productId", productId);
 
         return "review/reviewList";
     }
