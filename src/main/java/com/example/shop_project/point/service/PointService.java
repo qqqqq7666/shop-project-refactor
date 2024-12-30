@@ -40,9 +40,9 @@ public class PointService {
     private OrderRepository orderRepository;
 
     // 회원가입할 때 같이 생성
-    public void createPoint(Long memberId) {
+    public void createPointByEmail(String email) {
         Point point = Point.builder()
-                .member(memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")))
+                .member(memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")))
                 .build();
         pointRepository.save(point);
     }
@@ -144,5 +144,9 @@ public class PointService {
 
     public Integer getTotalSavedPoint(String email) {
         return savedPointRepository.findTotalSavedPoint(findPointByEmail(email));
+    }
+
+    public List<Point> getTotalPointList(){
+        return pointRepository.findAll();
     }
 }

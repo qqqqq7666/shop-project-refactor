@@ -52,7 +52,8 @@ public class MemberViewController {
 	        return "member/join";
 	    }
 
-		memberService.Join(memberRequestDTO);		
+		memberService.Join(memberRequestDTO);
+		pointService.createPointByEmail(memberRequestDTO.getEmail());
 		return "redirect:/";
 	}
 	

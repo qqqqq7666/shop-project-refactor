@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <style>
+        /* 기본 테이블 스타일 */
+        table {
+            border-collapse: collapse; /* 테두리 겹침 방지 */
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        /* 마우스 올릴 때 테두리 색상 변경 */
+        tbody tr:hover td {
+            border-color: #007BFF; /* 파란색 테두리 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <table class="table">
+        <thead align="center">
+        <tr>
+            <th scope="col">포인트 번호</th>
+            <th scope="col">가입 일자</th>
+            <th scope="col">마지막 수정 일자</th>
+            <th scope="col">회원 이름</th>
+            <th scope="col">회원 이메일</th>
+            <th scope="col">잔여 포인트</th>
+            <th scope="col">포인트 부여</th>
+            <th scope="col">포인트 차감</th>
+        </tr>
+        </thead>
+        <tbody align="center">
+        <tr th:each="point: ${pointList}" id="order-info" th:onclick="|location.href='@{/admin/orders/{orderNo}(orderNo=${order.orderNo})}'|"
+            style="cursor: pointer;">
+            <td th:text="${point.getPointId()}">/td>
+            <td th:text="${#temporals.format(point.getCreatedDate(), 'yy-MM-dd')}">1</td>
+            <td th:text="${#temporals.format(point.getUpdatedDate(), 'yy-MM-dd')}">Mark</td>
+            <td th:text="${point.getMember().getName()}">Mark</td>
+            <td th:text="${point.getMember().getEmail()}">Otto</td>
+            <td th:text="${point.getBalance()}">@mdo</td>
+            <td><form id="cancel-form" th:action="|/api/v1/admin/orders/${order.getOrderNo()}/delete|" method="post">
+                <input type="hidden" name="_method" value="delete">
+                <button type="submit" class="">주문 취소</button>
+            </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="/common/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById("cancel-form").addEventListener("submit", () => {
+        alert("주문이 취소 되었습니다.");
+        location.reload();
+    });
+</script>
+</body>
+</html>
