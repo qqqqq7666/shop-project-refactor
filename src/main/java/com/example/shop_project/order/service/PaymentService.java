@@ -55,7 +55,7 @@ public class PaymentService {
     @Transactional
     public void decreaseProductStock(List<OrderDetailDto> orderDetailDtoList){
         orderDetailDtoList.forEach(orderDetailDto -> {
-            Product product = productRepository.findById(orderDetailDto.getProductId()).orElseThrow(() -> new NoSuchElementException("상품이 존재하지 않습니다."));
+            Product product = productRepository.findById(orderDetailDto.getProductId()).orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
 
             for(ProductOption option : product.getOptions()){
                 if(option.getSize() == orderDetailDto.getSize() && Objects.equals(option.getColor(), orderDetailDto.getColor())) {
@@ -73,7 +73,7 @@ public class PaymentService {
     @Transactional
     public void productStockRollback(List<OrderDetailDto> orderDetailDtoList){
         orderDetailDtoList.forEach(orderDetailDto -> {
-            Product product = productRepository.findById(orderDetailDto.getProductId()).orElseThrow(() -> new NoSuchElementException("상품이 존재하지 않습니다."));
+            Product product = productRepository.findById(orderDetailDto.getProductId()).orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
 
             for(ProductOption option : product.getOptions()){
                 if(option.getSize() == orderDetailDto.getSize() && Objects.equals(option.getColor(), orderDetailDto.getColor())) {

@@ -106,7 +106,7 @@ public class OrderService {
     }
 
     public Order getRecentOrder() {
-        return orderRepository.findFirstByOrderByOrderNoDesc().orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다."));
+        return orderRepository.findFirstByOrderByOrderNoDesc().orElseGet(() -> Order.builder().orderNo(0L).build());
     }
 
     public CanceledOrder createCanceledOrder(Long orderNo, String reason) {
