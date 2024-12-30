@@ -84,6 +84,7 @@
                 >Add to cart</button>
                 <button onclick="location.href = '/order/cart'">장바구니</button>
                 <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/inquiries'|">상품 문의 목록</button>
+                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/reviews'|">상품 리뷰 목록</button>
             </div>
         </div>
     </div>
