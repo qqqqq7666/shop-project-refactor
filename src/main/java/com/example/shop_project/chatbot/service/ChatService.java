@@ -26,6 +26,10 @@ public class ChatService {
         return chatRoom;
     }
     
+    public ChatRoom getRoom(String roomId) {
+        return rooms.get(roomId);
+    }
+    
     // 방 목록에서 대기/진행중인 방만 조회
     public List<ChatRoom> getWaitingOrInProgressRooms() {
         List<ChatRoom> result = new ArrayList<>();

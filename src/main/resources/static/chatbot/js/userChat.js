@@ -2,9 +2,8 @@ let stompClient = null;
 let currentRoomId = null;
 let userId = "USER_123";  // 실제 로그인된 사용자 ID
 
-// 상담사 연결 버튼 클릭
+// 상담사 연결 버튼
 document.getElementById('connect-admin-btn').addEventListener('click', function() {
-    // 1) server에 연결 요청
     fetch('/api/v1/chat/connection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -13,9 +12,11 @@ document.getElementById('connect-admin-btn').addEventListener('click', function(
     .then(res => res.json())
     .then(chatRoom => {
         currentRoomId = chatRoom.roomId;
-        
-        // 2) WebSocket 연결
-        connectWebSocket();
+        // 1) 여기서는 "방 생성 완료(대기중)" 안내만
+        appendMessage("상담 요청이 접수되었습니다. 상담사가 연결할 때까지 대기...", 'bot');
+
+        // 2) 주기적으로 방 상태 체크
+        checkRoomStatusPeriodically();
     })
     .catch(err => {
         console.error(err);
@@ -23,22 +24,36 @@ document.getElementById('connect-admin-btn').addEventListener('click', function(
     });
 });
 
+// 방 상태 폴링
+function checkRoomStatusPeriodically() {
+    // 3초 간격으로 방 상태 조회
+    const intervalId = setInterval(() => {
+        fetch(`/api/v1/chat/room-status?roomId=${currentRoomId}`)
+          .then(res => res.json())
+          .then(room => {
+              if (room.status === 'IN_PROGRESS') {
+                  // Admin이 승인(방 상태 변경)하면, 그때 connectWebSocket
+                  clearInterval(intervalId); 
+                  connectWebSocket();
+              }
+          })
+          .catch(err => console.error(err));
+    }, 3000);
+}
+
 function connectWebSocket() {
     const socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         console.log('Connected: ' + frame);
-        
-        // 구독
+
         stompClient.subscribe('/topic/messages', function(message) {
             const msgBody = JSON.parse(message.body);
-            // roomId가 내 currentRoomId와 같으면 메시지 표시
             if (msgBody.roomId === currentRoomId) {
                 appendMessage(msgBody.content, msgBody.sender);
             }
         });
         
-        // 입력창 활성화
         enableUserInput();
         appendMessage("상담사 연결 성공! 메시지를 입력해주세요.", 'bot');
     });
