@@ -116,4 +116,9 @@ public class OrderService {
                 .reason(reason)
                 .build());
     }
+
+    //mypage
+    public Integer getOrderCountByEmail(String email){
+        return orderRepository.findAllByMember(memberRepository.findByEmail(email).orElseThrow()).size();
+    }
 }

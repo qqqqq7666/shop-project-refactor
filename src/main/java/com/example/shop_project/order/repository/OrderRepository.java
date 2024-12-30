@@ -14,13 +14,12 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-//    Page<Order> findAllByMemberAndOrderStatusNotOrderByOrderNoDesc(Member member, Pageable pageable, OrderStatus orderStatus, String keyword);
     Order save(Order order);
     Optional<Order> findByOrderNo(Long orderNo);
     void deleteByOrderNo(Long orderNo);
     List<Order> findAllByOrderByOrderNoDesc();
     Optional<Order> findFirstByOrderByOrderNoDesc();
-//    Page<Order> findAllByMemberAndOrderDetailListAndOrderStatusNotOrderByOrderNoDesc(Member member, Pageable pageable, OrderStatus orderStatus, List<OrderDetail> orderDetailList);
     Page<Order> findByMemberAndOrderStatusNotAndOrderDetailListProductProductNameContainingOrderByOrderNoDesc(Member member, OrderStatus orderStatus, String productName, Pageable pageable);
-    List<Order> findAllOrderByOrderStatus(OrderStatus orderStatus);
+
+    List<Order> findAllByMember(Member member);
 }

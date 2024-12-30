@@ -3,6 +3,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Base64;
 
+import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.point.service.PointService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +39,7 @@ public class MemberViewController {
 	private final MemberService memberService;
 	private final MemberRepository memberRepository;
 	private final PointService pointService;
+	private final OrderService orderService;
 
 	@GetMapping("/join")
 	public String Join() {
@@ -73,6 +75,7 @@ public class MemberViewController {
         Member member = memberService.findByEmail(email);
         model.addAttribute("member", member);
 		model.addAttribute("point", pointService.getPointByMember(email));
+		model.addAttribute("orderCount", orderService.getOrderCountByEmail(email));
 		return "member/mypage";
 	}
 	
