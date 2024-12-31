@@ -5,13 +5,14 @@ import com.example.shop_project.inquiry.entity.Inquiry;
 import com.example.shop_project.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/products/{productId}/inquiries")
@@ -20,13 +21,29 @@ public class InquiryViewController {
 
     private final InquiryService inquiryService;
 
+    // ROLE_ADMIN 권한 확인
+    private boolean isAdmin() {
+        var authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        return authorities.stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+    }
+
     // 특정 상품의 문의 목록 페이지 렌더링
     @GetMapping
     public String showInquiriesByProduct(@PathVariable Long productId, Model model) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Inquiry> inquiries = inquiryService.getInquiriesByProductId(productId, currentUserEmail);
 
-        model.addAttribute("inquiries", inquiries);
+        boolean isAdmin = isAdmin();
+
+        List<Map<String, Object>> inquiryDetails = inquiries.stream().map(inquiry -> {
+            Map<String, Object> detail = new HashMap<>();
+            detail.put("inquiry", inquiry);
+            detail.put("canView", isAdmin || !inquiry.isSecret() || inquiry.getMember().getEmail().equals(currentUserEmail));
+            return detail;
+        }).toList();
+
+        model.addAttribute("inquiries", inquiryDetails);
         model.addAttribute("productId", productId);
 
         return "inquiry/list";

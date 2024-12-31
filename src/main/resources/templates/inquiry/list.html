@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>문의 목록</title>
@@ -50,24 +50,29 @@
     </div>
 
     <div id="question-list">
-        <div th:each="inquiry : ${inquiries}" class="inquiry-container">
+        <div th:each="detail : ${inquiries}" class="inquiry-container">
             <h5>
-                <span th:text="${inquiry.title}">문의 제목</span>
-                <span th:if="${inquiry.commentCount > 0}" class="badge rounded-pill text-bg-secondary">답변완료</span>
+                <span th:text="${detail['inquiry'].title}">문의 제목</span>
+                <span th:if="${detail['inquiry'].commentCount > 0}" class="badge rounded-pill text-bg-secondary">답변완료</span>
             </h5>
-            <p class="info">작성자: <span th:text="${inquiry.member.nickname}">닉네임</span> | 작성일: <span th:text="${inquiry.date}">YYYY-MM-DD</span></p>
-            <p class="info">문의 유형: <span th:text="${inquiry.type.getKoreanName()}">문의 유형</span></p>
-            <p th:text="${inquiry.content}">문의 내용</p>
+            <p class="info">작성자: <span th:text="${detail['inquiry'].member.nickname}">닉네임</span> | 작성일: <span th:text="${detail['inquiry'].date}">YYYY-MM-DD</span></p>
+            <p class="info">문의 유형: <span th:text="${detail['inquiry'].type.getKoreanName()}">문의 유형</span></p>
+            <p th:text="${detail['inquiry'].content}">문의 내용</p>
 
-            <a sec:authorize="!hasAuthority('ROLE_ADMIN') and inquiry.isSecret() and inquiry.member.email != #authentication.name"
+            <a th:if="${!detail['canView']}"
                href="javascript:void(0);"
                onclick="alert('비밀글입니다.');"
-               class="btn btn-secondary btn-sm">상세 보기</a>
-            <a sec:authorize="hasAuthority('ROLE_ADMIN') or !inquiry.isSecret() or inquiry.member.email == #authentication.name"
-               th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${productId}, inquiryId=${inquiry.id})}"
-               class="btn btn-secondary btn-sm">상세 보기</a>
+               class="btn btn-secondary btn-sm">
+                상세 보기
+            </a>
+            <a th:if="${detail['canView']}"
+               th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${productId}, inquiryId=${detail['inquiry'].id})}"
+               class="btn btn-secondary btn-sm">
+                상세 보기
+            </a>
         </div>
     </div>
+
 </div>
 </body>
 </html>
