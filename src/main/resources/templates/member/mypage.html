@@ -1,26 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>마이페이지</title>
-    
-    <script>
-      window.isCounseling = false;
-    </script>
+
     
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/member/css/mypageStyle.css">
 	<link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
-
-    <!-- 챗봇 기능 추가 -->
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
-    <script src="/chatbot/js/chatbotSetup.js" defer></script>
-	
 	
 </head>
 <body>
+<main layout:fragment="content">
     <div class="mypage-container">
         <!-- 상단 프로필 섹션 -->
         <div class="profile-header">
@@ -60,6 +51,6 @@
             </tbody>
         </table>
     </div>
-	
+</main>
 </body>
 </html>
