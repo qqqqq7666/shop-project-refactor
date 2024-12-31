@@ -16,7 +16,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/products/{productId}/inquiries")
 @RequiredArgsConstructor
-public class InquiryController {
+public class InquiryViewController {
 
     private final InquiryService inquiryService;
 
@@ -28,6 +28,7 @@ public class InquiryController {
 
         model.addAttribute("inquiries", inquiries);
         model.addAttribute("productId", productId);
+
         return "inquiry/list";
     }
 
@@ -35,6 +36,7 @@ public class InquiryController {
     @GetMapping("/create")
     public String showCreatePage(@PathVariable Long productId, Model model) {
         model.addAttribute("productId", productId);
+
         return "inquiry/create";
     }
 
@@ -55,12 +57,6 @@ public class InquiryController {
         Inquiry inquiry = inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId);
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (inquiry.isSecret() && !inquiry.getMember().getEmail().equals(
-                SecurityContextHolder.getContext().getAuthentication().getName())) {
-            inquiry.setTitle("비밀글입니다");
-            inquiry.setContent("비밀글입니다");
-        }
-
         String nickname = inquiry.getMember().getNickname();
 
         model.addAttribute("inquiry", inquiry);
@@ -71,12 +67,4 @@ public class InquiryController {
         return "inquiry/detail";
     }
 
-    // 특정 상품의 특정 문의 삭제
-    @DeleteMapping("/{inquiryId}")
-    public ResponseEntity<Void> deleteInquiry(@PathVariable Long productId, @PathVariable Long inquiryId) {
-        System.out.println("productId: " + productId + ", inquiryId: " + inquiryId);
-        inquiryService.deleteInquiry(inquiryId);
-
-        return ResponseEntity.noContent().build();
-    }
 }

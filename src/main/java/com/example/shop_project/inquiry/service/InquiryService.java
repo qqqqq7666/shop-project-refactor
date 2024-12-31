@@ -86,4 +86,9 @@ public class InquiryService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다: " + email));
         return inquiryRepository.findByMemberId(member.getId());
     }
+
+    // 특정 회원의 문의 개수 조회
+    public Long getInquiryCountByMember(String userEmail) {
+        return inquiryRepository.countByMemberEmail(userEmail);
+    }
 }
