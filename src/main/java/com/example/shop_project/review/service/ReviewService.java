@@ -2,6 +2,7 @@ package com.example.shop_project.review.service;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
+import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.review.dto.ReviewRequestDto;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -97,5 +100,18 @@ public class ReviewService {
                 .color(review.getOrderDetail().getColor())
                 .size(review.getOrderDetail().getSize())
                 .build();
+    }
+
+    public Map<Long, Boolean> getReviewStatusMap(Page<OrderResponseDto> orderPage) {
+        Map<Long, Boolean> reviewStatusMap = new HashMap<>();
+
+        for (OrderResponseDto order : orderPage) {
+            for (OrderDetail detail : order.getOrderDetailList()) {
+                boolean hasReviewed = reviewRepository.existsByOrderDetail(detail);
+                reviewStatusMap.put(detail.getOrderDetailId(), hasReviewed);
+            }
+        }
+
+        return reviewStatusMap;
     }
 }
