@@ -155,6 +155,8 @@ function initializeCart() {
         testButton.addEventListener("click", mockAddProductsToCart);
     }
     loadCart();
+
+    changeProgressbar();
 }
 
 // 장바구니 상품 옵션 변경
@@ -173,6 +175,10 @@ function changeProductOption(cartIndex, optionIndex) {
     }
 }
 
+function changeProgressbar(){
+    document.getElementById("progress-bar").style.width = `${parseInt(document.getElementById("total-price").textContent.replace(/,/g,'')) / 500}%`
+}
+
 // DOM이 준비되면 초기화
 document.addEventListener("DOMContentLoaded", initializeCart);
 document.getElementById("checkout").addEventListener("click", () => {
@@ -186,4 +192,22 @@ document.getElementById("option-save-button").addEventListener("click", () => {
     const cartIndex = parseInt(indexSet[0]);
     const optionIndex = parseInt(indexSet[1]);
     changeProductOption(cartIndex, optionIndex);
+});
+
+const targetNode = document.getElementById("total-price");
+
+// MutationObserver 생성
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === "characterData" || mutation.type === "childList") {
+            changeProgressbar(); // textContent가 변경되면 실행될 함수
+        }
+    });
+});
+
+// MutationObserver 설정
+observer.observe(targetNode, {
+    childList: true, // 자식 노드 변경 감지
+    characterData: true, // 텍스트 내용 변경 감지
+    subtree: true // 하위 노드까지 감지
 });
