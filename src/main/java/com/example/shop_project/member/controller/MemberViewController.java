@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.Base64;
 
 import com.example.shop_project.order.service.OrderService;
+import com.example.shop_project.inquiry.service.InquiryService;
 import com.example.shop_project.point.service.PointService;
 import com.example.shop_project.review.service.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,7 @@ public class MemberViewController {
 	private final PointService pointService;
 	private final ReviewService reviewService;
 	private final OrderService orderService;
+	private final InquiryService inquiryService;
 
 	@GetMapping("/join")
 	public String Join() {
@@ -75,10 +77,12 @@ public class MemberViewController {
 		
 		String email = principal.getName();
         Member member = memberService.findByEmail(email);
+		Long inquiryCount = inquiryService.getInquiryCountByMember(email);
         model.addAttribute("member", member);
 		model.addAttribute("point", pointService.getPointByMember(email));
 		model.addAttribute("orderCount", orderService.getOrderCountByEmail(email));
 		model.addAttribute("reviewCount", reviewService.getReviewCountByMember(member));
+		model.addAttribute("inquiryCount", inquiryCount);
 		return "member/mypage";
 	}
 	

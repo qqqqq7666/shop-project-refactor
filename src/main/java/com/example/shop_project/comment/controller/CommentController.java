@@ -20,6 +20,16 @@ public class CommentController {
             @PathVariable Long productId,
             @ModelAttribute CommentRequestDto requestDto) {
 
+        // 현재 로그인한 사용자의 권한 확인
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            throw new IllegalStateException("댓글 작성 권한이 없습니다.");
+        }
+
         String nickname = SecurityContextHolder.getContext().getAuthentication().getName();
 
         commentService.createComment(inquiryId, requestDto, nickname);

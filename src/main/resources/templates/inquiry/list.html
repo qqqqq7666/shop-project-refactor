@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>문의 목록</title>
@@ -59,11 +59,11 @@
             <p class="info">문의 유형: <span th:text="${inquiry.type.getKoreanName()}">문의 유형</span></p>
             <p th:text="${inquiry.content}">문의 내용</p>
 
-            <a th:if="${inquiry.isSecret() && inquiry.member.email != #authentication.name}"
+            <a sec:authorize="!hasAuthority('ROLE_ADMIN') and inquiry.isSecret() and inquiry.member.email != #authentication.name"
                href="javascript:void(0);"
                onclick="alert('비밀글입니다.');"
                class="btn btn-secondary btn-sm">상세 보기</a>
-            <a th:if="${!inquiry.isSecret() || inquiry.member.email == #authentication.name}"
+            <a sec:authorize="hasAuthority('ROLE_ADMIN') or !inquiry.isSecret() or inquiry.member.email == #authentication.name"
                th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${productId}, inquiryId=${inquiry.id})}"
                class="btn btn-secondary btn-sm">상세 보기</a>
         </div>
