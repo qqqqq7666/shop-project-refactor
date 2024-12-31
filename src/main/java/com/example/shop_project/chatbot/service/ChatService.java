@@ -38,8 +38,7 @@ public class ChatService {
                 result.add(room);
             }
         }
-        
-        System.out.println("rooms.size() = " + rooms.size());
+
         return result;
     }
 
