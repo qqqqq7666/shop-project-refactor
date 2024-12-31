@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>찜한 상품 목록</title>
+  <link rel="stylesheet" href="/favorite/css/favoriteList.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>찜한 상품 목록</h1>
+  <!-- 제품 목록 -->
+  <div class="product-list">
+    <div th:each="product : ${favoriteProductPage.content}" class="product-card">
+      <a th:href="@{/products/detail/{id}(id=${product.productId})}">
+        <img th:src="${product.imageUrls[0]}" alt="상품 이미지">
+      </a>
+      <p class="title" th:text="${product.productName}">상품명</p>
+      <p class="price" th:text="'₩' + ${product.price}">가격</p>
+      <!-- 찜 삭제 버튼 추가 -->
+      <button class="remove-favorite-btn"
+              th:onclick="|removeFavorite(${product.productId})|">
+        찜 삭제
+      </button>
+    </div>
+  </div>
+
+  <!-- 페이지네이션 -->
+  <div class="pagination">
+    <!-- 처음 페이지로 이동 -->
+    <a th:if="${currentPage > 0}" th:href="@{/favorite(page=0, search=${search}, sort=${sort})}">&lt;&lt;</a>
+    <!-- 이전 페이지 -->
+    <a th:if="${currentPage > 0}" th:href="@{/favorite(page=${currentPage - 1}, search=${search}, sort=${sort})}">&lt;</a>
+    <!-- 페이지 번호 표시 -->
+    <span th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+          <a th:href="@{/favorite(page=${pageNum - 1}, search=${search}, sort=${sort})}"
+             th:classappend="${currentPage == pageNum - 1} ? 'active' : ''"
+             th:text="${pageNum}"></a>
+      </span>
+    <!-- 다음 페이지 -->
+    <a th:if="${currentPage < totalPages - 1}" th:href="@{/favorite(page=${currentPage + 1}, search=${search}, sort=${sort})}">&gt;</a>
+    <!-- 끝 페이지로 이동 -->
+    <a th:if="${currentPage < totalPages - 1}" th:href="@{/favorite(page=${totalPages - 1}, search=${search}, sort=${sort})}">&gt;&gt;</a>
+  </div>
+</div>
+
+
+<script src="/favorite/js/favoriteList.js"></script>
+</body>
+</html>

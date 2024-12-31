@@ -16,9 +16,28 @@ document.addEventListener("DOMContentLoaded", () => {
 // 선택된 상품 옵션 목록
 const selectedOptions = [];
 
-// 사이즈와 색상 select 요소 가져오기
-const sizeSelect = document.getElementById("sizeSelect");
-const colorSelect = document.getElementById("colorSelect");
+// 기존에 사이즈와 색상이 중복되는 경우 모두 불러와지는 경우 발생, 수정
+window.onload = function() {
+    // 사이즈와 색상 select 요소 가져오기
+    const sizeSelect = document.getElementById("sizeSelect");
+    const colorSelect = document.getElementById("colorSelect");
+
+    // 중복 제거 함수
+    function removeDuplicateOptions(selectElement) {
+        const seen = new Set();
+        [...selectElement.options].forEach(option => {
+            if (seen.has(option.value) && option.value !== "") {
+                option.remove(); // 중복된 옵션 제거
+            } else {
+                seen.add(option.value);
+            }
+        });
+    }
+
+    // 중복 제거 실행
+    removeDuplicateOptions(sizeSelect);
+    removeDuplicateOptions(colorSelect);
+};
 
 // 이벤트 리스너 등록
 sizeSelect.addEventListener("change", handleOptionChange);

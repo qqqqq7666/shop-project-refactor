@@ -26,13 +26,13 @@ public class AdminProductController {
     }
 
     @GetMapping("/products")
-    public String productList(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+    public String productList(@RequestParam(value = "search", required = false, defaultValue = "") String search,
                               @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort,
                               @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                               @RequestParam(value = "size", required = false, defaultValue = "8") int size,
                               Model model,
                               Principal principal) {
-        Page<ProductResponseDto> productPage = productService.getProductList(keyword, sort, page, size);
+        Page<ProductResponseDto> productPage = productService.getProductList(search, sort, page, size);
 
         // 페이지네이션 블록 설정
         int blockSize = 5; // 페이지 블록 크기 설정
@@ -51,7 +51,7 @@ public class AdminProductController {
         model.addAttribute("totalPages", productPage.getTotalPages());
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        model.addAttribute("keyword", keyword);
+        model.addAttribute("search", search);
         model.addAttribute("currentNickname", currentNickname);
         return "admin/productManage";
     }
