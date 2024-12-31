@@ -26,4 +26,8 @@ public class CanceledOrder extends BaseEntity {
     @Column(nullable = false)
     @ColumnDefault("false")
     private Boolean isConfirmed;
+
+    public void confirmRequire(){
+        isConfirmed = true;
+    }
 }

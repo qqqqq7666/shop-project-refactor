@@ -47,4 +47,8 @@ public class Point extends BaseEntity {
         savedPointList.add(savedPoint);
         balance += savedPoint.getSavedPoint();
     }
+
+    public void rollbackBalance(Integer amount){
+        balance -= amount;
+    }
 }

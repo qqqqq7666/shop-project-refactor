@@ -19,7 +19,32 @@
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container mt-5 d-flex flex-column align-items-center">
+    <form method="get" action="/admin/orders" class="d-flex justify-content-between my-3" style="gap: 300px;">
+        <div class="d-flex align-items-center" style="gap: 10px;">
+            <div style="white-space: nowrap">
+                주문 상태
+            </div>
+        <select name="orderStatus" id="status-select" class="form-select" style="width: auto">
+            <option value="all" th:selected="${selectedStatus == 'all'}">전체</option>
+            <option value="NEW" th:selected="${selectedStatus == 'NEW'}">신규 주문</option>
+            <option value="PREPARING" th:selected="${selectedStatus == 'PREPARING'}">배송 준비 중</option>
+            <option value="IN_SHIPPING" th:selected="${selectedStatus == 'IN_SHIPPING'}">배송중</option>
+            <option value="ARRIVE" th:selected="${selectedStatus == 'ARRIVE'}">배송 완료</option>
+            <option value="CANCEL_REQUIRE" th:selected="${selectedStatus == 'CANCEL_REQUIRE'}">취소 요청</option>
+            <option value="REFUND_REQUIRE" th:selected="${selectedStatus == 'REFUND_REQUIRE'}">환불 요청</option>
+            <option value="EXCHANGE_REQUIRE" th:selected="${selectedStatus == 'EXCHANGE_REQUIRE'}">교환 요청</option>
+            <option value="FAIL" th:selected="${selectedStatus == 'FAIL'}">결제 실패</option>
+            <option value="CONFIRMED" th:selected="${selectedStatus == 'CONFIRMED'}">구매 확정</option>
+            <option value="REFUND" th:selected="${selectedStatus == 'REFUND'}">환불 처리 완료</option>
+            <option value="EXCHANGE" th:selected="${selectedStatus == 'EXCHANGE'}">교환 처리 완료</option>
+        </select>
+        </div>
+        <div class="d-flex align-items-center" style="gap: 10px;">
+        <input th:value="${keyword}" class="form-control" placeholder="사용자의 이메일로 검색" style="width: 300px" name="email">
+            <button class="btn btn-dark" type="submit">검색</button>
+        </div>
+    </form>
     <table class="table">
         <thead align="center">
         <tr>
@@ -33,7 +58,7 @@
         </tr>
         </thead>
         <tbody align="center">
-        <tr th:each="order: ${orderList}" id="order-info" th:onclick="|location.href='@{/admin/orders/{orderNo}(orderNo=${order.orderNo})}'|"
+        <tr th:each="order: ${orderPage}" id="order-info" th:onclick="|location.href='@{/admin/orders/{orderNo}(orderNo=${order.orderNo})}'|"
             style="cursor: pointer;">
             <td th:text="${order.getOrderNo()}">/td>
             <td th:text="${#temporals.format(order.getCreatedDate(), 'yy-MM-dd')}">1</td>
@@ -49,13 +74,41 @@
         </tr>
         </tbody>
     </table>
+
+    <div th:if="${orderPage.isEmpty()}">
+        주문이 존재하지 않습니다
+    </div>
+    <nav aria-label="Page navigation example" th:if="${!orderPage.isEmpty()}">
+        <ul class="pagination" align="center">
+            <li th:if="${currentPage > 0}" class="page-item">
+                <a class="page-link" th:href="|?page=${currentPage - 1}|" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <div th:each="i : ${#numbers.sequence(0, orderPage.getTotalPages() - 1)}">
+                <li class="page-item"><a class="page-link" th:text="${i + 1}" th:href="|?page=${i}|">1</a></li>
+            </div>
+            <li th:if="${currentPage < orderPage.getTotalPages() - 1}" class="page-item">
+                <a class="page-link" th:href="|?page=${currentPage + 1}|" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 <script src="/common/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.getElementById("cancel-form").addEventListener("submit", () => {
-        alert("주문이 취소 되었습니다.");
-        location.reload();
-    });
+    const cancelButton = document.getElementById("cancel-form");
+    if(cancelButton !== null){
+        cancelButton.addEventListener("submit", () => {
+            alert("주문이 취소 되었습니다.");
+            location.reload();
+        });
+    }
+
+    document.getElementById("status-select").addEventListener("change", () => {
+        document.querySelector("form").submit();
+    })
 </script>
 </body>
 </html>

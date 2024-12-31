@@ -100,6 +100,32 @@ public class ProductService {
                 .build();
     }
 
+    public ProductResponseDto mapToResponseDto(Product product, boolean isOutOfStock) {
+        return ProductResponseDto.builder()
+                .productId(product.getProductId())
+                .categoryId(product.getCategoryId())
+                .productName(product.getProductName())
+                .price(product.getPrice())
+                .description(product.getDescription())
+                .viewCount(product.getViewCount())
+                .salesCount(product.getSalesCount())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
+                .imageUrls(product.getImages().stream()
+                        .map(ProductImage::getImageUrl)
+                        .collect(Collectors.toList()))
+                .options(product.getOptions().stream()
+                        .map(option -> {
+                            ProductOptionDto optionDto = new ProductOptionDto();
+                            optionDto.setSize(option.getSize());
+                            optionDto.setColor(option.getColor());
+                            optionDto.setStockQuantity(option.getStockQuantity());
+                            return optionDto;
+                        }).collect(Collectors.toList()))
+                .isOutOfStock(isOutOfStock)
+                .build();
+    }
+
     @Transactional
     public void validateProductRequest(ProductRequestDto productRequestDto) {
         // 제품 이름 검증
@@ -146,19 +172,24 @@ public class ProductService {
         Page<Product> products = productRepository.findByProductNameContaining(search, pageable);
 
         // Product -> ProductResponseDto로 변환
-        return products.map(product -> ProductResponseDto.builder()
-                .productId(product.getProductId())
-                .productName(product.getProductName())
-                .price(product.getPrice())
-                .nickname(product.getNickname())
-                .viewCount(product.getViewCount())
-                .salesCount(product.getSalesCount())
-                .createdAt(product.getCreatedAt())
-                .updatedAt(product.getUpdatedAt())
-                .imageUrls(product.getImages().stream()
-                        .map(ProductImage::getImageUrl)
-                        .toList())
-                .build());
+        return products.map(product -> {
+            boolean isOutOfStock = product.getOptions().stream()
+                    .allMatch(option -> option.getStockQuantity() == 0); // 모든 옵션의 재고가 0인지 확인
+            return mapToResponseDto(product, isOutOfStock);
+        });
+    }
+
+    @Transactional
+    public Page<ProductResponseDto> getProductsByCategory(Long categoryId, String sort, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort));
+
+        Page<Product> products = productRepository.findByCategoryId(categoryId, pageable);
+
+        return products.map(product -> {
+            boolean isOutOfStock = product.getOptions().stream()
+                    .allMatch(option -> option.getStockQuantity() == 0); // 모든 옵션의 재고가 0인지 확인
+            return mapToResponseDto(product, isOutOfStock);
+        });
     }
 
 

@@ -26,7 +26,7 @@ function navigationBar(categories) {
         category.subCategories.forEach(subCategory => {
             subCategoryList += `
                 <li>
-                    <a class="dropdown-item">${subCategory.categoryName}</a>
+                    <a class="dropdown-item" href="#" onclick="loadProductsByCategory(${subCategory.categoryId})">${subCategory.categoryName}</a>
                 </li>
             `;
         });
@@ -43,4 +43,10 @@ function navigationBar(categories) {
         `;
     });
     navbar.innerHTML = categoryList;
+}
+
+// 카테고리 클릭 시 상품 로드
+function loadProductsByCategory(categoryId) {
+    const url = `/products/productList?categoryId=${categoryId}`;
+    window.location.href = url;
 }

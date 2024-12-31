@@ -18,4 +18,7 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
     // 특정 사용자가 작성한 모든 문의를 조회
     List<Inquiry> findByMemberId(Long memberId);
+
+    // 특정 회원의 문의 개수 조회
+    Long countByMemberEmail(String email);
 }

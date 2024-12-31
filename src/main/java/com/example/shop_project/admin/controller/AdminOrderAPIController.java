@@ -5,6 +5,7 @@ import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.service.OrderService;
+import com.example.shop_project.order.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,8 @@ import java.util.List;
 public class AdminOrderAPIController {
     @Autowired
     OrderService orderService;
+    @Autowired
+    private PaymentService paymentService;
 
     @PatchMapping("/{orderNo}/update-status")
     public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long orderNo, @RequestBody OrderStatus orderStatus){
@@ -28,11 +31,18 @@ public class AdminOrderAPIController {
     @DeleteMapping("/{orderNo}/delete")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderNo){
         orderService.deleteOrder(orderNo);
-        return ResponseEntity.noContent().location(URI.create("/admin/orders")).build();
+        return ResponseEntity.ok().location(URI.create("/admin/orders")).build();
     }
 
     @GetMapping("/{orderNo}")
     public ResponseEntity<List<OrderDetail>> orderDetail(@PathVariable Long orderNo){
         return ResponseEntity.ok(orderService.getOrderDetailList(orderNo));
+    }
+
+    @PatchMapping("/refund")
+    public ResponseEntity<Void> refund(@RequestParam Long orderNo){
+        orderService.refund(orderNo);
+        paymentService.cancelPay(orderNo);
+        return ResponseEntity.ok().build();
     }
 }

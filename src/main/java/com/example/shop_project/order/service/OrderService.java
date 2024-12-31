@@ -2,6 +2,7 @@ package com.example.shop_project.order.service;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.repository.MemberRepository;
+import com.example.shop_project.order.dto.AddressDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.CanceledOrder;
@@ -13,6 +14,9 @@ import com.example.shop_project.order.repository.CanceledOrderRepository;
 import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.order.repository.PaymentRepository;
+import com.example.shop_project.point.entity.UsedPoint;
+import com.example.shop_project.point.repository.UsedPointRepository;
+import com.example.shop_project.point.service.PointService;
 import com.example.shop_project.product.entity.Product;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +49,8 @@ public class OrderService {
     private PaymentRepository paymentRepository;
     @Autowired
     private CanceledOrderRepository canceledOrderRepository;
+    @Autowired
+    private UsedPointRepository usedPointRepository;
 
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
@@ -65,7 +71,6 @@ public class OrderService {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         List<Product> productList = productRepository.findAllByProductNameContaining(keyword);
         Page<Order> orderPage = orderRepository.findByMemberAndOrderStatusNotAndOrderDetailListProductProductNameContainingOrderByOrderNoDesc(member, OrderStatus.FAIL, keyword, pageable);
-//        Page<Order> orderPage = orderRepository.findAllByMemberAndOrderDetailListAndOrderStatusNotOrderByOrderNoDesc(member, pageable, OrderStatus.FAIL);
         Page<OrderResponseDto> orderResponseDtoPage = orderPage.map(order -> orderMapper.toResponseDto(order));
 
         return orderResponseDtoPage;
@@ -80,13 +85,6 @@ public class OrderService {
 
     public OrderResponseDto getOrderByOrderNo(Long orderNo) {
         return orderMapper.toResponseDto(orderRepository.findByOrderNo(orderNo).orElseThrow());
-    }
-
-    @Transactional
-    public OrderResponseDto updateOrder(Long orderNo, OrderRequestDto request) {
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
-        order.updateOrder(request);
-        return orderMapper.toResponseDto(orderRepository.save(order));
     }
 
     // updateStatus를 따로 구현하는게 맞는지..
@@ -106,7 +104,7 @@ public class OrderService {
     }
 
     public Order getRecentOrder() {
-        return orderRepository.findFirstByOrderByOrderNoDesc().orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다."));
+        return orderRepository.findFirstByOrderByOrderNoDesc().orElseGet(() -> Order.builder().orderNo(0L).build());
     }
 
     public CanceledOrder createCanceledOrder(Long orderNo, String reason) {
@@ -115,5 +113,53 @@ public class OrderService {
                 .order(order)
                 .reason(reason)
                 .build());
+    }
+
+    public CanceledOrder getCanceledOrder(Long orderNo){
+        return canceledOrderRepository.findById(orderNo).orElseGet(() -> null);
+    }
+
+    @Transactional
+    public void refund(Long orderNo){
+        CanceledOrder canceledOrder = canceledOrderRepository.findById(orderNo).orElseThrow();
+        Order order = canceledOrder.getOrder();
+        canceledOrder.confirmRequire();
+        if(order.getIsPaidWithPoint()){
+            UsedPoint usedPoint = usedPointRepository.findByOrder(order).orElseThrow();
+            usedPoint.getPoint().rollbackBalance(-usedPoint.getAmount());
+            usedPointRepository.delete(usedPoint);
+        }
+        canceledOrderRepository.save(canceledOrder);
+        order.updateStatus(OrderStatus.REFUND);
+        orderRepository.save(order);
+    }
+
+    //mypage
+    public Integer getOrderCountByEmail(String email){
+        return orderRepository.findAllByMember(memberRepository.findByEmail(email).orElseThrow()).size();
+    }
+
+    @Transactional
+    public void updateAddress(AddressDto addressDto){
+        Order order = orderRepository.findByOrderNo(addressDto.getOrderNo()).orElseThrow();
+        order.updateAddress(addressDto);
+        orderRepository.save(order);
+    }
+
+    @Transactional
+    public void deleteCanceledOrder(Long orderNo){
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        order.updateStatus(OrderStatus.NEW);
+        orderRepository.save(order);
+        CanceledOrder canceledOrder = canceledOrderRepository.findById(orderNo).orElseThrow();
+        canceledOrderRepository.delete(canceledOrder);
+    }
+
+    public Page<OrderResponseDto> getTotalOrderPage(String email, String orderStatus, Pageable pageable){
+        if(orderStatus.equals("all"))
+            return orderRepository.findAllByMemberEmailContainingOrderByOrderNoDesc(email, pageable).map(order -> orderMapper.toResponseDto(order));
+        else
+            return orderRepository.findAllByOrderStatusAndMemberEmailContainingOrderByOrderNoDesc(OrderStatus.valueOf(orderStatus), email, pageable)
+                    .map(order -> orderMapper.toResponseDto(order));
     }
 }

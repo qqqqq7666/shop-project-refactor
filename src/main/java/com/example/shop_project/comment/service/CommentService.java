@@ -27,6 +27,11 @@ public class CommentService {
         Member member = memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원 정보를 찾을 수 없습니다: " + userEmail));
 
+        // 관리자 권한 확인
+        if (!member.getRole().getKey().equals("ROLE_ADMIN")) {
+            throw new IllegalStateException("댓글 작성 권한이 없습니다.");
+        }
+
         Comment comment = new Comment();
         comment.setInquiry(inquiry);
         comment.setContent(requestDto.getContent());

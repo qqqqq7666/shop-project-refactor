@@ -14,17 +14,21 @@ import java.util.List;
 @Controller
 @RequestMapping("/my-inquiries")
 @RequiredArgsConstructor
-public class MyInquiryController {
+public class MyInquiryViewController {
     private final InquiryService inquiryService;
 
     // 사용자가 작성한 문의 목록 조회
     @GetMapping
     public String showMyInquiries(Model model) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-
         List<Inquiry> inquiries = inquiryService.getInquiriesByMember(userEmail);
 
+        for (Inquiry inquiry : inquiries) {
+            inquiry.setCommentCount(inquiry.getComments().size());
+        }
+
         model.addAttribute("inquiries", inquiries);
+
         return "inquiry/myInquiries";
     }
 }

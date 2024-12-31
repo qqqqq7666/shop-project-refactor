@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>문의 상세 조회</title>
@@ -69,7 +69,7 @@
                 const inquiryId = [[${inquiry.id}]];
 
                 if (confirm("정말 삭제하시겠습니까?")) {
-                    fetch(`/products/${productId}/inquiries/${inquiryId}`, {
+                    fetch(`/api/v1/products/${productId}/inquiries/${inquiryId}`, {
                         method: 'DELETE',
                     })
                         .then(response => {
@@ -103,7 +103,7 @@
                     <form th:if="${#authentication.name == comment.member.email}"
                           th:action="@{/products/{productId}/inquiries/{inquiryId}/comment/{commentId}(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id}, commentId=${comment.id})}"
                           method="post"
-                          onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');">
+                          onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
                         <input type="hidden" name="_method" value="delete"/>
                         <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                     </form>
@@ -111,10 +111,12 @@
             </ul>
 
             <!-- 댓글 작성 폼 -->
-            <form th:action="@{/products/{productId}/inquiries/{inquiryId}/comment(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" method="post">
-                <textarea name="content" placeholder="댓글을 입력하세요." required></textarea>
-                <button type="submit">댓글 작성</button>
-            </form>
+            <div sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <form th:action="@{/products/{productId}/inquiries/{inquiryId}/comment(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" method="post">
+                    <textarea name="content" placeholder="댓글을 입력하세요." required></textarea>
+                    <button type="submit">댓글 작성</button>
+                </form>
+            </div>
 
         </div>
     </div>

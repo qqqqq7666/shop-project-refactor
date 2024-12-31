@@ -5,20 +5,28 @@ import com.example.shop_project.inquiry.entity.Inquiry;
 import com.example.shop_project.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/products/{productId}/inquiries")
 @RequiredArgsConstructor
-public class InquiryController {
+public class InquiryViewController {
 
     private final InquiryService inquiryService;
+
+    // ROLE_ADMIN 권한 확인
+    private boolean isAdmin() {
+        var authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        return authorities.stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+    }
 
     // 특정 상품의 문의 목록 페이지 렌더링
     @GetMapping
@@ -26,8 +34,18 @@ public class InquiryController {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Inquiry> inquiries = inquiryService.getInquiriesByProductId(productId, currentUserEmail);
 
-        model.addAttribute("inquiries", inquiries);
+        boolean isAdmin = isAdmin();
+
+        List<Map<String, Object>> inquiryDetails = inquiries.stream().map(inquiry -> {
+            Map<String, Object> detail = new HashMap<>();
+            detail.put("inquiry", inquiry);
+            detail.put("canView", isAdmin || !inquiry.isSecret() || inquiry.getMember().getEmail().equals(currentUserEmail));
+            return detail;
+        }).toList();
+
+        model.addAttribute("inquiries", inquiryDetails);
         model.addAttribute("productId", productId);
+
         return "inquiry/list";
     }
 
@@ -35,6 +53,7 @@ public class InquiryController {
     @GetMapping("/create")
     public String showCreatePage(@PathVariable Long productId, Model model) {
         model.addAttribute("productId", productId);
+
         return "inquiry/create";
     }
 
@@ -55,12 +74,6 @@ public class InquiryController {
         Inquiry inquiry = inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId);
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (inquiry.isSecret() && !inquiry.getMember().getEmail().equals(
-                SecurityContextHolder.getContext().getAuthentication().getName())) {
-            inquiry.setTitle("비밀글입니다");
-            inquiry.setContent("비밀글입니다");
-        }
-
         String nickname = inquiry.getMember().getNickname();
 
         model.addAttribute("inquiry", inquiry);
@@ -71,12 +84,4 @@ public class InquiryController {
         return "inquiry/detail";
     }
 
-    // 특정 상품의 특정 문의 삭제
-    @DeleteMapping("/{inquiryId}")
-    public ResponseEntity<Void> deleteInquiry(@PathVariable Long productId, @PathVariable Long inquiryId) {
-        System.out.println("productId: " + productId + ", inquiryId: " + inquiryId);
-        inquiryService.deleteInquiry(inquiryId);
-
-        return ResponseEntity.noContent().build();
-    }
 }
