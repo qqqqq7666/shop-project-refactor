@@ -128,13 +128,6 @@ function toggleForm(formId) {
             addButton.style.display = '';
         }
     }
-    if (formContainer.classList.contains('active')) {
-        // 폼이 활성화 상태면 버튼 숨김
-        addButton.style.display = 'none';
-    } else {
-        // 폼이 비활성화 상태면 버튼 복원
-        addButton.style.display = '';
-    }
 
     formContainer.reset(); // 폼 초기화
 }
