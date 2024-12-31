@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -25,11 +26,10 @@ public class ProductResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String nickname;
+    private boolean isOutOfStock;
 
     public ProductResponseDto() {
 
     }
 
-    public ProductResponseDto(Product product) {
-    }
 }

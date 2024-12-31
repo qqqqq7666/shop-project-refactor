@@ -45,8 +45,16 @@ public class productViewController {
                                   @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort,
                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                   @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                                  @RequestParam(value = "categoryId", required = false) Long categoryId,
                                   Model model) {
-        Page<ProductResponseDto> productPage = productService.getProductList(search, sort, page, size);
+
+        Page<ProductResponseDto> productPage;
+
+        if (categoryId != null) {
+            productPage = productService.getProductsByCategory(categoryId, sort, page, size);
+        } else {
+            productPage = productService.getProductList(search, sort, page, size);
+        }
 
         // 페이지네이션 블록 설정
         int blockSize = 5; // 페이지 블록 크기 설정
@@ -63,6 +71,7 @@ public class productViewController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("search", search);
         model.addAttribute("sort", sort);
+        model.addAttribute("categoryId", categoryId);
         return "products/productList";
     }
 
