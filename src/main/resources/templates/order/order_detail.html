@@ -74,7 +74,7 @@
         <div th:if="${payment.getPayStatus() == payment.getPayStatus().CANCEL}" align="center">
             <h3>결제 취소</h3>
         </div>
-        <div th:if="${order.getOrderStatus() != isConfirmed && order.getOrderStatus() != order.getOrderStatus().REFUND && order.getOrderStatus() != order.getOrderStatus().EXCHANGE}">
+        <div th:if="${order.getOrderStatus() != order.getOrderStatus().CONFIRMED && order.getOrderStatus() != order.getOrderStatus().REFUND && order.getOrderStatus() != order.getOrderStatus().EXCHANGE}">
             <br>
             <div align="center">
                 구매확정시 상품금액 1% 포인트 적립
@@ -87,7 +87,7 @@
                     </button>
                 </div>
                 <div th:if="${order.getOrderStatus() == orderStatusArray[5] || order.getOrderStatus() == orderStatusArray[6]}">
-                    <form action="/api/v1/orders/canceled-order" method="post" th:onsubmit="|/order/${orderNo}|">
+                    <form action="/api/v1/orders/canceled-order" method="post">
                         <input type="hidden" name="orderNo" th:value="${orderNo}">
                         <input type="hidden" name="_method" value="delete">
                         <button type="submit" class="btn btn-dark">

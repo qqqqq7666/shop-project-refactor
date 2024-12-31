@@ -14,6 +14,9 @@ const payMethodArray = [
     "TOSS"
 ];
 
+const cartList = document.getElementById("cart-list");
+const cart = JSON.parse(localStorage.getItem("cart"));
+
 // 유효성 검사
 (() => {
     'use strict'
@@ -88,9 +91,6 @@ function sample6_execDaumPostcode() {
         }
     }).open();
 }
-
-const cartList = document.getElementById("cart-list");
-const cart = JSON.parse(localStorage.getItem("cart"));
 
 // 결제 품목 표시
 function renderProduct() {
@@ -381,21 +381,6 @@ function usePoint(usedPointRequestDto){
         body: JSON.stringify(usedPointRequestDto)
     })
 }
-
-// function savePoint(savedPointRequestDto){
-//     fetch("/api/v1/points/save-point", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(savedPointRequestDto)
-//     })
-//         .then(response => {
-//             if(!response.ok){
-//                 console.log("포인트 적립 안됨");
-//             }
-//         })
-// }
 
 function checkoutFail(orderNo){
     fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {

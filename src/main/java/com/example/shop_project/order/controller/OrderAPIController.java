@@ -90,12 +90,12 @@ public class OrderAPIController {
     @PatchMapping("/address")
     public ResponseEntity<Void> updateAddress(@RequestBody AddressDto addressDto){
         orderService.updateAddress(addressDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().location(URI.create("/order" + addressDto.getOrderNo())).build();
     }
 
     @DeleteMapping("/canceled-order")
     public ResponseEntity<?> deleteCanceledOrder(Long orderNo){
         orderService.deleteCanceledOrder(orderNo);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().location(URI.create("/order" + orderNo)).build();
     }
 }

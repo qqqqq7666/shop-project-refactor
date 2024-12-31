@@ -74,6 +74,7 @@
 <script>
     const requirementSelect = document.getElementById("requirement");
     const requireTextarea = document.getElementById("message-textarea");
+    const orderNo = [[${orderNo}]]
     requirementSelect.addEventListener("change", () => {
         if (requirementSelect.value === "직접입력")
             requireTextarea.style.display = "block";
@@ -132,7 +133,6 @@
         let requirement = document.getElementById("requirement").value;
         if(document.getElementById("requirement").value === "직접입력")
             requirement = document.getElementById("message-textarea").value;
-        const orderNo = [[${orderNo}]]
         const addressDto = {
             orderNo,
             addressee: document.querySelector("input[name='addressee']").value,
@@ -158,6 +158,22 @@
             })
 
     })
+
+    window.addEventListener("load", async () => {
+        const orderPromise = await fetch(`/api/v1/orders/${orderNo}`);
+        const order = await orderPromise.json();
+
+        const inputArr = document.querySelectorAll("input");
+        inputArr[0].value = order.addressee;
+        inputArr[1].value = order.contact;
+        inputArr[2].value = order.postNo;
+        inputArr[4].value = order.address;
+        inputArr[5].value = order.addressDetail;
+    })
+
+    window.addEventListener("beforeunload", (event) => {
+        event.preventDefault();
+    });
 </script>
 </body>
 </html>
