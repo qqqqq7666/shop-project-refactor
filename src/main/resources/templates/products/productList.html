@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>상품 리스트</title>
   <link rel="stylesheet" href="/product/css/productList.css">
+  <link rel="stylesheet" type="text/css" href="/common/css/header.css">
 </head>
 <body>
+<!-- <header th:replace="~{/common/layout :: headerFragment}"></header> -->
+<main layout:fragment="content">
 <div class="container">
   <!-- 상단 정렬과 검색 -->
   <div class="top-bar">
@@ -34,25 +37,22 @@
       </a>
       <p class="title" th:text="${product.productName}">상품명</p>
       <p class="price" th:text="'₩' + ${product.price}">가격</p>
+      <p class="out-of-stock" th:if="${product.isOutOfStock}">품절</p>
     </div>
   </div>
 
   <!-- 페이지네이션 -->
+  <!-- 페이지네이션 -->
   <div class="pagination">
-    <!-- 처음 페이지로 이동 -->
-    <a th:if="${currentPage > 0}" th:href="@{/products/productList(page=0, search=${search}, sort=${sort})}">&lt;&lt;</a>
-    <!-- 이전 페이지 -->
-    <a th:if="${currentPage > 0}" th:href="@{/products/productList(page=${currentPage - 1}, search=${search}, sort=${sort})}">&lt;</a>
-    <!-- 페이지 번호 표시 -->
+    <a th:if="${currentPage > 0}" th:href="@{/products/productList(page=0, search=${search}, sort=${sort}, categoryId=${categoryId})}">&lt;&lt;</a>
+    <a th:if="${currentPage > 0}" th:href="@{/products/productList(page=${currentPage - 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}">&lt;</a>
     <span th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
-        <a th:href="@{/products/productList(page=${pageNum - 1}, search=${search}, sort=${sort})}"
+        <a th:href="@{/products/productList(page=${pageNum - 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}"
            th:classappend="${currentPage == pageNum - 1} ? 'active' : ''"
            th:text="${pageNum}"></a>
     </span>
-    <!-- 다음 페이지 -->
-    <a th:if="${currentPage < totalPages - 1}" th:href="@{/products/productList(page=${currentPage + 1}, search=${search}, sort=${sort})}">&gt;</a>
-    <!-- 끝 페이지로 이동 -->
-    <a th:if="${currentPage < totalPages - 1}" th:href="@{/products/productList(page=${totalPages - 1}, search=${search}, sort=${sort})}">&gt;&gt;</a>
+    <a th:if="${currentPage < totalPages - 1}" th:href="@{/products/productList(page=${currentPage + 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}">&gt;</a>
+    <a th:if="${currentPage < totalPages - 1}" th:href="@{/products/productList(page=${totalPages - 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}">&gt;&gt;</a>
   </div>
 </div>
 
@@ -65,5 +65,6 @@
     window.location.href = url;
   });
 </script>
+</main>
 </body>
 </html>

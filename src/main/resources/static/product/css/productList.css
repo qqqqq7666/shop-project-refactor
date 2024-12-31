@@ -118,3 +118,12 @@ body {
     color: #fff; /* 글자 색상을 하얀색 */
     border-color: #000;
 }
+
+.out-of-stock {
+    background-color: #000; /* 활성화된 페이지: 검정 배경 */
+    color: #fff; /* 글자 색상을 하얀색 */
+    font-weight: bold;
+    font-size: 14px;
+    margin-top : -5px
+}
+
