@@ -16,13 +16,10 @@ import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.order.repository.PaymentRepository;
 import com.example.shop_project.point.entity.UsedPoint;
 import com.example.shop_project.point.repository.UsedPointRepository;
-import com.example.shop_project.point.service.PointService;
-import com.example.shop_project.product.entity.Product;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,18 +59,16 @@ public class OrderService {
 
     public List<OrderDetail> getOrderDetailList(Long orderNo) {
         Order foundOrder = orderRepository.findByOrderNo(orderNo).orElseThrow();
-        List<OrderDetail> detailList = orderDetailRepository.findAllByOrder(foundOrder);
-        return detailList;
+        return orderDetailRepository.findAllByOrder(foundOrder);
     }
 
     @Transactional(readOnly = true)
     public Page<OrderResponseDto> getOrderPageList(Principal principal, Pageable pageable, String keyword) {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-        List<Product> productList = productRepository.findAllByProductNameContaining(keyword);
-        Page<Order> orderPage = orderRepository.findByMemberAndOrderStatusNotAndOrderDetailListProductProductNameContainingOrderByOrderNoDesc(member, OrderStatus.FAIL, keyword, pageable);
-        Page<OrderResponseDto> orderResponseDtoPage = orderPage.map(order -> orderMapper.toResponseDto(order));
+        Page<Order> orderPage = orderRepository.findAllByMemberAndOrderStatusNotAndOrderDetailListProductProductNameContainingOrderByOrderNoDesc(member, OrderStatus.FAIL, keyword, pageable);
+        log.info("orderPage size = {}", orderPage.getTotalElements());
 
-        return orderResponseDtoPage;
+        return orderPage.map(order -> orderMapper.toResponseDto(order));
     }
 
     public List<OrderResponseDto> getOrderList() {
@@ -87,7 +82,6 @@ public class OrderService {
         return orderMapper.toResponseDto(orderRepository.findByOrderNo(orderNo).orElseThrow());
     }
 
-    // updateStatus를 따로 구현하는게 맞는지..
     @Transactional
     public OrderResponseDto updateOrderStatus(Long orderNo, OrderStatus orderStatus) {
         Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
