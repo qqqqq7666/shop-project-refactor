@@ -10,11 +10,14 @@
 <div class="container mt-5 d-flex flex-column align-items-center">
     <h2 class="mb-4">주문내역</h2>
     <form method="get" action="/order">
-        <input placeholder="상품명으로 주문을 검색하세요" style="width: 450px" name="search">
+        <input th:value="${keyword}" placeholder="상품명으로 주문을 검색하세요" style="width: 450px" name="search">
         <button type="submit">검색</button>
     </form>
     <br>
     <!-- Card Example -->
+    <div th:if="${orderPage.isEmpty()}">
+        주문이 존재하지 않습니다
+    </div>
     <div class="card mb-3 w-100" style="max-width: 540px;" id="product-card"
          th:each="order : ${orderPage}">
         <div>
@@ -51,7 +54,7 @@
             </div>
         </div>
     </div>
-    <nav aria-label="Page navigation example">
+    <nav aria-label="Page navigation example" th:if="${!orderPage.isEmpty()}">
         <ul class="pagination">
             <li th:if="${currentPage > 0}" class="page-item">
                 <a class="page-link" th:href="|?page=${currentPage - 1}|" aria-label="Previous">

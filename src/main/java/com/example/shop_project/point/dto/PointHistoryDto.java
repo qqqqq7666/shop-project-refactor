@@ -18,4 +18,5 @@ public class PointHistoryDto {
     private String reason;
     private Order order;
     private Boolean isUsed;
+    private Long pointId;
 }

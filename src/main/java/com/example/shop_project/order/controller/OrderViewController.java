@@ -58,10 +58,9 @@ public class OrderViewController {
     @GetMapping
     public String orderList(Model model, Principal principal, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search){
         Page<OrderResponseDto> orderPage = orderService.getOrderPageList(principal, PageRequest.of(page, 10), search);
-        if(orderPage.isEmpty())
-            return "order/order_empty";
         model.addAttribute("orderPage", orderPage);
         model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", search);
         return "order/order_list";
     }
 
@@ -80,5 +79,11 @@ public class OrderViewController {
     @GetMapping("cart")
     public String cart(){
         return "/order/cart/cart";
+    }
+
+    @GetMapping("modify-address/{orderNo}")
+    public String modifyAddress(Model model, @PathVariable Long orderNo){
+        model.addAttribute("orderNo", orderNo);
+        return "/order/modify_address";
     }
 }

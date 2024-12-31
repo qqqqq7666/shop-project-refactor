@@ -45,7 +45,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><a href="/order">주문개수</td>
+                    <td><a href="/order" th:text="${orderCount}">주문개수</a></td>
                     <td><a href="/my-reviews" th:text="${reviewCount}"></a></td>
                     <td><a href="/my-inquiries">문의개수</a></td>
                     <td><a th:text="${point.getBalance()}" href="/point"></a></td>

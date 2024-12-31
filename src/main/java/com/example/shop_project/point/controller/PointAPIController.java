@@ -16,12 +16,6 @@ public class PointAPIController {
     @Autowired
     private PointService pointService;
 
-    @PostMapping("/create/{memberId}")
-    public ResponseEntity<Void> test(@PathVariable Long memberId){
-        pointService.createPoint(memberId);
-        return ResponseEntity.created(URI.create("/order")).build();
-    }
-
     @GetMapping
     public ResponseEntity<PointDto> getPoint(Principal principal){
         return ResponseEntity.ok(pointService.getPointByMember(principal.getName()));
@@ -34,8 +28,8 @@ public class PointAPIController {
     }
 
     @PostMapping("/use-point")
-    public ResponseEntity<PointDto> usePoint(@RequestBody UsedPointRequestDto responseDto){
-        PointDto response = pointService.createUsedPoint(responseDto);
+    public ResponseEntity<PointDto> usePoint(@RequestBody UsedPointRequestDto requestDto){
+        PointDto response = pointService.createUsedPoint(requestDto);
         return ResponseEntity.created(URI.create("/mypage")).body(response);
     }
 }
