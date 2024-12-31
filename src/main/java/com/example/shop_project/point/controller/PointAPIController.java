@@ -3,6 +3,7 @@ package com.example.shop_project.point.controller;
 import com.example.shop_project.point.dto.*;
 import com.example.shop_project.point.entity.UsedPoint;
 import com.example.shop_project.point.service.PointService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.security.Principal;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/points")
 public class PointAPIController {
@@ -23,6 +25,7 @@ public class PointAPIController {
 
     @PostMapping("/save-point")
     public ResponseEntity<PointDto> savePoint(@RequestBody SavedPointRequestDto requestDto){
+        log.warn("requestDto email = {}", requestDto.getEmail());
         PointDto response = pointService.createSavedPoint(requestDto);
         return ResponseEntity.created(URI.create("/mypage")).body(response);
     }

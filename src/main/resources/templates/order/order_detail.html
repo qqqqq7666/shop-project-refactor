@@ -133,6 +133,7 @@
 <script src="/common/js/bootstrap.bundle.min.js"></script>
 <script>
     document.getElementById("confirm-button").addEventListener("click", async () => {
+        const email = `[[${memberEmail}]]`;
         const confirmed = confirm("구매 확정을 하면 교환 및 환불이 불가합니다.");
         let saveReason
         if([[${detailList.size() - 1}]] === 1)
@@ -160,7 +161,7 @@
                             "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
-                            email: "root@root.com",
+                            email,
                             saveReason,
                             savedPoint: [[${order.getTotalPrice() * 0.01}]]
                         }),

@@ -56,6 +56,7 @@ public class OrderViewController {
         model.addAttribute("payment", paymentService.getPaymentByOrderNo(orderNo));
         model.addAttribute("point", pointService.getUsedPointByOrderNo(orderNo));
         model.addAttribute("orderStatusArray", OrderStatus.values());
+        model.addAttribute("memberEmail", principal.getName());
         return "order/order_detail";
     }
 
