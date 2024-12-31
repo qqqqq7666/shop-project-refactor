@@ -1,5 +1,8 @@
 import { validatePassword, checkPasswordMatch, formatPhoneInput, validateForm } from './validationCheck.js';
 
+let emailChecked = false;
+let nicknameChecked = false;
+
 document.addEventListener('DOMContentLoaded', function() {
     const emailInput = document.getElementById('email');
     const nicknameInput = document.getElementById('nickname');
@@ -13,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('emailCheckBtn').addEventListener('click', function() {
         const email = emailInput.value;
 		const emailErrorElement = document.getElementById('emailError');
-		
+		emailChecked = false;
 		if (!email) {
 	        emailErrorElement.textContent = '이메일을 입력해주세요.';
 	        emailErrorElement.style.color = 'red';
@@ -42,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data && !data.exists) {
                 emailErrorElement.textContent = '사용할 수 있는 이메일입니다.';
                 emailErrorElement.style.color = 'blue';
+				emailChecked = true;
             }
         })
         .catch(error => console.error('Error', error));
@@ -51,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nicknameCheckBtn').addEventListener('click', function() {
         const nickname = nicknameInput.value;
 		const nicknameErrorElement = document.getElementById('nicknameError');
-		
+		nicknameChecked = false;
 		if (!nickname) {
 	        nicknameErrorElement.textContent = '닉네임을 입력해주세요.';
 	        nicknameErrorElement.style.color = 'red';
@@ -67,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 nicknameErrorElement.textContent = '사용할 수 있는 닉네임입니다.';
                 nicknameErrorElement.style.color = 'blue';
+				nicknameChecked = true;
             }
         })
         .catch(error => console.error('Error:', error));
@@ -121,6 +126,13 @@ document.addEventListener('DOMContentLoaded', function() {
             { element: phoneInput, errorId: 'phoneError', message: '전화번호를 입력해주세요.' },
         ];
         const isValid = validateForm(fields);
+		
+		if (!emailChecked|| !nicknameChecked) {
+		    e.preventDefault();
+		    alert('이메일/닉네임 중복확인을 해주세요.');
+		    return;
+		}
+		
         if (!isValid) {
             e.preventDefault(); // 폼 제출 방지
         }

@@ -1,5 +1,9 @@
 // let isCounseling = false;
 
+window.onload = function () {
+    loadChatbotMessages();
+};
+
 // 초기 상태: 입력창과 전송 버튼 비활성화
 document.getElementById('chatbot-user-input').disabled = true;
 document.getElementById('chatbot-send-btn').disabled = true;
@@ -20,7 +24,7 @@ document.querySelectorAll('.chatbot-question-btn').forEach(button => {
 
 // 메시지 및 응답 처리
 function processMessage(message) {
-    appendMessage(message, 'user');
+	appendMessage(message, 'user');
     fetch('/api/v1/chatbot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -38,23 +42,50 @@ function processMessage(message) {
 
 // 메시지 추가
 function appendMessage(content, sender) {
-    const div = document.getElementById('chatbot-content');
-    if (!div) {
-        console.error("chatbot-content 요소를 찾을 수 없습니다.");
-        return;
-    }
-    const messageDiv = document.createElement('div');
+	const div = document.getElementById('chatbot-content');
+	    if (!div) {
+	        console.error("chatbot-content 요소를 찾을 수 없습니다.");
+	        return;
+	    }
+	    const messageDiv = document.createElement('div');
 
-    messageDiv.classList.add('message');
-    if (sender === 'user') {
-        messageDiv.classList.add('user');
-    } else {
-        messageDiv.classList.add('bot');
-    }
+	    messageDiv.classList.add('message');
+	    if (sender === 'user') {
+	        messageDiv.classList.add('user');
+	    } else {
+	        messageDiv.classList.add('bot');
+	    }
 
-    messageDiv.textContent = content;
-    div.appendChild(messageDiv);
-    div.scrollTop = div.scrollHeight;
+	    messageDiv.textContent = content;
+	    div.appendChild(messageDiv);
+	    div.scrollTop = div.scrollHeight;
+
+	    // (추가) 메시지를 localStorage에도 저장
+	    saveChatbotMessages(content, sender);
+}
+
+/* 메시지를 localStorage에 저장 */
+function saveChatbotMessages(content, sender) {
+    // 기존에 저장된 챗봇 대화 배열을 불러옴
+    let storedData = localStorage.getItem('chatbotMessages');
+    let messages = storedData ? JSON.parse(storedData) : [];
+
+    // 새 메시지 추가
+    messages.push({ content, sender });
+
+    // 다시 localStorage에 저장
+    localStorage.setItem('chatbotMessages', JSON.stringify(messages));
+}
+
+/* 페이지 로드시 localStorage에 있는 챗봇 대화 복구 */
+function loadChatbotMessages() {
+    let storedData = localStorage.getItem('chatbotMessages');
+    if (!storedData) return; // 저장된 기록이 없으면 종료
+
+    let messages = JSON.parse(storedData);
+    messages.forEach(msg => {
+        appendMessage(msg.content, msg.sender);
+    });
 }
 
 // 입력창 활성화 함수 

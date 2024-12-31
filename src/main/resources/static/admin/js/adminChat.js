@@ -1,5 +1,5 @@
 let stompClient = null;
-let adminId = "ADMIN_001";   // 실제 로그인 관리자 ID
+let adminId = "ADMIN";   // 실제 로그인 관리자 ID
 let selectedRoomId = null;
 
 function joinRoom(roomId) {
