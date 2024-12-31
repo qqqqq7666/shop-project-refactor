@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>후기 작성</title>
@@ -9,6 +10,7 @@
     <script src="/review/js/reviewCreate.js" defer></script>
 </head>
 <body>
+<main layout:fragment="content">
 <div class="review-box">
     <p>이 상품 어떠셨나요?</p>
     <div class="product-info"></div>
@@ -45,6 +47,6 @@
         </div>
     </form>
 </div>
-
+</main>
 </body>
 </html>

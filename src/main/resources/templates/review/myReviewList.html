@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>나의 리뷰</title>
@@ -8,6 +9,7 @@
     <script src="/review/js/reviewList.js" defer></script>
 </head>
 <body>
+<main layout:fragment="content">
 <div class="container mt-5 d-flex flex-column align-items-center">
     <h2 class="mr-3 mb-3 ">나의 리뷰</h2>
     <div id="review-list">
@@ -52,5 +54,6 @@
         </ul>
     </nav>
 </div>
+</main>
 </body>
 </html>
