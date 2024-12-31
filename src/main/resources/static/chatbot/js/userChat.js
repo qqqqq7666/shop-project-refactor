@@ -1,7 +1,8 @@
 
 let stompClient = null;
 let currentRoomId = null;
-let userId = "USER_123";  // 실제 로그인된 사용자 ID
+let userId = "USER";  // 실제 로그인된 사용자 ID
+const CHAT_STORAGE_KEY = 'chatbotMessages';
 
 // 상담사 연결 버튼
 document.getElementById('connect-admin-btn').addEventListener('click', function() {
@@ -132,9 +133,6 @@ function userappendMessage(content, sender) {
     container.appendChild(messageDiv);
     container.scrollTop = container.scrollHeight;
 }
-
-
-
 
 // 상담 종료 시 처리
 function endCounseling() {
