@@ -2,6 +2,13 @@ function editProduct(productId) {
     window.location.href = '/products/edit/' + productId;
 }
 
+function performSearch() {
+    const searchInput = document.querySelector('input[name="search"]').value || '';
+    const url = `/admin/products?keyword=${encodeURIComponent(searchInput)}`;
+    window.location.href = url; // 페이지 이동
+}
+
+
 function submitPartialUpdate() {
     const productId = document.getElementById("productId").value;
 

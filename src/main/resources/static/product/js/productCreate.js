@@ -114,6 +114,9 @@ function renderImagePreviews() {
     images.forEach((image, index) => {
         const li = document.createElement("li");
         li.classList.add("image-item");
+        if (index === 0) {
+            li.classList.add("highlight"); // 첫 번째 이미지에만 highlight 클래스 추가
+        }
         li.setAttribute("data-index", index); // 인덱스 저장
 
         li.innerHTML = `
@@ -238,7 +241,6 @@ document.getElementById('productForm').addEventListener('submit', function (even
         })
         .then(data => {
             console.log("상품 등록 성공:", data);
-            alert('상품이 성공적으로 등록되었습니다!');
             window.location.href = '/admin/products';
         })
         .catch(errors => {
