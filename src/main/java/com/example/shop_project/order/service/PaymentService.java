@@ -3,6 +3,7 @@ package com.example.shop_project.order.service;
 import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.PaymentDto;
 import com.example.shop_project.order.entity.Order;
+import com.example.shop_project.order.entity.PayStatus;
 import com.example.shop_project.order.entity.Payment;
 import com.example.shop_project.order.mapper.OrderMapper;
 import com.example.shop_project.order.repository.OrderRepository;
@@ -31,16 +32,24 @@ public class PaymentService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Transactional
     public Payment createPayment(PaymentDto paymentDto){
         Payment newPayment = orderMapper.toEntity(paymentDto);
-        newPayment.assignOrderToCreate(orderRepository.findFirstByOrderByOrderNoDesc().orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다.")));
+        Order order = orderRepository.findFirstByOrderByOrderNoDesc().orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다."));
+        newPayment.assignOrderToCreate(order);
+        order.getOrderDetailList().forEach(orderDetail -> {
+            Product product = orderDetail.getProduct();
+            product.setSalesCount((int) (product.getSalesCount() + orderDetail.getQuantity()));
+            productRepository.save(product);
+        });
         return paymentRepository.save(newPayment);
     }
 
     @Transactional
     public Payment getPaymentByOrderNo(Long orderNo){
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
-        return paymentRepository.findByOrder(order).orElseThrow();
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+        return paymentRepository.findByOrder(order).orElseGet(() -> Payment.builder()
+                .payStatus(PayStatus.FAIL).build());
     }
 
     @Transactional
@@ -69,7 +78,6 @@ public class PaymentService {
             for(ProductOption option : product.getOptions()){
                 if(option.getSize() == orderDetailDto.getSize() && Objects.equals(option.getColor(), orderDetailDto.getColor())) {
                     int updatedStock = (int) (option.getStockQuantity() + orderDetailDto.getQuantity());
-                    log.warn("updatedStock : {}", updatedStock);
                     option.setStockQuantity(updatedStock);
                     break;
                 }

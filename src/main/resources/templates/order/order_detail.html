@@ -37,7 +37,7 @@
                         <div>
                         <span th:text="|${detail.getColor()} / ${detail.getSize()} / ${detail.getQuantity()}개|">옵션 / 개수</span><br>
                         </div>
-                        <span th:text="|${detail.getPrice() * detail.getQuantity()}원|">가격</span><br>
+                        <span th:text="|${#numbers.formatInteger(detail.getPrice() * detail.getQuantity(), 0, 'COMMA')}원|">가격</span><br>
                     </div>
                 </li>
             </ul>
@@ -46,20 +46,21 @@
         <h5>결제 정보</h5>
         <div class="d-flex justify-content-between">
             <p>상품 금액</p>
-            <p th:text="|${order.getTotalPrice()}원|">총 상품 금액</p>
+            <p th:text="|${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')}원|">총 상품 금액</p>
         </div>
         <div class="d-flex justify-content-between">
             <p>포인트 사용</p>
-            <p th:text="|-${point.getAmount()}P|"></p>
+            <p th:if="${point.getAmount() > 0}" th:text="|-${#numbers.formatInteger(point.getAmount(), 0, 'COMMA')}P|"></p>
+            <p th:if="${point.getAmount() <= 0}">-</p>
         </div>
         <div class="d-flex justify-content-between">
             <p>배송비</p>
             <p th:if="${order.getTotalPrice() >= 50000}">무료</p>
-            <p th:if="${order.getTotalPrice() < 50000}">3000원</p>
+            <p th:if="${order.getTotalPrice() < 50000}">3,000원</p>
         </div>
         <div class="d-flex justify-content-between">
             <p style="font-size: 20px">결제 금액</p>
-            <p th:text="|${payment.getAmount()}원|">총 결제 금액</p>
+            <p th:text="|${#numbers.formatInteger(payment.getAmount(), 0, 'COMMA')}원|">총 결제 금액</p>
         </div>
         <!-- TODO 상품 상세 제대로 표시하기 -->
         <div class="d-flex justify-content-between">
@@ -67,13 +68,51 @@
             <p th:text="${payment.getPayMethod()}">결제 수단</p>
         </div>
         <div th:if="${order.getOrderStatus() != isConfirmed}">
+            <br>
+            <div align="center">
+                구매확정시 상품금액 1% 포인트 적립
+            </div>
             <div class= "mt-4 d-flex justify-content-around">
                 <button id="confirm-button" class="btn custom-button" name="orderStatus" value="CONFIRMED" onclick="">구매 확정</button>
-                <button class="btn custom-button" name="orderStatus" value="REFUND" type="submit">환불 요청</button>
-                <button class="btn custom-button" name="orderStatus" value="EXCHANGE" type="submit">교환 요청</button>
+                <div th:if="${order.getOrderStatus() != orderStatusArray[5] && order.getOrderStatus() != orderStatusArray[6]}">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        교환/환불 요청
+                    </button>
+                </div>
+                <div th:if="${order.getOrderStatus() == orderStatusArray[5] || order.getOrderStatus() == orderStatusArray[6]}">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        교환/환불 요청 취소
+                    </button>
+                </div>
             </div>
-            <div>
-                구매확정시 상품금액 1% 포인트 적립
+        </div>
+    </div>
+
+    <!-- Button trigger modal -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" th:action="|/api/v1/orders/${orderNo}/canceled-order|">
+                        <select name="orderStatus">
+                            <option value="REFUND_REQUIRE">환불 요청</option>
+                            <option value="EXCHANGE_REQUIRE">교환 요청</option>
+                        </select><br>
+                        <textarea id="message-textarea" name="reason" placeholder="교환/환불 사유를 100자 이내로 입력해주세요" required maxlength="100"
+                                  style="width: 100%; height: 6.25em; resize: none;"></textarea>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -82,7 +121,7 @@
 <script src="/common/js/bootstrap.bundle.min.js"></script>
 <script>
     document.getElementById("confirm-button").addEventListener("click", async () => {
-        const confirmed = confirm("구매확정을 하시겠습니까?");
+        const confirmed = confirm("구매 확정을 하면 교환 및 환불이 불가합니다.");
         let saveReason
         if([[${detailList.size() - 1}]] === 1)
             saveReason = `[[${detailList.get(0).getProduct().getProductName()}]] 구매 확정`

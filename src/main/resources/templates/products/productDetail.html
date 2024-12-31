@@ -83,7 +83,24 @@
                         th:onclick="addItem([[${product.getProductId()}]], [[${product.getProductName()}]], [[${product.getPrice()}]], 1); alert('장바구니에 상품이 담겼습니다.');"
                 >Add to cart</button>
                 <button onclick="location.href = '/order/cart'">장바구니</button>
+                <button id="favoriteButton" th:onclick="toggleFavorite([[${product.productId}]]);">찜하기</button>
+                <script>
+                    function toggleFavorite(productId) {
+                        fetch(`/api/favorites/${productId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    alert("찜 목록이 업데이트되었습니다.");
+                                } else {
+                                    alert("이미 찜한 상품입니다.");
+                                }
+                            });
+                    }
+                </script>
                 <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/inquiries'|">상품 문의 목록</button>
+                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/reviews'|">상품 리뷰 목록</button>
             </div>
         </div>
     </div>

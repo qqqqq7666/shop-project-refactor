@@ -13,5 +13,4 @@ public class ShopProjectApplication {
     public static void main(String[] args) {
         SpringApplication.run(ShopProjectApplication.class, args);
     }
-
 }

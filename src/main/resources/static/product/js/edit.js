@@ -140,6 +140,9 @@ function renderAllImages() {
         .forEach((image, index) => {
             const li = document.createElement("li");
             li.classList.add("image-item");
+            if (index === 0) {
+                li.classList.add("highlight"); // 첫 번째 이미지에만 highlight 클래스 추가
+            }
             li.setAttribute("data-index", index); // 인덱스 저장
 
             li.innerHTML = `

@@ -1,0 +1,36 @@
+#review-header {
+    width: 80%;
+    justify-content: center;
+    position: relative;
+}
+
+#review-header h2 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#average-stars {
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    margin-right: auto;
+}
+
+#star {
+    font-size: 1.8rem;
+}
+
+.nickname {
+    font-size: 1.5rem;
+}
+
+#pagination {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.review-btn {
+    margin-left: auto;
+    margin-right: 0px;
+}

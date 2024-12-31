@@ -18,6 +18,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAll(Sort sort);
     List<Product> findByProductNameContaining(String keyword);
 
+    List<Product> findAllByProductNameContaining(String productName);
+
 
     @Modifying
     @Query(value = "UPDATE Product p SET p.viewCount = p.viewCount + :increment WHERE p.productId = :productId")

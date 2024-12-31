@@ -9,13 +9,18 @@
 <body>
 <div class="container mt-5 d-flex flex-column align-items-center">
     <h2 class="mb-4">주문내역</h2>
-
+    <form method="get" action="/order">
+        <input placeholder="상품명으로 주문을 검색하세요" style="width: 450px" name="search">
+        <button type="submit">검색</button>
+    </form>
+    <br>
     <!-- Card Example -->
     <div class="card mb-3 w-100" style="max-width: 540px;" id="product-card"
          th:each="order : ${orderPage}">
         <div>
-            <h4 th:text="${#temporals.format(order.getCreatedDate(), 'yy.MM.dd')}"></h4>
+            <h4 class="mx-3 my-2" th:text="${#temporals.format(order.getCreatedDate(), 'yy.MM.dd')}"></h4>
         </div>
+        <div class="mx-3 my-1"><b th:text="${order.getOrderStatus()}">주문 상태</b></div>
         <div class="row g-0" th:each="detail, i : ${order.getOrderDetailList()}">
             <!-- Image Section -->
             <div class="col-md-4">
@@ -41,8 +46,9 @@
                             th:data-product-color="${detail.getColor()}"
                             th:data-product-size="${detail.getSize()}">후기 작성</button>
                 </div>
+                <br>
+                <br>
             </div>
-            <hr>
         </div>
     </div>
     <nav aria-label="Page navigation example">
@@ -64,5 +70,6 @@
     </nav>
 </div>
 <script src="/common/js/bootstrap.bundle.min.js"></script>
+<script src="/review/js/storeProductInfo.js"></script>
 </body>
 </html>

@@ -5,12 +5,13 @@ import com.example.shop_project.review.dto.ReviewResponseDto;
 import com.example.shop_project.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Collections;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class ReviewViewController {
     // 리뷰 작성 페이지
     @GetMapping("/review/create")
     public String createReview() {
-        return "review/create";
+        return "review/reviewCreate";
     }
 
     // 리뷰 저장
@@ -33,9 +34,38 @@ public class ReviewViewController {
 
     // 리뷰 목록 페이지
     @GetMapping("/products/{productId}/reviews")
-    public String reviewList(@PathVariable Long productId, Model model){
-        List<ReviewResponseDto> reviews = reviewService.getReviewsByProductId(productId);
-        model.addAttribute("reviews", reviews);
+    public String reviewList(@PathVariable Long productId,
+                             @RequestParam(defaultValue = "date") String sort,
+                             @RequestParam(defaultValue = "0") int page, Model model){
+        Page<ReviewResponseDto> reviews = reviewService.getReviewsByProductId(productId, sort, page);
+        if (reviews == null || reviews.isEmpty()) {
+            model.addAttribute("reviews", Collections.emptyList());
+        } else {
+            model.addAttribute("reviews", reviews.getContent());
+            model.addAttribute("totalPages", reviews.getTotalPages());
+            model.addAttribute("currentPage", reviews.getNumber());
+        }
+
+        Double averageStars = reviewService.getAverageStarsByProductId(productId);
+
+        model.addAttribute("averageStars", averageStars);
+        model.addAttribute("sortOption", sort);
+        model.addAttribute("productId", productId);
+
         return "review/reviewList";
+    }
+
+    @GetMapping("/my-reviews")
+    public String myReviewList(@RequestParam(defaultValue = "0") int page, Model model) {
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Page<ReviewResponseDto> reviews = reviewService.getReviewsByMember(memberEmail, page);
+        if (reviews == null || reviews.isEmpty()) {
+            model.addAttribute("reviews", Collections.emptyList());
+        } else {
+            model.addAttribute("reviews", reviews.getContent());
+            model.addAttribute("totalPages", reviews.getTotalPages());
+            model.addAttribute("currentPage", reviews.getNumber());
+        }
+        return "review/myReviewList";
     }
 }
