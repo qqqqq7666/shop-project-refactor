@@ -23,6 +23,10 @@ public class MyInquiryViewController {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Inquiry> inquiries = inquiryService.getInquiriesByMember(userEmail);
 
+        for (Inquiry inquiry : inquiries) {
+            inquiry.setCommentCount(inquiry.getComments().size());
+        }
+
         model.addAttribute("inquiries", inquiries);
 
         return "inquiry/myInquiries";
