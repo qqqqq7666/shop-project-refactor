@@ -15,7 +15,7 @@ function saveCart() {
 }
 
 // 장바구니 UI 렌더링
-function renderCart() {
+async function renderCart() {
     const cartItems = document.getElementById("cart-items");
     const itemCount = document.getElementById("item-count");
     const totalPrice = document.getElementById("total-price");
@@ -25,47 +25,58 @@ function renderCart() {
     let total = 0;
     let count = 0;
 
-    cart.forEach(async (item, index) => {
-        item.option.forEach((option, optionIndex) => {
+    // cart 배열을 순회하는 for...of 사용
+    for (let index = 0; index < cart.length; index++) {
+        const item = cart[index];
+        const productImage = await fetch(`/api/v1/orders/product-image?productId=${item.productId}`).then(response => response.text());
+
+        // item.option 배열을 순회하는 for...of 사용
+        for (let optionIndex = 0; optionIndex < item.option.length; optionIndex++) {
+            const option = item.option[optionIndex];
+
+
             const li = document.createElement("li");
             li.innerHTML = `
-            <div>
-            <img src="/images/imageInfo.png" width="100px">
-            </div>
-            <div align="center">
-            <span>${item.name}<br><br></span>
-            <span>${item.price}원</span>
-            </div>
-            <h6>X</h6>
-            <div class="quantity-controls" align="center">
-            <span>(${option.size} / ${option.color})<br>
-                <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, -1)">-</button>
-                <input type="text" value="${option.quantity}" readonly />
-                <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, 1)">+</button>
-                <br>
-                <button type="button" id="${index}-${optionIndex}" class="btn btn-primary option-change-button option${index}" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    옵션 변경
-                </button>
-            </span>
-            </div>
-            <h3>=</h3>
-            <span>${item.price * option.quantity}원</span>
-            <div>
-            <button class="btn btn-primary" onclick="removeOption(${index}, ${optionIndex})">삭제</button>
-            </div>
-        `;
+                <div>
+                    <img src="${productImage}" class="img-thumbnail" width="100px" height="100px">
+                </div>
+                <div align="center">
+                    <span>${item.name}<br><br></span>
+                    <span>${item.price}원</span>
+                </div>
+                <h6>X</h6>
+                <div class="quantity-controls" align="center">
+                    <span>(${option.size} / ${option.color})<br>
+                        <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, -1)">-</button>
+                        <input type="text" value="${option.quantity}" readonly />
+                        <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, 1)">+</button>
+                        <br>
+                        <button type="button" id="${index}-${optionIndex}" class="btn btn-primary option-change-button option${index}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            옵션 변경
+                        </button>
+                    </span>
+                </div>
+                <h3>=</h3>
+                <span>${item.price * option.quantity}원</span>
+                <div>
+                    <button class="btn btn-primary" onclick="removeOption(${index}, ${optionIndex})">삭제</button>
+                </div>
+            `;
             cartItems.appendChild(li);
-            total += option.quantity * item.price;
 
-        });
+            total += option.quantity * item.price;
+            count += option.quantity;
+        }
 
         // 상품 옵션 변경 모달 render
-        const response = await fetch(`/api/v1/orders/product-option/${cart[index].productId}`);
+        const response = await fetch(`/api/v1/orders/product-option/${item.productId}`);
         const productOption = await response.json();
+
+        // 상품 옵션 변경 처리
         document.body.addEventListener("click", event => {
             if (event.target.classList.contains(`option${index}`)) {
-                document.getElementById("option-size").innerHTML = ""
-                document.getElementById("option-color").innerHTML = ""
+                document.getElementById("option-size").innerHTML = "";
+                document.getElementById("option-color").innerHTML = "";
                 console.log(event.target.id);
                 productOption.options.forEach(option => {
                     const optionSize = document.createElement("option");
@@ -83,15 +94,96 @@ function renderCart() {
                 });
             }
         });
+    }
 
-        cartItems.getEvent
-    });
-
-
-    itemCount.textContent = cart.length.toLocaleString();
+    // 최종 출력
+    itemCount.textContent = count.toLocaleString();
     totalPrice.textContent = total.toLocaleString();
     finalPrice.textContent = (total + 3000).toLocaleString(); // 배송비 포함
 }
+// function renderCart() {
+//     const cartItems = document.getElementById("cart-items");
+//     const itemCount = document.getElementById("item-count");
+//     const totalPrice = document.getElementById("total-price");
+//     const finalPrice = document.getElementById("final-price");
+//
+//     // const productImage = await fetch("/api/v1/orders/product-image");
+//
+//     cartItems.innerHTML = "";
+//     let total = 0;
+//     let count = 0;
+//
+//     cart.forEach(async (item, index) => {
+//         item.option.forEach((option, optionIndex) => {
+//             const li = document.createElement("li");
+//             li.innerHTML = `
+//             <div>
+//             <img src="" class="img-thumbnail" width="100px" height="100px">
+//             </div>
+//             <div align="center">
+//             <span>${item.name}<br><br></span>
+//             <span>${item.price}원</span>
+//             </div>
+//             <h6>X</h6>
+//             <div class="quantity-controls" align="center">
+//             <span>(${option.size} / ${option.color})<br>
+//                 <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, -1)">-</button>
+//                 <input type="text" value="${option.quantity}" readonly />
+//                 <button class="btn btn-primary" onclick="updateQuantity(${index}, ${optionIndex}, 1)">+</button>
+//                 <br>
+//                 <button type="button" id="${index}-${optionIndex}" class="btn btn-primary option-change-button option${index}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+//                     옵션 변경
+//                 </button>
+//             </span>
+//             </div>
+//             <h3>=</h3>
+//             <span>${item.price * option.quantity}원</span>
+//             <div>
+//             <button class="btn btn-primary" onclick="removeOption(${index}, ${optionIndex})">삭제</button>
+//             </div>
+//         `;
+//             cartItems.appendChild(li);
+//             total += option.quantity * item.price;
+//             count += option.quantity;
+//             console.log(total);
+//             console.log(count);
+//         });
+//
+//         const productImage = await fetch(`/api/v1/orders/product-image?productId=${item.productId}`).then(response => response.text());
+//
+//         // 상품 옵션 변경 모달 render
+//         const response = await fetch(`/api/v1/orders/product-option/${cart[index].productId}`);
+//         const productOption = await response.json();
+//         document.body.addEventListener("click", event => {
+//             if (event.target.classList.contains(`option${index}`)) {
+//                 document.getElementById("option-size").innerHTML = ""
+//                 document.getElementById("option-color").innerHTML = ""
+//                 console.log(event.target.id);
+//                 productOption.options.forEach(option => {
+//                     const optionSize = document.createElement("option");
+//                     const optionColor = document.createElement("option");
+//
+//                     optionSize.value = option.size;
+//                     optionColor.value = option.color;
+//                     optionSize.textContent = option.size;
+//                     optionColor.textContent = option.color;
+//
+//                     document.getElementById("option-size").appendChild(optionSize);
+//                     document.getElementById("option-color").appendChild(optionColor);
+//
+//                     currentProductOption = event.target.id;
+//                 });
+//             }
+//         });
+//     });
+//
+//     console.log(count.toLocaleString());
+//
+//
+//     itemCount.textContent = count.toLocaleString();
+//     totalPrice.textContent = total.toLocaleString();
+//     finalPrice.textContent = (total + 3000).toLocaleString(); // 배송비 포함
+// }
 
 // 장바구니에 상품 추가
 function addItem(productId, name, price) {

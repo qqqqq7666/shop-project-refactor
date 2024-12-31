@@ -99,4 +99,9 @@ public class OrderAPIController {
         orderService.deleteCanceledOrder(orderNo);
         return new RedirectView("/order/" + orderNo);
     }
+
+    @GetMapping("/product-image")
+    public ResponseEntity<String> productImage(Long productId){
+        return ResponseEntity.ok(productService.getProductImageUrls(productId).getFirst());
+    }
 }
