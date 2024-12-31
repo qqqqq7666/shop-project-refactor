@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
     <title>문의 상세 조회</title>
@@ -30,6 +30,7 @@
     </style>
 </head>
 <body>
+<main layout:fragment="content">
 <div class="container">
     <div class="detail-container">
         <h2 th:text="${inquiry.title}">문의 제목</h2>
@@ -121,5 +122,6 @@
         </div>
     </div>
 </div>
+</main>
 </body>
 </html>
