@@ -2,6 +2,7 @@ package com.example.shop_project.admin.controller;
 
 import com.example.shop_project.point.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +17,10 @@ public class AdminPointViewController {
     private PointService pointService;
 
     @GetMapping
-    public String pointList(Model model){
-        model.addAttribute("pointList", pointService.getTotalPointList());
+    public String pointList(Model model, @RequestParam(defaultValue = "") String email, @RequestParam(defaultValue = "0") Integer page){
+        model.addAttribute("pointPage", pointService.getTotalPointList(email, PageRequest.of(page, 10)));
+        model.addAttribute("keyword", email);
+        model.addAttribute("currentPage", page);
 
         return "admin/admin_point_list";
     }

@@ -15,6 +15,8 @@ import com.example.shop_project.point.repository.SavedPointRepository;
 import com.example.shop_project.point.repository.UsedPointRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -149,8 +151,8 @@ public class PointService {
         return totalSavedPoint;
     }
 
-    public List<Point> getTotalPointList() {
-        return pointRepository.findAll();
+    public Page<Point> getTotalPointList(String email, Pageable pageable) {
+        return pointRepository.findAllByMemberEmailContaining(email, pageable);
     }
 
     // admin

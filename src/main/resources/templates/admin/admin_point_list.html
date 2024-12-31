@@ -19,7 +19,13 @@
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container mt-5 d-flex flex-column align-items-center">
+    <form method="get" action="/admin/point" class="d-flex justify-content-between my-1" style="gap: 300px;">
+        <div class="d-flex align-items-center" style="gap: 10px;">
+            <input th:value="${keyword}" class="form-control" placeholder="사용자의 이메일로 검색" style="width: 300px" name="email">
+            <button class="btn btn-dark" type="submit">검색</button>
+        </div>
+    </form>
     <table class="table">
         <thead align="center">
         <tr>
@@ -32,7 +38,7 @@
         </tr>
         </thead>
         <tbody align="center">
-        <tr th:each="point, index : ${pointList}" id="order-info" th:onclick="|location.href='@{/admin/point/{pointId}(pointId=${point.pointId})}'|"
+        <tr th:each="point, index : ${pointPage}" id="order-info" th:onclick="|location.href='@{/admin/point/{pointId}(pointId=${point.pointId})}'|"
             style="cursor: pointer;">
             <td th:text="${point.getPointId()}">/td>
             <td th:text="${#temporals.format(point.getCreatedDate(), 'yy-MM-dd')}">1</td>
@@ -48,6 +54,26 @@
         </tr>
         </tbody>
     </table>
+    <div th:if="${pointPage.isEmpty()}">
+        포인트가 존재하지 않습니다.
+    </div>
+    <nav aria-label="Page navigation example" th:if="${!pointPage.isEmpty()}">
+        <ul class="pagination" align="center">
+            <li th:if="${currentPage > 0}" class="page-item">
+                <a class="page-link" th:href="|?page=${currentPage - 1}|" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <div th:each="i : ${#numbers.sequence(0, pointPage.getTotalPages() - 1)}">
+                <li class="page-item"><a class="page-link" th:text="${i + 1}" th:href="|?page=${i}|">1</a></li>
+            </div>
+            <li th:if="${currentPage < pointPage.getTotalPages() - 1}" class="page-item">
+                <a class="page-link" th:href="|?page=${currentPage + 1}|" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
