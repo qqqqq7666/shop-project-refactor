@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" data-bs-theme="auto" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <script src="/order/js/color-modes.js"></script>
 
@@ -133,6 +133,7 @@
     </symbol>
 </svg>
 
+<main layout:fragment="content">
 <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
     <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
             id="bd-theme"
@@ -392,5 +393,6 @@
         pointInput.value = [[${point.getBalance()}]];
     })
 </script>
-</body>
+</main>
+</body>>
 </html>

@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>장바구니</title>
     <link href="/common/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/order/css/cart.css">
+    <style>
+    </style>
 </head>
 <body>
+<main layout:fragment="content">
 <div class="cart-layout">
     <!-- 왼쪽 상품 리스트 -->
     <div class="product-list">
@@ -85,5 +88,6 @@
 </div>
 <script src="/common/js/bootstrap.bundle.min.js"></script>
 <script src="/order/js/cart.js"></script>
+</main>
 </body>
 </html>

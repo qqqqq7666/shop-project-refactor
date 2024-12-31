@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="/common/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<main layout:fragment="content">
 <!-- TODO 배송지 유효성 검사 -->
 <div class="container" style="padding: 20px; width: 35%;">
     <h4 class="mb-3">배송지</h4>
@@ -175,5 +176,6 @@
         event.preventDefault();
     });
 </script>
+</main>
 </body>
 </html>
