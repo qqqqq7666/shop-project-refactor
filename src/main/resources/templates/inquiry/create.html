@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>문의 작성</title>
@@ -7,6 +7,7 @@
     <link href="/inquiry/style/create.css" rel="stylesheet">
 </head>
 <body>
+<main layout:fragment="content">
 <div class="container inquiry-create">
     <h2>판매자에게 문의하기</h2>
 
@@ -61,5 +62,6 @@
         </form>
     </div>
 </div>
+</main>
 </body>
 </html>
