@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>마이페이지</title>
+    
+    <script>
+      window.isCounseling = false;
+    </script>
+    
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/member/css/mypageStyle.css">
 	<link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
 
-    <!-- SockJS, StompJS (CDN) -->
+    <!-- 챗봇 기능 추가 -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-	<script src="/chatbot/js/chatbotWork.js"></script>
+    <link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
+    <script src="/chatbot/js/chatbotSetup.js" defer></script>
+	
 	
 </head>
 <body>
@@ -53,30 +60,6 @@
             </tbody>
         </table>
     </div>
-    
-    <!-- 챗봇 위젯 HTML -->
-	<div id="chatbot-widget">
-	    <div id="chatbot-header">챗봇</div>
-	    <!-- 추천 질문 버튼 (상단 고정) -->
-	    <div id="chatbot-questions">
-	        <button class="chatbot-question-btn">안녕하세요</button>
-	        <button class="chatbot-question-btn">배송 기간은 얼마나 되나요?</button>
-	        <button class="chatbot-question-btn">환불 정책은 어떻게 되나요?</button>
-	        <button class="chatbot-question-btn">감사합니다</button>
-	        <button id="connect-admin-btn" class="chatbot-question-btn">상담사 연결</button>
-	    </div>
-	    <!-- 대화 내용 -->
-	    <div id="chatbot-content"></div>
-	    <!-- 입력 영역 -->
-		<div id="chatbot-input">
-		    <input type="text" id="chatbot-user-input" placeholder="상담사와 대화를 원한다면 연결해주세요" disabled>
-		    <button id="chatbot-send-btn" disabled>전송</button>
-		</div>
-	</div>
-	
-	<script src="/chatbot/js/userChat.js"></script>
-	
-	
 	
 </body>
 </html>

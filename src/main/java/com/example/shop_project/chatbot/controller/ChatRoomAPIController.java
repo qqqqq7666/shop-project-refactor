@@ -24,5 +24,15 @@ public class ChatRoomAPIController {
 	     // 2) 채팅방 정보 반환
 	     return ResponseEntity.ok(chatRoom);
 	}
+	 
+	// User가 폴링할 때 사용: 현재 room 상태 조회
+    @GetMapping("/room-status")
+    public ResponseEntity<ChatRoom> getRoomStatus(@RequestParam("roomId") String roomId) {
+        ChatRoom room = chatService.getRoom(roomId);
+        if (room == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(room);
+    }
 }
 
