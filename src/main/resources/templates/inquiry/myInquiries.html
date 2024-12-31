@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>내 문의 목록</title>
@@ -38,6 +38,7 @@
     </style>
 </head>
 <body>
+<main layout:fragment="content">
 <div class="question-board">
     <h2>내 문의 목록</h2>
 
@@ -55,5 +56,6 @@
         </div>
     </div>
 </div>
+</main>
 </body>
 </html>
