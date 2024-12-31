@@ -50,8 +50,6 @@ public class OrderService {
     @Autowired
     private CanceledOrderRepository canceledOrderRepository;
     @Autowired
-    private PointService pointService;
-    @Autowired
     private UsedPointRepository usedPointRepository;
 
     @Transactional
@@ -73,7 +71,6 @@ public class OrderService {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         List<Product> productList = productRepository.findAllByProductNameContaining(keyword);
         Page<Order> orderPage = orderRepository.findByMemberAndOrderStatusNotAndOrderDetailListProductProductNameContainingOrderByOrderNoDesc(member, OrderStatus.FAIL, keyword, pageable);
-//        Page<Order> orderPage = orderRepository.findAllByMemberAndOrderDetailListAndOrderStatusNotOrderByOrderNoDesc(member, pageable, OrderStatus.FAIL);
         Page<OrderResponseDto> orderResponseDtoPage = orderPage.map(order -> orderMapper.toResponseDto(order));
 
         return orderResponseDtoPage;
@@ -88,13 +85,6 @@ public class OrderService {
 
     public OrderResponseDto getOrderByOrderNo(Long orderNo) {
         return orderMapper.toResponseDto(orderRepository.findByOrderNo(orderNo).orElseThrow());
-    }
-
-    @Transactional
-    public OrderResponseDto updateOrder(Long orderNo, OrderRequestDto request) {
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
-        order.updateOrder(request);
-        return orderMapper.toResponseDto(orderRepository.save(order));
     }
 
     // updateStatus를 따로 구현하는게 맞는지..
@@ -163,5 +153,13 @@ public class OrderService {
         orderRepository.save(order);
         CanceledOrder canceledOrder = canceledOrderRepository.findById(orderNo).orElseThrow();
         canceledOrderRepository.delete(canceledOrder);
+    }
+
+    public Page<OrderResponseDto> getTotalOrderPage(String email, String orderStatus, Pageable pageable){
+        if(orderStatus.equals("all"))
+            return orderRepository.findAllByMemberEmailContainingOrderByOrderNoDesc(email, pageable).map(order -> orderMapper.toResponseDto(order));
+        else
+            return orderRepository.findAllByOrderStatusAndMemberEmailContainingOrderByOrderNoDesc(OrderStatus.valueOf(orderStatus), email, pageable)
+                    .map(order -> orderMapper.toResponseDto(order));
     }
 }

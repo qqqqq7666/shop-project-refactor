@@ -12,19 +12,3 @@ body {
 hr {
     margin: 20px 0;
 }
-.delete-button {
-    background-color: #dc3545;
-    color: white;
-}
-.delete-button:hover {
-    background-color: #c82333;
-}
-
-.custom-button {
-    background-color: #000000;
-    color: white;
-}
-
-.custom-button:hover {
-    background-color: #bbbbbb;
-}

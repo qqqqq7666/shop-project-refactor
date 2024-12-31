@@ -31,7 +31,7 @@ public class AdminOrderAPIController {
     @DeleteMapping("/{orderNo}/delete")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderNo){
         orderService.deleteOrder(orderNo);
-        return ResponseEntity.noContent().location(URI.create("/admin/orders")).build();
+        return ResponseEntity.ok().location(URI.create("/admin/orders")).build();
     }
 
     @GetMapping("/{orderNo}")
