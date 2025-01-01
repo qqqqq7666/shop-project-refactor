@@ -1,6 +1,6 @@
 // chatbotSetup.js
 document.addEventListener('DOMContentLoaded', function () {
-    // ✅ 챗봇 아이콘 및 위젯 추가
+    // 챗봇 아이콘 및 위젯 추가
     const chatbotHtml = `
         <!-- 챗봇 아이콘 -->
         <div id="chatbot-icon"></div>
@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     `;
 
-    // ✅ HTML을 body에 추가
+    // HTML을 body에 추가
     document.body.insertAdjacentHTML('beforeend', chatbotHtml);
 
-    // ✅ 챗봇 관련 스크립트 로드
+    // 챗봇 관련 스크립트 로드
     const chatbotScript1 = document.createElement('script');
     chatbotScript1.src = '/chatbot/js/userChat.js';
     document.body.appendChild(chatbotScript1);
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     chatbotScript2.src = '/chatbot/js/chatbotWork.js';
     document.body.appendChild(chatbotScript2);
 
-    // ✅ 챗봇 열기/닫기 기능
+    // 챗봇 열기/닫기 기능
     const chatbotIcon = document.getElementById('chatbot-icon');
     const chatbotWidget = document.getElementById('chatbot-widget');
 
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ✅ ESC 키로 챗봇 닫기
+    // ESC 키로 챗봇 닫기
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && chatbotWidget.classList.contains('open')) {
             chatbotWidget.classList.remove('open');
