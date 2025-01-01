@@ -24,7 +24,7 @@
                 <li><div class="position-relative" style="display: inline-block;">
                     <a href="/order/cart">
                     <img src="/images/cart_icon.png" style="width: 50px" href="/order/cart">
-                    <div id="item-count" class="badge bg-primary position-absolute bottom-0 start-100 translate-middle-x rounded-pill bg-danger">
+                    <div id="item-count-badge" class="badge bg-primary position-absolute bottom-0 start-100 translate-middle-x rounded-pill bg-danger">
                         1
                     </div>
                     </a>
@@ -39,7 +39,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
 <script>
-    document.getElementById("item-count").textContent = JSON.parse(localStorage.getItem("cart")).length;
+    function optionCount(cart){
+        let cnt = 0;
+        cart.forEach(item => cnt += item.option.length)
+        return cnt;
+    }
+    document.getElementById("item-count-badge").textContent = optionCount(JSON.parse(localStorage.getItem("cart")));
 </script>
 </body>
 </html>

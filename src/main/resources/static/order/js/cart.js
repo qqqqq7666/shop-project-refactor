@@ -5,6 +5,7 @@ function loadCart() {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
         cart = JSON.parse(savedCart);
+        cart = cart.filter(item => item.option.length !== 0)
     }
     renderCart();
 }
