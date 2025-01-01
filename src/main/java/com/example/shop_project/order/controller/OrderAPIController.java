@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.URI;
 import java.security.Principal;
@@ -76,10 +77,10 @@ public class OrderAPIController {
     }
 
     @PostMapping("/{orderNo}/canceled-order")
-    public ResponseEntity<CanceledOrder> cancelOrder(@PathVariable Long orderNo, String reason, OrderStatus orderStatus){
+    public RedirectView cancelOrder(@PathVariable Long orderNo, String reason, OrderStatus orderStatus){
         CanceledOrder response = orderService.createCanceledOrder(orderNo, reason);
         orderService.updateOrderStatus(orderNo, orderStatus);
-        return ResponseEntity.created(URI.create("/" + response.getOrder().getOrderNo())).body(response);
+        return new RedirectView("/order/" + orderNo);
     }
 
     @GetMapping("/product-option/{productId}")
@@ -94,8 +95,8 @@ public class OrderAPIController {
     }
 
     @DeleteMapping("/canceled-order")
-    public ResponseEntity<?> deleteCanceledOrder(Long orderNo){
+    public RedirectView deleteCanceledOrder(Long orderNo){
         orderService.deleteCanceledOrder(orderNo);
-        return ResponseEntity.ok().location(URI.create("/order" + orderNo)).build();
+        return new RedirectView("/order/" + orderNo);
     }
 }

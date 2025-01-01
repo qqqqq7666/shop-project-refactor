@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
+<main layout:fragment="content">
 <div class="container" style="width: 30%">
     <small>현재 적립금</small>
     <div class="current-points">
@@ -55,5 +56,6 @@
 
 <script src="/point/js/point_history.js"></script>
 <script src="/common/js/bootstrap.bundle.min.js"></script>
+</main>
 </body>
 </html>

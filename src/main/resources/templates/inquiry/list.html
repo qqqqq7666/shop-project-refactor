@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>문의 목록</title>
@@ -42,6 +42,7 @@
     </style>
 </head>
 <body>
+<main layout:fragment="content">
 <div class="question-board">
     <h2>상품 문의 목록</h2>
 
@@ -57,7 +58,7 @@
             </h5>
             <p class="info">작성자: <span th:text="${detail['inquiry'].member.nickname}">닉네임</span> | 작성일: <span th:text="${detail['inquiry'].date}">YYYY-MM-DD</span></p>
             <p class="info">문의 유형: <span th:text="${detail['inquiry'].type.getKoreanName()}">문의 유형</span></p>
-            <p th:text="${detail['inquiry'].content}">문의 내용</p>
+            <p th:text="${#strings.abbreviate(detail['inquiry'].content, 80)}">문의 내용</p>
 
             <a th:if="${!detail['canView']}"
                href="javascript:void(0);"
@@ -74,5 +75,6 @@
     </div>
 
 </div>
+</main>
 </body>
 </html>

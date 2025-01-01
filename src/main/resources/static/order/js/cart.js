@@ -176,7 +176,7 @@ function changeProductOption(cartIndex, optionIndex) {
 // DOM이 준비되면 초기화
 document.addEventListener("DOMContentLoaded", initializeCart);
 document.getElementById("checkout").addEventListener("click", () => {
-    if (localStorage.getItem("cart") === "[]")
+    if (localStorage.getItem("cart") === "[]" || localStorage.getItem("cart") === null)
         alert("장바구니가 비어있습니다.");
     else
         window.location.href = "/order/checkout";
