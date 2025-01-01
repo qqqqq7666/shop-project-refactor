@@ -1,21 +1,37 @@
-/* 챗봇 위젯 스타일 */
-#chatbot-widget {
-    /*position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 350px;
-    height: 500px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-    overflow: hidden;*/
-    
+/* 챗봇 아이콘 스타일 */
+#chatbot-icon {
     position: fixed;
     bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #4b0082; /* 보라색 배경 */
+    border-radius: 50%; /* 원형 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#chatbot-icon:hover {
+    transform: scale(1.1); /* 호버 시 확대 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 챗봇 아이콘 내부 모양 */
+#chatbot-icon::before {
+    content: "💬"; /* 말풍선 이모지 */
+    font-size: 24px;
+    color: white;
+}
+
+/* 챗봇 위젯 */
+#chatbot-widget { 
+    position: fixed;
+    bottom: 80px;
     right: 20px;
     width: 350px;
     height: 500px;
@@ -27,11 +43,20 @@
     flex-direction: column;
     z-index: 1000;
     overflow: hidden;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transform: translateY(20px);
+    opacity: 0;
+}
+
+#chatbot-widget.open {
+    transform: translateY(0);
+    opacity: 1;
+    display: flex;
 }
 
 /* 챗봇 헤더 */
 #chatbot-header {
-    background-color: #007bff;
+    background-color: #4b0082;
     color: #fff;
     padding: 10px;
     text-align: center;
@@ -40,6 +65,7 @@
 
 /* 질문 리스트 (상단 고정) */
 #chatbot-questions {
+    flex: 0 0 auto; /* 고정 높이 */
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -47,25 +73,12 @@
     border-bottom: 1px solid #ccc;
     background-color: #f1f1f1;
     overflow-y: auto;
-    max-height: 150px;
-}
-
-.chatbot-question-btn {
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
-    background-color: #e7e7e7;
-    cursor: pointer;
-    text-align: center;
-}
-
-.chatbot-question-btn:hover {
-    background-color: #d7d7d7;
+    max-height: 120px;
 }
 
 /* 대화 내용 */
 #chatbot-content {
-    flex: 1;
+    flex: 1; /* 남은 모든 공간 차지 */
     padding: 10px;
     overflow-y: auto;
     background-color: #f9f9f9;
@@ -73,33 +86,42 @@
 
 /* 입력 영역 */
 #chatbot-input {
+    flex: 0 0 60px; /* 고정 높이 */
     display: flex;
+    align-items: center;
+    gap: 5px;
     padding: 10px;
     border-top: 1px solid #ccc;
     background-color: #fff;
+    box-sizing: border-box; /* 패딩 포함 */
 }
 
 #chatbot-input input {
     flex: 1;
-    padding: 5px;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box; /* 패딩 포함 */
 }
 
 #chatbot-input button {
-    padding: 5px 10px;
-    margin-left: 5px;
+    padding: 8px 12px;
     border: none;
-    background-color: #007bff;
-    color: #fff;
+    background-color: #4b0082;
+    color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
+#chatbot-input button:hover {
+    background-color: #6a0dad;
+}
+
+/* 메시지 스타일 */
 .message {
     display: block;
     margin: 5px 0;
-    clear: both; /* 양쪽 정렬 시 레이아웃 충돌 방지 */
+    clear: both;
     width: fit-content;
     max-width: 60%;
     padding: 8px 12px;
@@ -108,26 +130,19 @@
 
 .user {
     float: right; 
-    background-color: #cce5ff; /* 연한 파랑 */
-    text-align: left;         /* 텍스트 정렬은 왼쪽, 말풍선 자체는 오른쪽 */
+    background-color: #cce5ff;
+    text-align: left;
     margin-bottom: 10px;
     clear: both;
 }
 
-/* 관리자 메시지: 왼쪽 정렬, 배경색 등 */
-.admin {
+.admin, .bot {
     float: left;
-    background-color: #d4edda; /* 연한 초록 */
+    background-color: #d4edda;
     text-align: left;
-}
-
-.bot {
-    float: left;
-    background-color: #d4edda; /* 연한 초록 */
-    text-align: left;
-    color: green; /* 필요 시 유지 또는 변경 */
-    margin-bottom: 10px; /* 메시지 간 간격 */
-    clear: both; /* 이전 플로트를 정리 */
+    color: green;
+    margin-bottom: 10px;
+    clear: both;
 }
 
 /* 입력 영역 비활성화 상태 스타일 */
