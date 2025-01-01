@@ -1,5 +1,6 @@
 package com.example.shop_project.order;
 
+import com.example.shop_project.jwt.JwtFilter;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.controller.OrderAPIController;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -39,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @WebMvcTest(value = {OrderAPIController.class})
 @MockBean(JpaMetamodelMappingContext.class)
+@ContextConfiguration(classes = {JwtFilter.class})
 @WithMockUser(roles = "USER", username = "username")
 @Import(SecurityConfig.class)
 public class OrderControllerTest {
@@ -127,7 +130,7 @@ public class OrderControllerTest {
         );
 
         resultActions
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test

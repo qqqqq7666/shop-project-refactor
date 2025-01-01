@@ -60,7 +60,7 @@ public class OrderIntegralTest {
     @DisplayName("주문 목록 가져오기")
     void getOrderList() throws Exception {
         // given
-        Principal principal = () -> "test@example.com";
+        Principal principal = () -> "root@root.com";
 
         ResultActions resultActions = mockMvc.perform(get("/order")
                 .param("page", "0")
@@ -79,6 +79,7 @@ public class OrderIntegralTest {
     @DisplayName("주문 상태 변경")
     void updateOrderStatus() throws Exception {
         OrderStatus orderStatus = OrderStatus.IN_SHIPPING;
+
 
     }
 }
