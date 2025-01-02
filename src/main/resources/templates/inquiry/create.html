@@ -11,15 +11,14 @@
 <div class="container inquiry-create">
     <h2>판매자에게 문의하기</h2>
 
-<!--
     <div class="product-info">
-        <img src="/images/sample-product.jpg" alt="Embroidery Waffle Knit Cream">
+<!--        <img th:src="${product.images}" alt="상품 이미지" class="product-image">-->
+<!--        <img th:src="${productImage}" alt="상품 이미지" class="product-image">-->
         <div>
-            <h3>Embroidery Waffle Knit Cream</h3>
-            <p>₩99,000</p>
+            <h3 th:text="${product.productName}">상품 이름</h3>
+            <p th:text="${formattedPrice} + '₩'">상품 가격</p>
         </div>
     </div>
--->
 
     <div class="inquiry-form-container">
         <form th:action="@{/products/{productId}/inquiries(productId=${productId})}" method="post">

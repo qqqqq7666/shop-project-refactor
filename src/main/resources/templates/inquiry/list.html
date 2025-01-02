@@ -46,6 +46,15 @@
 <div class="question-board">
     <h2>상품 문의 목록</h2>
 
+    <div class="product-info">
+        <!--        <img th:src="${product.images}" alt="상품 이미지" class="product-image">-->
+<!--        <img th:src="${productImage}" alt="상품 이미지" class="product-image">-->
+        <div>
+            <h3 th:text="${product.productName}">상품 이름</h3>
+            <p th:text="${formattedPrice} + '₩'">상품 가격</p>
+        </div>
+    </div>
+
     <div class="write-button">
         <a th:href="@{/products/{productId}/inquiries/create(productId=${productId})}" class="btn btn-primary">문의 작성</a>
     </div>
