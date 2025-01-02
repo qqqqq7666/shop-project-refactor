@@ -32,7 +32,7 @@ public class AdminProductController {
                               @RequestParam(value = "size", required = false, defaultValue = "8") int size,
                               Model model,
                               Principal principal) {
-        Page<ProductResponseDto> productPage = productService.getProductList(search, sort, page, size);
+        Page<ProductResponseDto> productPage = productService.getProductList(null, search, sort, page, size);
 
         // 페이지네이션 블록 설정
         int blockSize = 5; // 페이지 블록 크기 설정

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,39 +9,47 @@
     <link rel="stylesheet" href="/order/css/cart.css">
 </head>
 <body>
-<main layout:fragment="content" class="d-flex justify-content-center">
+<main layout:fragment="content" class="d-flex justify-content-around align-items-start">
     <div class="cart-layout my-5">
         <!-- 왼쪽 상품 리스트 -->
         <div class="product-list">
             <h1>상품 리스트</h1>
-            <ul id="cart-items">
+            <ul id="cart-items" class="cart-list">
                 <!-- 상품 아이템 동적으로 추가 -->
             </ul>
         </div>
 
         <!-- 오른쪽 결제 정보 -->
-        <div class="cart-summary">
-            <h2>결제정보</h2>
-            <div class="info-row">
-                <span>상품수</span>
-                <span id="item-count">0</span>개
-            </div>
-            <div class="info-row">
-                <span>상품금액</span>
-                <span id="total-price">0</span>원
-            </div>
-            <div class="info-row">
-                <span>배송비</span>
-                <span id="delivery-fee">3000</span>원
-            </div>
-            <hr>
-            <div class="info-row total">
-                <span>총 결제금액</span>
-                <span id="final-price">0</span>원
-            </div>
-            <button id="checkout" class="btn btn-success">구매하기</button>
-            <button id="clear-cart" class="btn btn-danger">장바구니 비우기</button>
+    </div>
+    <div class="cart-summary my-5 sticky-sm-top">
+        <h2>결제정보</h2>
+        <small class="text-success text-opacity-75">50,000원 이상 구매 시 배송비 무료!</small>
+        <div class="progress">
+            <div id="progress-bar" class="progress-bar progress-bar-striped bg-success progress-bar-animated"
+                 role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
+        <div class="info-row">
+            <span>상품수</span>
+            <span id="item-count">0</span>개
+        </div>
+        <div class="info-row">
+            <span>상품금액</span>
+            <span id="total-price">0</span>원
+        </div>
+        <div id="delivery-fee-div" class="info-row">
+            <span>배송비</span>
+            <span id="delivery-fee">3000</span>원
+        </div>
+        <div align="center">
+            <span id="delivery-free"></span>
+        </div>
+        <hr>
+        <div class="info-row total">
+            <span>총 결제금액</span>
+            <span id="final-price">0</span>원
+        </div>
+        <button id="checkout" class="btn btn-success">구매하기</button>
+        <button id="clear-cart" class="btn btn-danger">장바구니 비우기</button>
     </div>
     <!-- Button trigger modal -->
     <!--<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
@@ -57,34 +66,35 @@
                 </div>
                 <div id="modal-body" class="modal-body">
                     <label>
+                        색상
+                        <select id="option-color">
+                            <option>test color</option>
+                        </select>
+                    </label>
+                    <label>
                         사이즈
                         <select id="option-size">
                             <option>test size</option>
                         </select>
                     </label>
                     <br>
-                    <label>
-                        색상
-                        <select id="option-color">
-                            <option>test color</option>
-                        </select>
-                    </label>
                     <br>
-                    <label>
-                        수량
-                        <select id="option-quantity">
-                            <option>test quantity</option>
-                        </select>
-                    </label>
+<!--                    <label>-->
+<!--                        수량-->
+<!--                        <select id="option-quantity">-->
+<!--                            <option>test quantity</option>-->
+<!--                        </select>-->
+<!--                    </label>-->
                 </div>
                 <div class="modal-footer">
-                    <button id="cancel-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button id="option-save-button" type="button" class="btn btn-primary option-save-button">옵션 저장</button>
+                    <button id="cancel-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소
+                    </button>
+                    <button id="option-save-button" type="button" class="btn btn-primary option-save-button">옵션 저장
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    <script src="/common/js/bootstrap.bundle.min.js"></script>
     <script src="/order/js/cart.js"></script>
 </main>
 </body>

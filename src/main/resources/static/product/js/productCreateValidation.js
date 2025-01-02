@@ -80,10 +80,4 @@ document.getElementById('productForm').addEventListener('submit', function (even
         }
     });
 
-    // 폼이 유효하면 서버로 제출
-    if (isValid) {
-        alert('상품이 성공적으로 등록되었습니다!');
-        // 실제 폼 제출
-        this.submit();
-    }
 });

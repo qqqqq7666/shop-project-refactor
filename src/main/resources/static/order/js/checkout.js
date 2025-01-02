@@ -198,14 +198,16 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, usedPointRequestDto
     );
 }
 
+// 결제 요청
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
         const pointAmount = parseInt(document.getElementById("point-input").value);
         let isPaidWithPoint = false;
         if(pointAmount > 0)
             isPaidWithPoint = true;
-        const orderNoJson = await fetch("/api/v1/orders/recent-order-no");
-        const orderNo = await orderNoJson.json() + 1;
+        const orderNo = await (await fetch("/api/v1/orders/recent-order-no")).json() + 1;
+
+        // 결제 도중 페이지 벗어나기 방지
         window.addEventListener("beforeunload", async (event) => {
             event.preventDefault();
         });
@@ -236,13 +238,10 @@ async function checkout() {
             return;
         }
 
-        console.log(orderDetailDtoList);
-
         let member;
 
         try {
-            const response = await fetch("/api/v1/orders/member-info")
-            member = await response.json();
+            member = await (await fetch("/api/v1/orders/member-info")).json();
         } catch (error) {
             alert("로그인이 만료되었습니다.");
             window.location.href = "/";
@@ -250,7 +249,6 @@ async function checkout() {
         }
 
         const payMethodVal = document.querySelector("select[name = 'payMethod']").value;
-
         const channelKey = channelKeyArray[parseInt(payMethodVal)];
         const payMethod = payMethodArray[parseInt(payMethodVal)];
 
@@ -310,6 +308,8 @@ async function checkout() {
             name = cart[0].name;
         else
             name = `${cart[0].name} 외 ${cart.length - 1}개`
+
+        // 결제정보 객체
         const payInfo = {
             channelKey,
             pay_method: "card",
@@ -322,21 +322,6 @@ async function checkout() {
             buyer_addr: member.address,
             buyer_postcode: member.postNo,
             m_redirect_url: "{모바일에서 결제 완료 후 리디렉션 될 URL}",
-            // escrow: true, //에스크로 결제인 경우 설정
-            // vbank_due: "YYYYMMDD",
-            // bypass: {
-            //     // PC 경우
-            //     acceptmethod: "noeasypay", // 간편결제 버튼을 통합결제창에서 제외(PC)
-            //     // acceptmethod: "cardpoint", // 카드포인트 사용시 설정(PC)
-            //     // 모바일 경우
-            //     P_RESERVED: "noeasypay=Y", // 간편결제 버튼을 통합결제창에서 제외(모바일)
-            //     // P_RESERVED: "cp_yn=Y", // 카드포인트 사용시 설정(모바일)
-            //     // P_RESERVED: "twotrs_bank=Y&iosapp=Y&app_scheme=your_app_scheme://", // iOS에서 계좌이체시 결제가 이뤄지던 앱으로 돌아가기
-            // },
-            // period: {
-            //     from: "20240101", //YYYYMMDD
-            //     to: "20301231", //YYYYMMDD
-            // },
         };
 
         const paymentDto = {
@@ -396,6 +381,9 @@ function checkoutFail(orderNo){
                 return response.json();
         });
 }
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("point-input").value = 0;
+});
 
 document.getElementById("checkout-btn").addEventListener("click", checkout);
 document.getElementById("total-count").innerText = cart.length;

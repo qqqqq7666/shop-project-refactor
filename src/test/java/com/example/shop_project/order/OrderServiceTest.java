@@ -21,13 +21,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.security.Principal;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -103,10 +106,10 @@ public class OrderServiceTest {
         OrderDetailDto orderDetailDto = testEntity.detailDto();
         OrderResponseDto responseDto = testEntity.orderResponseDto();
 
-        when(orderMapper.toEntity(any(OrderRequestDto.class), productRepository)).thenReturn(order);
+        when(orderMapper.toEntity(any(OrderRequestDto.class), any(ProductRepository.class))).thenReturn(order);
         when(orderRepository.save(order)).thenReturn(order);
-        when(orderMapper.toEntity(any(OrderDetailDto.class), productRepository)).thenReturn(orderDetail);
-        when(productRepository.findById(orderDetailDto.getProductId())).thenReturn(Optional.of(testEntity.product()));
+//        when(orderMapper.toEntity(any(OrderDetailDto.class), any(ProductRepository.class))).thenReturn(orderDetail);
+//        when(productRepository.findById(orderDetailDto.getProductId())).thenReturn(Optional.of(testEntity.product()));
         when(orderMapper.toResponseDto(order)).thenReturn(responseDto);
 
 
@@ -164,26 +167,28 @@ public class OrderServiceTest {
         Order order = testEntity.order();
         Member member = testEntity.member();
         OrderResponseDto orderResponseDto = testEntity.orderResponseDto();
-        List<OrderDetail> orderDetailList = Arrays.asList(testEntity.orderDetail());
-        Map<OrderResponseDto, List<OrderDetail>> map = new LinkedHashMap<>();
-        map.put(orderResponseDto, orderDetailList);
+        List<Order> orderList = Collections.singletonList(order);
+        List<OrderDetail> orderDetailList = Collections.singletonList(testEntity.orderDetail());
+        Pageable pageable = PageRequest.of(0, 10);
         Principal principal = new Principal() {
             @Override
             public String getName() {
                 return member.getEmail();
             }
         };
+        Page<Order> orderPage = new PageImpl<>(orderList);
 
         when(memberRepository.findByEmail(principal.getName())).thenReturn(Optional.of(member));
-        //when(orderRepository.findAllByMemberOrderByOrderNoDesc(member)).thenReturn(Arrays.asList(order));
+        when(orderRepository.findAllByMemberAndOrderStatusNotAndOrderDetailListProductProductNameContainingOrderByOrderNoDesc(member, OrderStatus.FAIL, "test", pageable))
+                .thenReturn(orderPage);
         when(orderMapper.toResponseDto(order)).thenReturn(orderResponseDto);
-        when(orderDetailRepository.findAllByOrder(order)).thenReturn(orderDetailList);
+//        when(orderDetailRepository.findAllByOrder(order)).thenReturn(orderDetailList);
 
         // when
-        //Map<OrderResponseDto, List<OrderDetail>> response = orderService.getOrderAndDetailMap(principal);
+        Page<OrderResponseDto> response = orderService.getOrderPageList(principal, pageable, "test");
 
         // then
-        //assertEquals(response.get(orderResponseDto), orderDetailList);
+        assertFalse(response.isEmpty());
     }
 
     @Test
@@ -238,5 +243,43 @@ public class OrderServiceTest {
         verify(orderDetailRepository, times(1)).deleteByOrder(any(Order.class));
         verify(paymentRepository, times(1)).deleteByOrder(any(Order.class));
         verify(orderRepository, times(1)).deleteByOrderNo(anyLong());
+    }
+
+    @Test
+    @DisplayName("최근 주문 조회 성공 테스트")
+    void retrieveRecentOrder() throws Exception{
+        //given
+        Order order = testEntity.order();
+
+        when(orderRepository.findFirstByOrderByOrderNoDesc()).thenReturn(Optional.of(order));
+
+        //when
+        Order response = orderService.getRecentOrder();
+
+        //then
+        assertEquals(1L, response.getOrderNo());
+    }
+
+    @Test
+    @DisplayName("최근 주문 조회 첫주문 테스트")
+    void retrieveRecentOrderFail() throws Exception{
+        //given
+        Order order = testEntity.order();
+
+        when(orderRepository.findFirstByOrderByOrderNoDesc()).thenReturn(Optional.empty());
+
+        //when
+        Order response = orderService.getRecentOrder();
+
+        assertEquals(0L, response.getOrderNo());
+    }
+
+    @Test
+    @DisplayName("환불 주문 생성 테스트")
+    void createCanceledOrder() throws Exception {
+        //given
+        Order order = testEntity.order();
+
+        when(orderRepository.findByOrderNo(1L)).thenReturn(Optional.of(order));
     }
 }

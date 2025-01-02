@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
 document.getElementById('addSizeColorStock').addEventListener('click', function () {
     const container = document.getElementById('sizeColorStockContainer');
 
@@ -74,8 +73,6 @@ document.getElementById('addSizeColorStock').addEventListener('click', function 
     });
 });
 
-
-
 const imageInput = document.getElementById("images");
 const imagePreviewList = document.getElementById("imagePreviewList");
 let images = []; // 이미지 정보 저장 (file과 order)
@@ -84,6 +81,7 @@ const customFileButton = document.getElementById("customFileButton");
 const fileCountMessage = document.getElementById("fileCountMessage");
 
 customFileButton.addEventListener("click", () => {
+    console.log("파일 선택 버튼 클릭");
     imageInput.click(); // 실제 파일 선택 필드 클릭
 });
 
@@ -181,6 +179,82 @@ function removeImage(index) {
     renderImagePreviews();
 }
 
+imageInput.addEventListener("change", async function (event) {
+    const files = event.target.files;
+    console.log("imageInput.files : ", imageInput.files);
+    console.log("images.file : ", images.file);
+    console.log("images.files : ", images.files);
+    console.log("event.target.files :", event.target.files);
+
+    for (const file of files) {
+        console.log("for문 통과");
+        if (file.type.startsWith("image/")) {
+            try {
+                const compressedFile = await compressImage(file, 0.8, 800); // 압축 실행
+                images.push({ file: compressedFile, order: images.length + 1 }); // 압축된 파일 추가
+                console.log("압축된 파일 추가");
+            } catch (error) {
+                console.error("이미지 압축 실패:", error);
+            }
+        } else {
+            images.push({ file, order: images.length + 1 }); // 원본 파일 추가
+            console.log("원본 파일 추가");
+        }
+    }
+
+    renderImagePreviews(); // 미리보기 렌더링
+    console.log("압축된 파일 목록:", images);
+    fileCountMessage.textContent = `선택된 파일: ${images.length}개`;
+});
+
+
+function compressImage(file, quality = 0.8, maxWidth = 800) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+
+                // 이미지 크기 조정
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth) {
+                    height = (maxWidth / width) * height;
+                    width = maxWidth;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // 압축된 데이터 생성
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) {
+                            resolve(new File([blob], file.name, { type: blob.type }));
+                        } else {
+                            reject(new Error("이미지 압축 실패"));
+                        }
+                    },
+                    file.type,
+                    quality
+                );
+            };
+
+            img.onerror = () => reject(new Error("이미지 로드 실패"));
+        };
+
+        reader.onerror = () => reject(new Error("파일 읽기 실패"));
+    });
+}
+
 
 
 // 폼 제출 처리
@@ -240,10 +314,12 @@ document.getElementById('productForm').addEventListener('submit', function (even
             return response.json();
         })
         .then(data => {
+            alert("상품 등록이 성공적으로 완료되었습니다.");
             console.log("상품 등록 성공:", data);
             window.location.href = '/admin/products';
         })
         .catch(errors => {
+            alert("상품 등록 중 문제가 발생했습니다.", errors);
             // 필드별 에러 메시지 표시
             Object.keys(errors).forEach(field => {
                 const errorElement = document.getElementById(`${field}Error`);

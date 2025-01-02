@@ -48,13 +48,7 @@ public class productViewController {
                                   @RequestParam(value = "categoryId", required = false) Long categoryId,
                                   Model model) {
 
-        Page<ProductResponseDto> productPage;
-
-        if (categoryId != null) {
-            productPage = productService.getProductsByCategory(categoryId, sort, page, size);
-        } else {
-            productPage = productService.getProductList(search, sort, page, size);
-        }
+        Page<ProductResponseDto> productPage = productService.getProductList(categoryId, search, sort, page, size);
 
         // 페이지네이션 블록 설정
         int blockSize = 5; // 페이지 블록 크기 설정

@@ -5,6 +5,7 @@ import com.example.shop_project.product.dto.ProductOptionDto;
 import com.example.shop_project.product.dto.ProductRequestDto;
 import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.entity.*;
+import com.example.shop_project.product.repository.ProductOptionRepository;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ImageService imageService;
+    private final ProductOptionRepository productOptionRepository;
 
     @Transactional
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto, List<MultipartFile> images) {
@@ -111,6 +113,7 @@ public class ProductService {
                 .salesCount(product.getSalesCount())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
+                .nickname(product.getNickname())
                 .imageUrls(product.getImages().stream()
                         .map(ProductImage::getImageUrl)
                         .collect(Collectors.toList()))
@@ -165,11 +168,23 @@ public class ProductService {
 
 
     @Transactional
-    public Page<ProductResponseDto> getProductList(String search, String sort, int page, int size) {
+    public Page<ProductResponseDto> getProductList(Long categoryId, String search, String sort, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort));
 
-        // 검색 기능 적용
-        Page<Product> products = productRepository.findByProductNameContaining(search, pageable);
+        Page<Product> products;
+        if (categoryId != null && !search.isEmpty()) {
+            // 카테고리와 검색 조건이 모두 있는 경우
+            products = productRepository.findByCategoryIdAndProductNameContaining(categoryId, search, pageable);
+        } else if (categoryId != null) {
+            // 카테고리만 있는 경우
+            products = productRepository.findByCategoryId(categoryId, pageable);
+        } else if (!search.isEmpty()) {
+            // 검색 조건만 있는 경우
+            products = productRepository.findByProductNameContaining(search, pageable);
+        } else {
+            // 조건이 없는 경우
+            products = productRepository.findAll(pageable);
+        }
 
         // Product -> ProductResponseDto로 변환
         return products.map(product -> {
@@ -350,5 +365,16 @@ public class ProductService {
     @Transactional
     public void incrementViewCount(Long productId, int viewCount) {
         productRepository.incrementViewCount(productId, viewCount);
+    }
+
+    @Transactional
+    public List<ProductOptionDto> getAvailableSizes(Long productId, String color) {
+        // Repository를 통해 데이터베이스에서 조건에 맞는 옵션들을 조회
+        List<ProductOption> productOptions = productOptionRepository.findByProductIdAndColor(productId, color);
+
+        // Entity -> DTO 변환
+        return productOptions.stream()
+                .map(option -> new ProductOptionDto(option.getSize(), option.getColor(), option.getStockQuantity()))
+                .collect(Collectors.toList());
     }
 }

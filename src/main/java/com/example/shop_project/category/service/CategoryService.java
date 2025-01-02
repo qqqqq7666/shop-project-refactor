@@ -8,6 +8,7 @@ import com.example.shop_project.category.entity.Category;
 import com.example.shop_project.category.exception.CategoryCustomException;
 import com.example.shop_project.category.exception.CategoryErrorCode;
 import com.example.shop_project.category.repository.CategoryRepository;
+import com.example.shop_project.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     // 전체 카테고리 조회
     public List<CategoryResDto> getAllCategories() {
@@ -121,7 +123,6 @@ public class CategoryService {
         categoryDeleteResDto.setMainCategoryId(parentCategory.getCategoryId());
         parentCategory.getSubCategories().remove(category); // 연관관계 삭제
 
-        // TODO: productList 비었는지 확인 후 비었으면
         categoryRepository.delete(category); // 서브 카테고리 삭제
 
         // 메인 카테고리에 서브 카테고리 없으면 메인 카테고리 삭제
@@ -134,6 +135,14 @@ public class CategoryService {
             categoryDeleteResDto.setExistMainCategory(true);
         }
         return categoryDeleteResDto;
+    }
+
+    // 카테고리 삭제 시 상품 존재 여부 확인
+    public void existsProduct(Long categoryId) {
+        boolean hasProduct = productRepository.existsByCategoryId(categoryId);
+        if(hasProduct){
+            throw new CategoryCustomException(CategoryErrorCode.CONFLICT_WITH_PRODUCTS);
+        }
     }
 
     // 서브 카테고리 생성 메서드

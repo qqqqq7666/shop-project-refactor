@@ -19,16 +19,16 @@
     <div th:if="${orderPage.isEmpty()}">
         주문이 존재하지 않습니다
     </div>
-    <div class="card mb-3 w-100" style="max-width: 540px;" id="product-card"
+    <div class="card mb-3 w-100" style="max-width: 540px; background-color: #f5f2f2" id="product-card"
          th:each="order : ${orderPage}">
         <div>
             <h4 class="mx-3 my-2" th:text="${#temporals.format(order.getCreatedDate(), 'yy.MM.dd')}"></h4>
         </div>
-        <div class="mx-3 my-1"><b th:text="${order.getOrderStatus()}">주문 상태</b></div>
+        <div class="mx-3 my-1"><span class="badge rounded-pill bg-secondary" th:text="${order.getOrderStatus()}">주문 상태</span></div>
         <div class="row g-0" th:each="detail, i : ${order.getOrderDetailList()}">
             <!-- Image Section -->
             <div class="col-md-4">
-                <img th:src="|http://localhost:8080${detail.getProduct().getImages().getFirst().getImageUrl()}|" class="img-fluid rounded-start" alt="Product Image">
+                <img th:src="|http://localhost:8080${detail.getProduct().getImages().getFirst().getImageUrl()}|" class="img-thumbnail" alt="Product Image">
             </div>
             <!-- Text Section -->
             <div class="col-md-8">

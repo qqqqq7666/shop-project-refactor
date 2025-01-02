@@ -61,7 +61,7 @@
     </div>
 
     <!-- 페이지네이션 -->
-    <div class="pagination">
+    <div class="pagination" th:if="${totalPages > 0}">
         <!-- 처음 페이지로 이동 -->
         <a th:if="${currentPage > 0}" th:href="@{/admin/products(page=0, search=${search}, sort=${sort})}">&lt;&lt;</a>
         <!-- 이전 페이지 -->
@@ -71,7 +71,7 @@
         <a th:href="@{/admin/products(page=${pageNum - 1}, search=${search}, sort=${sort})}"
            th:classappend="${currentPage == pageNum - 1} ? 'active' : ''"
            th:text="${pageNum}"></a>
-    </span>
+        </span>
         <!-- 다음 페이지 -->
         <a th:if="${currentPage < totalPages - 1}" th:href="@{/admin/products(page=${currentPage + 1}, search=${search}, sort=${sort})}">&gt;</a>
         <!-- 끝 페이지로 이동 -->
