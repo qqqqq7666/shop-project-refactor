@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.shop_project.jwt.AuthTokenImpl;
+import com.example.shop_project.jwt.JwtProvider;
 import com.example.shop_project.jwt.dto.JwtTokenDto;
 import com.example.shop_project.jwt.dto.JwtTokenLoginRequest;
 import com.example.shop_project.jwt.dto.JwtTokenResponse;
+import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.service.MemberService;
 
 import jakarta.servlet.http.Cookie;
@@ -26,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtController {
 
     private final MemberService userService;
+    private final JwtProvider jwtProvider;
     
     @PostMapping("/jwt-login")
     public ResponseEntity<JwtTokenResponse> jwtLogin(@RequestBody JwtTokenLoginRequest request,
@@ -87,5 +91,57 @@ public class JwtController {
 
         return ResponseEntity.ok("로그아웃 성공");
     }
+    
+    @PostMapping("/jwt-refresh")
+    public ResponseEntity<JwtTokenResponse> refreshAccessToken(HttpServletRequest request,
+    	    													HttpServletResponse response) {
+        // 1. Refresh Token 추출
+        String refreshToken = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                }
+            }
+        }
+
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // 2. Refresh Token 검증
+        AuthTokenImpl refreshTokenObj = (AuthTokenImpl) jwtProvider.convertAuthToken(refreshToken);
+        if (!refreshTokenObj.validate()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // 3. 새로운 Access Token 생성
+        String email = refreshTokenObj.getDate().getSubject();
+        Member member = userService.findByEmail(email);
+
+        AuthTokenImpl accessToken = (AuthTokenImpl)jwtProvider.createAccessToken(
+            member.getEmail(),
+            member.getRole(),
+            null
+        );
+
+        String newAccessToken = accessToken.getToken();
+
+        // 4. Access Token을 쿠키에 저장
+        Cookie accessTokenCookie = new Cookie("accessToken", newAccessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(false);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(10 * 60); // 10분
+
+        response.addCookie(accessTokenCookie);
+
+        return ResponseEntity.ok(
+            JwtTokenResponse.builder()
+                .accessToken(newAccessToken)
+                .build()
+        );
+    }
+
 
 }
