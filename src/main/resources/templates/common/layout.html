@@ -50,6 +50,10 @@
                         1
                     </div>
                     </a>
+                    
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+					    <a class="nav-link" href="/admin">관리자 페이지</a>
+					</li>
                 </div></li>
             </ul>
         </div>
