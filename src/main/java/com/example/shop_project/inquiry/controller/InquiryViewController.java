@@ -3,6 +3,8 @@ package com.example.shop_project.inquiry.controller;
 import com.example.shop_project.inquiry.entity.InquiryRequestDto;
 import com.example.shop_project.inquiry.entity.Inquiry;
 import com.example.shop_project.inquiry.service.InquiryService;
+import com.example.shop_project.product.entity.Product;
+import com.example.shop_project.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +24,7 @@ import java.util.Map;
 public class InquiryViewController {
 
     private final InquiryService inquiryService;
+    private final ProductRepository productRepository;
 
     // ROLE_ADMIN 권한 확인
     private boolean isAdmin() {
@@ -43,8 +48,16 @@ public class InquiryViewController {
             return detail;
         }).toList();
 
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 상품을 찾을 수 없습니다: " + productId));
+
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.KOREA);
+        String formattedPrice = numberFormat.format(product.getPrice());
+
         model.addAttribute("inquiries", inquiryDetails);
         model.addAttribute("productId", productId);
+        model.addAttribute("product", product);
+        model.addAttribute("formattedPrice", formattedPrice);
 
         return "inquiry/list";
     }
@@ -52,7 +65,18 @@ public class InquiryViewController {
     // 특정 상품의 문의 작성 페이지
     @GetMapping("/create")
     public String showCreatePage(@PathVariable Long productId, Model model) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 상품을 찾을 수 없습니다: " + productId));
+
+        String representativeImage = product.getImages().isEmpty() ? "/images/default-product.jpg" : product.getImages().get(0).getImageUrl();
+
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.KOREA);
+        String formattedPrice = numberFormat.format(product.getPrice());
+
         model.addAttribute("productId", productId);
+        model.addAttribute("product", product);
+        model.addAttribute("formattedPrice", formattedPrice);
+        model.addAttribute("productImage", representativeImage);
 
         return "inquiry/create";
     }

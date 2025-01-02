@@ -4,124 +4,105 @@
     <meta charset="UTF-8">
     <title>문의 상세 조회</title>
     <link href="/inquiry/style/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .detail-container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .detail-container h2 {
-            margin-bottom: 20px;
-        }
-        .detail-container .info {
-            margin-bottom: 15px;
-        }
-        .detail-container .info span {
-            font-weight: bold;
-        }
-        .back-button {
-            display: block;
-            margin-top: 20px;
-        }
-
-    </style>
+    <link href="/inquiry/style/detail.css" rel="stylesheet">
 </head>
 <body>
 <main layout:fragment="content">
-<div class="container">
-    <div class="detail-container">
-        <h2 th:text="${inquiry.title}">문의 제목</h2>
+    <div class="container">
+        <div class="detail-container">
+            <a th:href="@{/products/{productId}/inquiries(productId=${productId})}" class="btn btn btn-outline-secondary back-button" >>> 문의 목록으로 돌아가기</a>
+            <h2 th:text="${inquiry.title}">문의 제목</h2>
 
-        <div class="info">
-            <span>작성자:</span>
-            <span th:text="${nickname}">닉네임</span>
-        </div>
-        <div class="info">
-            <span>작성 날짜:</span>
-            <span th:text="${inquiry.date}">YYYY-MM-DD</span>
-        </div>
-
-        <div class="info">
-            <span>문의 유형:</span>
-            <span th:text="${inquiry.type.getKoreanName()}">-</span>
-        </div>
-
-        <div class="content">
-            <h4>문의 내용</h4>
-            <div class="border p-3">
-                <p th:text="${inquiry.content}">여기에 문의 내용이 표시됩니다.</p>
+            <div class="info">
+                <span>작성자:</span>
+                <span th:text="${nickname}">닉네임</span>
             </div>
-        </div>
+            <div class="info">
+                <span>작성 날짜:</span>
+                <span th:text="${inquiry.date}">YYYY-MM-DD</span>
+            </div>
 
-        <button
-                th:if="${inquiry.member.email == userEmail}"
-                id="delete-button"
-                type="button"
-                class="btn btn-primary"
-                style="margin-top: 10px; background-color: #CDCDCD; color: white; border: none;">
-            문의 삭제
-        </button>
-        <script>
-            document.getElementById('delete-button').addEventListener('click', function() {
-                const productId = [[${productId}]];
-                const inquiryId = [[${inquiry.id}]];
+            <div class="info">
+                <span>문의 유형:</span>
+                <span th:text="${inquiry.type.getKoreanName()}">-</span>
+            </div>
 
-                if (confirm("정말 삭제하시겠습니까?")) {
-                    fetch(`/api/v1/products/${productId}/inquiries/${inquiryId}`, {
-                        method: 'DELETE',
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                alert("문의가 삭제되었습니다.");
-                                window.location.href = `/products/${productId}/inquiries`;
-                            } else {
-                                alert("삭제에 실패했습니다.");
-                            }
+            <div class="content">
+                <h4>문의 내용</h4>
+                <div class="border p-3">
+                    <p th:text="${inquiry.content}">여기에 문의 내용이 표시됩니다.</p>
+                </div>
+            </div>
+
+            <button
+                    th:if="${inquiry.member.email == userEmail}"
+                    id="delete-button"
+                    type="button"
+                    class="btn btn-primary"
+                    style="margin-top: 10px; background-color: #CDCDCD; color: white; border: none;">
+                문의 삭제
+            </button>
+            <script>
+                document.getElementById('delete-button').addEventListener('click', function() {
+                    const productId = [[${productId}]];
+                    const inquiryId = [[${inquiry.id}]];
+
+                    if (confirm("정말 삭제하시겠습니까?")) {
+                        fetch(`/api/v1/products/${productId}/inquiries/${inquiryId}`, {
+                            method: 'DELETE',
                         })
-                        .catch(error => {
-                            console.error("삭제 중 오류 발생:", error);
-                            alert("삭제 중 오류가 발생했습니다.");
-                        });
-                }
-            });
-        </script>
+                            .then(response => {
+                                if (response.ok) {
+                                    alert("문의가 삭제되었습니다.");
+                                    window.location.href = `/products/${productId}/inquiries`;
+                                } else {
+                                    alert("삭제에 실패했습니다.");
+                                }
+                            })
+                            .catch(error => {
+                                console.error("삭제 중 오류 발생:", error);
+                                alert("삭제 중 오류가 발생했습니다.");
+                            });
+                    }
+                });
+            </script>
 
-        <a th:href="@{/products/{productId}/inquiries(productId=${productId})}" class="btn btn-secondary back-button" >문의 목록으로 돌아가기</a>
-        <hr>
-        <div>
-            <h3>댓글</h3>
-            <ul>
-                <li th:each="comment : ${inquiry.comments}">
-                    <span th:text="${comment.member.nickname}">작성자</span>
-                    <div class="border p-3">
+            <hr>
+            <div class="comments-section">
+                <h3>답변</h3>
+                <div th:if="${#lists.isEmpty(inquiry.comments)}" class="no-comments">
+                    <p>아직 답변이 없습니다.</p>
+                </div>
+
+                <div th:each="comment : ${inquiry.comments}" class="comment-block">
+                    <div class="comment-header">
+                        <span th:text="${comment.member.nickname}">작성자</span> ·
+                        <small th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">작성 시간</small>
+                    </div>
+                    <div class="comment-content">
                         <p th:text="${comment.content}">댓글 내용</p>
                     </div>
-                    <small th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">작성 시간</small>
-                    <!--삭제 버튼 -->
-                    <form th:if="${#authentication.name == comment.member.email}"
-                          th:action="@{/products/{productId}/inquiries/{inquiryId}/comment/{commentId}(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id}, commentId=${comment.id})}"
-                          method="post"
-                          onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
-                        <input type="hidden" name="_method" value="delete"/>
-                        <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                    <div class="comment-actions">
+                        <form th:if="${#authentication.name == comment.member.email}"
+                              th:action="@{/products/{productId}/inquiries/{inquiryId}/comment/{commentId}(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id}, commentId=${comment.id})}"
+                              method="post"
+                              onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                            <input type="hidden" name="_method" value="delete"/>
+                            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 댓글 작성 폼 -->
+                <div sec:authorize="hasAuthority('ROLE_ADMIN')">
+                    <form th:action="@{/products/{productId}/inquiries/{inquiryId}/comment(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" method="post">
+                        <textarea name="content" placeholder="댓글을 입력하세요. (최대 500자)" required maxlength="500"></textarea>
+                        <button type="submit" class="btn btn-primary">댓글 작성</button>
                     </form>
-                </li>
-            </ul>
-
-            <!-- 댓글 작성 폼 -->
-            <div sec:authorize="hasAuthority('ROLE_ADMIN')">
-                <form th:action="@{/products/{productId}/inquiries/{inquiryId}/comment(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" method="post">
-                    <textarea name="content" placeholder="댓글을 입력하세요." required></textarea>
-                    <button type="submit">댓글 작성</button>
-                </form>
+                </div>
             </div>
-
         </div>
     </div>
-</div>
 </main>
 </body>
 </html>
