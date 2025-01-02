@@ -2,6 +2,8 @@ package com.example.shop_project.member.controller;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Base64;
+import java.util.Optional;
+import java.util.UUID;
 
 import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.inquiry.service.InquiryService;
@@ -124,5 +126,40 @@ public class MemberViewController {
         request.getSession().invalidate();    // 세션 무효화
 
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+    }
+	
+    @GetMapping("/password-reset")
+    public String showPasswordResetPage() {
+        return "member/findPassword";
+    }
+    
+    @PostMapping("/password-reset")
+    public String resetPassword(@RequestParam("email") String email, Model model) {
+        Member member = memberService.findByEmail(email);
+
+        if (member != null) {
+            String tempPassword = generateTemporaryPassword();
+            
+            MemberRequestDTO memberDTO = new MemberRequestDTO();
+            memberDTO.setPassword(tempPassword);
+            memberDTO.setNickname(member.getNickname());
+            memberDTO.setPhone(member.getPhone());
+            memberDTO.setPostNo(member.getPostNo());
+            memberDTO.setAddress(member.getAddress());
+            memberDTO.setAddressDetail(member.getAddressDetail());
+
+            memberService.updateMember(member, memberDTO);
+
+            model.addAttribute("tempPassword", tempPassword);
+        } else {
+            model.addAttribute("error", "해당 이메일로 등록된 사용자가 없습니다.");
+        }
+
+        return "member/findPassword";
+    }
+
+    private String generateTemporaryPassword() {
+        // 간단한 임시 비밀번호 생성
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 }

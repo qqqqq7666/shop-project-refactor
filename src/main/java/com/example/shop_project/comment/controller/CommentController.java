@@ -30,6 +30,11 @@ public class CommentController {
             throw new IllegalStateException("댓글 작성 권한이 없습니다.");
         }
 
+        if (requestDto.getContent().length() > 500) {
+            throw new IllegalArgumentException("댓글 내용은 500자 이내로 작성해주세요.");
+        }
+
+
         String nickname = SecurityContextHolder.getContext().getAuthentication().getName();
 
         commentService.createComment(inquiryId, requestDto, nickname);

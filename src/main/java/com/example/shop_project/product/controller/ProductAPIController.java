@@ -2,8 +2,10 @@ package com.example.shop_project.product.controller;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.service.MemberService;
+import com.example.shop_project.product.dto.ProductOptionDto;
 import com.example.shop_project.product.dto.ProductRequestDto;
 import com.example.shop_project.product.dto.ProductResponseDto;
+import com.example.shop_project.product.entity.Size;
 import com.example.shop_project.product.repository.productImageRepository;
 import com.example.shop_project.product.service.ImageService;
 import com.example.shop_project.product.service.ProductService;
@@ -93,6 +95,14 @@ public class ProductAPIController {
     public ResponseEntity<?> deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.ok().body("Product deleted successfully");
+    }
+
+    // 재고 검사 API
+    @GetMapping("/available-sizes")
+    public ResponseEntity<?> getAvailableSizes(@RequestParam("productId") Long productId,
+                                               @RequestParam("color") String color) {
+        List<ProductOptionDto> availableSizes = productService.getAvailableSizes(productId, color);
+        return ResponseEntity.ok(availableSizes);
     }
 
 
