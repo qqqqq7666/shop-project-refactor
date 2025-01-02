@@ -28,6 +28,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
     
     // 판매량 top5가져오기
-    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.images i WHERE i.sortOrder = 1 ORDER BY p.salesCount DESC LIMIT 5")
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.images i WHERE i.sortOrder = 1 ORDER BY p.salesCount DESC LIMIT 4")
     List<Product> findTop5BestSellersWithFirstImage();
 }
