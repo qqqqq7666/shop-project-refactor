@@ -70,6 +70,10 @@
             <hr>
             <div class="comments-section">
                 <h3>답변</h3>
+                <div th:if="${#lists.isEmpty(inquiry.comments)}" class="no-comments">
+                    <p>아직 답변이 없습니다.</p>
+                </div>
+
                 <div th:each="comment : ${inquiry.comments}" class="comment-block">
                     <div class="comment-header">
                         <span th:text="${comment.member.nickname}">작성자</span> ·
