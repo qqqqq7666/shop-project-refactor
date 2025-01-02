@@ -3,18 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        /* 슬라이드 쇼 컨테이너 스타일 */
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 100vh; /* 화면 가득 채움 */
+            overflow: hidden;
+        }
+
+        /* 각 슬라이드 이미지 스타일 */
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+        
+        /* 베스트 셀러 섹션 스타일 */
+        .best-seller-container {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .best-seller-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .best-seller-list {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .best-seller-card {
+            flex: 0 0 200px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .best-seller-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .best-seller-card .title {
+            font-size: 14px;
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .best-seller-card .price {
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
 <main layout:fragment="content">
-    <button onclick="location.href = '/login'">로그인</button>
-    <button onclick="location.href = '/mypage'">마이페이지</button>
-    <button onclick="location.href = '/admin'">관리자페이지</button>
-    <button onclick="location.href = '/products/productList'">상품목록</button>
-    <button onclick="location.href = '/order/cart'">장바구니</button>
+	<div class="slideshow-container">
+        <img src="/images/mainImage/img1.png" alt="Slide 1" class="slide active">
+        <img src="/images/mainImage/img2.png" alt="Slide 2" class="slide">
 
-<!-- 임시 로그아웃 버튼 -->
-<button onclick="logout()">로그아웃</button>
-<script src="/member/js/logout.js"></script>
+    </div>
+
+
+	<section class="best-seller-container">
+	    <h2 class="best-seller-title"> 베스트 셀러 </h2>
+	    <div class="best-seller-list">
+	        <div th:each="product : ${bestSellers}" class="best-seller-card">
+	            <a th:href="@{/products/detail/{id}(id=${product.productId})}">
+	                <img th:src="${product.imageUrls != null && product.imageUrls.size() > 0 ? product.imageUrls[0] : '/images/default-product.png'}"
+	                     alt="베스트 셀러 이미지">
+	            </a>
+	            <p class="title" th:text="${product.productName}">상품명</p>
+	            <p class="price" th:text="'₩' + ${product.price}">가격</p>
+	        </div>
+	    </div>
+	</section>
+
+
+    <script src="/member/js/logout.js"></script>
+    <script src="/mainpage/js/slideshow.js"></script>
 </main>
 </body>
 </html>

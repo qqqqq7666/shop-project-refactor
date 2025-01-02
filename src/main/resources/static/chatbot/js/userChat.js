@@ -165,7 +165,7 @@ function endCounseling() {
 /* ========== 여기서부터는 추가된 부분(상태 저장/복구 로직) ========== */
 
 const MAX_CHAT_MESSAGES = 5;
-/** 메시지를 localStorage에 기록(추가) */
+// 메시지를 localStorage에 기록 
 function storeChatMessage(content, sender) {
     // 기존 배열 불러오기
     let chatLog = localStorage.getItem('userChatMessages');
