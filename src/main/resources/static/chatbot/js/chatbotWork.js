@@ -138,3 +138,30 @@ function cleanChatbotMessages(maxMessages = 10) {
     }
 }
 
+// 상담 시작 시 버튼 상담 숨기기
+function hideQuestionButtons() {
+	const questionSection = document.getElementById('chatbot-questions');
+	const contentSection = document.getElementById('chatbot-content');
+
+	if (questionSection && contentSection) {
+	    questionSection.classList.add('hidden');
+		contentSection.style.flex = '1 1 auto'; // 남은 공간 채우기
+	    console.log("버튼 영역이 숨겨졌습니다.");
+	} else {
+	    console.warn("chatbot-questions 또는 chatbot-content 요소를 찾을 수 없습니다.");
+	}
+}
+
+// 상담 종료 시 버튼 상담 보이기
+function showQuestionButtons() {
+	const questionSection = document.getElementById('chatbot-questions');
+	const contentSection = document.getElementById('chatbot-content');
+
+	if (questionSection && contentSection) {
+	    questionSection.classList.remove('hidden');
+	    console.log("버튼 영역이 다시 표시되었습니다.");
+	} else {
+	    console.warn("chatbot-questions 또는 chatbot-content 요소를 찾을 수 없습니다.");
+	}
+}
+
