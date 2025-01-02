@@ -9,21 +9,23 @@
 </head>
 <body>
 <main layout:fragment="content">
-    <h1>Categories</h1>
+    <h2>카테고리 관리</h2>
     <div id="add-main-cagegory">
         <!-- 메인 카테고리 추가 버튼 -->
-        <button class="add-btn" onclick="toggleForm('main-category-form')">추가</button>
+        <button class="add-btn btn btn-bd-primary" onclick="toggleForm('main-category-form')">추가</button>
         <!-- 메인 카테고리 추가 입력 폼 -->
-        <form id="main-category-form" class="form-container">
-            <h2>메인 카테고리 추가</h2>
-            <label for="main-category-name">메인 카테고리 이름:</label>
-            <input type="text" id="main-category-name" name="mainCategoryName" placeholder="메인 카테고리 이름을 입력하세요" required>
+        <form id="main-category-form" class="form-container needs-validation">
+            <h3>메인 카테고리 추가</h3>
+            <label for="main-category-name" class="form-label">메인 카테고리 이름:</label>
+            <input type="text" id="main-category-name" name="mainCategoryName" class="form-control" placeholder="메인 카테고리 이름을 입력하세요" required>
+            <div class="invalid-feedback"></div>
             <br>
-            <label for="sub-category-name">서브 카테고리 이름:</label>
-            <input type="text" id="sub-category-name" name="subCategoryName" placeholder="서브 카테고리 이름을 입력하세요" required>
+            <label for="sub-category-name" class="form-label">서브 카테고리 이름:</label>
+            <input type="text" id="sub-category-name" name="subCategoryName" class="form-control" placeholder="서브 카테고리 이름을 입력하세요" required>
+            <div class="invalid-feedback"></div>
             <br>
-            <button type="submit">저장</button>
-            <button type="button" onclick="toggleForm('main-category-form')">취소</button>
+            <button type="submit" class="btn btn-bd-primary">저장</button>
+            <button type="button" class="btn btn-secondary" onclick="toggleForm('main-category-form')">취소</button>
         </form>
     </div>
 
@@ -33,26 +35,28 @@
             <div>
                 <p th:id="|main-category-${category.categoryId}|" th:text="${category.categoryName}">메인 카테고리 이름</p>
                 <!--메인 카테고리 수정 버튼-->
-                <button class="update-btn" th:onclick="|editCategory('main-category-${category.categoryId}', '${category.categoryId}')|">수정</button>
+                <button class="update-btn btn" th:onclick="|editCategory('main-category-${category.categoryId}', '${category.categoryId}')|">수정</button>
             </div>
             <ul th:id="|sub-category-list-${category.categoryId}|">
                 <li th:each="subCategory : ${category.subCategories}" class="sub-category">
                     <span th:id="|sub-category-${subCategory.categoryId}|" th:text="${subCategory.categoryName}">서브 카테고리 이름</span>
                     <!--서브 카테고리 수정, 삭제 버튼-->
-                    <button class="update-btn" th:onclick="|editCategory('sub-category-${subCategory.categoryId}', '${subCategory.categoryId}')|">수정</button>
-                    <button class="delete-btn" th:onclick="|deleteSubCategory('${subCategory.categoryId}')|">삭제</button>
+                    <button class="update-btn btn" th:onclick="|editCategory('sub-category-${subCategory.categoryId}', '${subCategory.categoryId}')|">수정</button>
+                    <button class="delete-btn btn btn-secondary" th:onclick="|deleteSubCategory('${subCategory.categoryId}')|">삭제</button>
                 </li>
             </ul>
             <!-- 서브 카테고리 추가 입력 폼 -->
-            <form th:id="|sub-category-form-${category.categoryId}|" class="form-container" >
+            <form th:id="|sub-category-form-${category.categoryId}|" class="form-container needs-validation" >
                 <input type="hidden" name="mainCategoryName" th:value="${category.categoryName}">
-                <label th:for="|sub-form-category-name-${category.categoryId}|">서브 카테고리 추가</label><br>
-                <input type="text" th:id="|sub-form-category-name-${category.categoryId}|" name="subCategoryName" placeholder="서브 카테고리 이름을 입력하세요" required><br>
-                <button type="submit">저장</button>
-                <button type="button" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">취소</button>
+                <label th:for="|sub-form-category-name-${category.categoryId}|" class="form-label">서브 카테고리 추가</label><br>
+                <input type="text" th:id="|sub-form-category-name-${category.categoryId}|" class="form-control" name="subCategoryName" placeholder="서브 카테고리 이름을 입력하세요" required>
+                <div class="invalid-feedback"></div>
+                <br>
+                <button type="submit" class="btn btn-bd-primary">저장</button>
+                <button type="button" class="btn btn-secondary" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">취소</button>
             </form>
             <!-- 서브 카테고리 추가 버튼 -->
-            <button class="add-sub-category-btn add-btn" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">+</button>
+            <button class="add-sub-category-btn add-btn btn btn-bd-primary" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">+</button>
         </div>
     </div>
 </main>

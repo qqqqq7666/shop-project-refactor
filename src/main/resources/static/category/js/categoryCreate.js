@@ -1,20 +1,25 @@
 // 카테고리 폼 제출
 document.body.addEventListener('click', (event) => {
     if (event.target.matches('button[type="submit"]')) {
-        // let form = event.target; // 클릭된 버튼
-
-        // while (form && form.tagName !== 'FORM') {
-        //     form = form.parentElement; // 부모 요소로 이동
-        // }
         let form = event.target.closest('form');
         if (!form) return; // 폼이 없으면 종료
         console.log('Form ID:', form.id);
 
-        // 브라우저 기본 검증 실행
-        if (!form.checkValidity()) {
-            form.reportValidity(); // 기본 브라우저 알림
+        const mainCategoryNameInput = form.querySelector('input[name="mainCategoryName"]');
+        console.log(mainCategoryNameInput.value);
+        const subCategoryNameInput = form.querySelector('input[name="subCategoryName"]');
+        console.log(subCategoryNameInput.value);
+
+        const isMainValid = validateCategoryName(mainCategoryNameInput);
+        console.log(isMainValid);
+        const isSubValid = validateCategoryName(subCategoryNameInput);
+        console.log(isSubValid);
+
+        if (!isMainValid || !isSubValid) {
+            event.preventDefault(); // 기본 제출 동작 중단
             return;
         }
+
         event.preventDefault(); // 기본 제출 동작 중단
 
         const formData = new FormData(form);
@@ -57,7 +62,7 @@ document.body.addEventListener('click', (event) => {
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('에러 발생: ' + error.message);
+                alert(error.message);
             });
     }
 });
@@ -129,5 +134,37 @@ function toggleForm(formId) {
         }
     }
 
+    // 유효성 검사 클래스, 에러 메세지 초기화
+    formContainer.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    formContainer.querySelectorAll('.invalid-feedback').forEach(el => el.style.display = 'none');
+
     formContainer.reset(); // 폼 초기화
+}
+
+// 카테고리 이름 유효성 검사 함수
+function validateCategoryName(inputElement) {
+    // 서브 카테고리 생성 시 메인 카텥고리 검사는 pass
+    if (inputElement.type === 'hidden') {
+        return true; // 유효성 검사 통과
+    }
+    const errorContainer = inputElement.nextElementSibling; // 에러 메시지 요소
+    const categoryName = inputElement.value.trim();
+    const isValidCategoryName = /^[가-힣a-zA-Z/]+$/.test(categoryName); // 유효성 검사
+
+    // 빈 값 or 유효성 검사 통과 X
+    if (!categoryName || !isValidCategoryName) {
+        inputElement.classList.add('is-invalid');
+        if (errorContainer) {
+            errorContainer.textContent = '카테고리 이름은 한글, 영어 대소문자, /만 가능하며 공백일 수 없습니다.';
+            errorContainer.style.display = 'block'; // 에러 메시지 표시
+        }
+        return false; // 유효성 검사 실패
+    }
+
+    // 유효성 검사 성공
+    inputElement.classList.remove('is-invalid');
+    if (errorContainer) {
+        errorContainer.style.display = 'none'; // 에러 메시지 숨김
+    }
+    return true; // 유효성 검사 성공
 }
