@@ -77,3 +77,19 @@
     font-size: 1.2rem;
     color: #6c757d;
 }
+
+.info-table a {
+    display: inline-block;
+    text-align: center;
+    padding: 8px 12px;
+    color: #4E007C; /* 보라색 글자 */
+    text-decoration: none; /* 밑줄 제거 */
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+/* 호버 시 글자 색상 강조 */
+.info-table a:hover {
+    color: #6a0dad; /* 밝은 보라색 */
+    text-decoration: underline; /* 호버 시 밑줄 추가 */
+}
