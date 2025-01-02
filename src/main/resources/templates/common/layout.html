@@ -44,7 +44,11 @@
         cart.forEach(item => cnt += item.option.length)
         return cnt;
     }
-    document.getElementById("item-count-badge").textContent = optionCount(JSON.parse(localStorage.getItem("cart")));
+    function countInit(){
+        document.getElementById("item-count-badge").textContent = optionCount(JSON.parse(localStorage.getItem("cart")));
+    }
+
+    countInit();
 </script>
 </body>
 </html>

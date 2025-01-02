@@ -221,6 +221,7 @@ function updateQuantity(index, optionIndex, change) {
 function removeOption(index, optionIndex) {
     cart[index].option.splice(optionIndex, 1);
     saveCart();
+    countInit();
     renderCart();
 }
 
