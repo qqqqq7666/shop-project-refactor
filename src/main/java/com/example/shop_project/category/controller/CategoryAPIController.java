@@ -59,6 +59,10 @@ public class CategoryAPIController {
     public ResponseEntity<CategoryDeleteResDto> deleteCategory(@RequestBody Map<String, Object> request) {
         log.debug("카테고리 삭제(controller) - 요청 ID: {}", request.get("categoryId"));
         Long categoryId = Long.valueOf(request.get("categoryId").toString());
+
+        // 상품 존재 여부 확인
+        categoryService.existsProduct(categoryId);
+
         CategoryDeleteResDto categoryDeleteResDto = categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok(categoryDeleteResDto);
     }
