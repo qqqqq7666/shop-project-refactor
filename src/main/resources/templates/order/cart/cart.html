@@ -14,7 +14,7 @@
         <!-- 왼쪽 상품 리스트 -->
         <div class="product-list">
             <h1>상품 리스트</h1>
-            <ul id="cart-items">
+            <ul id="cart-items" class="cart-list">
                 <!-- 상품 아이템 동적으로 추가 -->
             </ul>
         </div>
@@ -66,25 +66,25 @@
                 </div>
                 <div id="modal-body" class="modal-body">
                     <label>
+                        색상
+                        <select id="option-color">
+                            <option>test color</option>
+                        </select>
+                    </label>
+                    <label>
                         사이즈
                         <select id="option-size">
                             <option>test size</option>
                         </select>
                     </label>
                     <br>
-                    <label>
-                        색상
-                        <select id="option-color">
-                            <option>test color</option>
-                        </select>
-                    </label>
                     <br>
-                    <label>
-                        수량
-                        <select id="option-quantity">
-                            <option>test quantity</option>
-                        </select>
-                    </label>
+<!--                    <label>-->
+<!--                        수량-->
+<!--                        <select id="option-quantity">-->
+<!--                            <option>test quantity</option>-->
+<!--                        </select>-->
+<!--                    </label>-->
                 </div>
                 <div class="modal-footer">
                     <button id="cancel-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소
@@ -95,7 +95,6 @@
             </div>
         </div>
     </div>
-    <script src="/common/js/bootstrap.bundle.min.js"></script>
     <script src="/order/js/cart.js"></script>
 </main>
 </body>
