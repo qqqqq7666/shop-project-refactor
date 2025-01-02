@@ -226,7 +226,7 @@ button:hover {
 
 
 .image-item.highlight {
-    border: 2px solid #ff0000; /* 하이라이트 테두리 */
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); /* 하이라이트 그림자 */
-    background: #ffe6e6; /* 배경색 변경 */
+    border: 2px solid #ccc;
+    box-shadow: 0 0 10px #ccc;
+    background: #d3f3fd
 }

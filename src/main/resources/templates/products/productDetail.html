@@ -7,7 +7,8 @@
 </head>
 <body>
 <main layout:fragment="content">
-<div class="product-detail-container">
+    <div class="product-detail-container">
+        <div id="productData" th:data-product-id="${product.productId}" data-color=""></div>
     <!-- 이미지 섹션 -->
     <div class="product-image">
         <!-- 이미지 슬라이드 -->
@@ -50,23 +51,19 @@
         <p th:text="${product.description}">설명</p>
 
         <!-- 사이즈 및 색상 옵션 -->
-        <div class = "sort-dropdown-size">
-            <label>사이즈</label>
-            <select id="sizeSelect">
-                <option value="">사이즈를 선택하세요</option>
-                <option th:each="option : ${product.options}"
-                        th:text="${option.size}"
-                        th:value="${option.size}">Size</option>
-            </select>
-        </div>
-
-        <div class = "sort-dropdown-color">
+        <div class="sort-dropdown-color">
             <label>색상</label>
-            <select id="colorSelect">
+            <select id="colorSelect" th:data-product-id="${product.productId}">
                 <option value="">색상을 선택하세요</option>
                 <option th:each="option : ${product.options}"
                         th:text="${option.color}"
                         th:value="${option.color}">Color</option>
+            </select>
+        </div>
+        <div class="sort-dropdown-size">
+            <label>사이즈</label>
+            <select id="sizeSelect" disabled>
+                <option value="">사이즈를 선택하세요</option>
             </select>
         </div>
 
@@ -106,8 +103,16 @@
         </div>
     </div>
 </div>
+    <script src="/order/js/productDetail.js"></script>
+    <script src="/product/js/productDetail.js"></script>
+    <script th:inline="javascript">
+        const productOptions = /*[[${product.options}]]*/ [];
+        if (!productOptions.length) {
+            console.error("productOptions이 비어 있습니다.");
+        } else {
+            console.log("초기 productOptions:", productOptions);
+        }
+    </script>
 </main>
 </body>
-<script src="/order/js/productDetail.js"></script>
-<script src="/product/js/productDetail.js"></script>
 </html>

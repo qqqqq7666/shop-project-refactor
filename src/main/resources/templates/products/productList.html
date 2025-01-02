@@ -23,6 +23,7 @@
     </div>
     <div class="search-box">
       <form th:action="@{/products/productList}" method="get" id="searchForm">
+        <input type="hidden" name="categoryId" th:value="${categoryId}">
         <input type="text" name="search" placeholder="상품 검색" th:value="${search}">
         <button type="submit">검색</button>
       </form>
@@ -42,8 +43,7 @@
   </div>
 
   <!-- 페이지네이션 -->
-  <!-- 페이지네이션 -->
-  <div class="pagination">
+  <div class="pagination" th:if="${totalPages > 0}">
     <a th:if="${currentPage > 0}" th:href="@{/products/productList(page=0, search=${search}, sort=${sort}, categoryId=${categoryId})}">&lt;&lt;</a>
     <a th:if="${currentPage > 0}" th:href="@{/products/productList(page=${currentPage - 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}">&lt;</a>
     <span th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
@@ -61,7 +61,8 @@
   document.getElementById('sort').addEventListener('change', function() {
     const selectedSort = this.value;
     const currentSearch = document.querySelector('input[name="search"]').value || '';
-    const url = `/products/productList?sort=${selectedSort}&search=${currentSearch}`;
+    const currentCategoryId = document.querySelector('input[name="categoryId"]').value || '';
+    const url = `/products/productList?sort=${selectedSort}&search=${currentSearch}&categoryId=${currentCategoryId}`;
     window.location.href = url;
   });
 </script>

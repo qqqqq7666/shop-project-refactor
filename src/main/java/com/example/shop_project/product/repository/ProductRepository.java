@@ -26,4 +26,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     void incrementViewCount(@Param("productId") Long productId, @Param("increment") Integer increment);
 
     Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
+
+    Page<Product> findByCategoryIdAndProductNameContaining(Long categoryId, String search, Pageable pageable);
 }
