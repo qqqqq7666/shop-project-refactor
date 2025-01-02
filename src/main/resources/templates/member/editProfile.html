@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <title>회원정보 수정</title>
     <!-- 우편번호 API -->
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/member/css/joinStyle.css">
 </head>
 <body>
-
+<main layout:fragment="content">
 <div class="register-container">
     <!-- 상단 제목을 '회원가입'에서 '회원정보 수정'으로 변경 -->
     <div class="register-header">회원정보 수정</div>
@@ -90,6 +90,7 @@
 <!-- JS 파일 -->
 <script type="module" src="/member/js/editcheck.js"></script>
 <script src="/member/js/joinPostInput.js"></script>
+</main>
 </body>
 </html>
 

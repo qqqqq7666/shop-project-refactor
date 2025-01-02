@@ -9,3 +9,19 @@
     width: 230px;
     height: 50px;
 }
+
+.navbar-nav {
+    display: flex;
+    flex-direction: row; /* 가로 방향으로 정렬 */
+    align-items: center; /* 수직 정렬 */
+    gap: 10px; /* 메뉴 간격 */
+}
+
+.navbar-nav .nav-item {
+    display: inline-block; /* 가로 정렬 유지 */
+}
+
+.navbar-nav .nav-link {
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    padding: 5px 10px; /* 여백 조정 */
+}

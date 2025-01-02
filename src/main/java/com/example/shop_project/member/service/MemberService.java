@@ -88,6 +88,10 @@ public class MemberService {
 	    Member member = memberRepository.findByEmail(request.getEmail())
 	        .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
+	    if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+	    
 	    // 2) 이메일을 subject로 사용
 	    String subject = member.getEmail();   // 예: "user@example.com"
 

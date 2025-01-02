@@ -61,6 +61,7 @@ function startCounseling() {
     isCounseling = true;
     connectWebSocket();
     enableUserInput();
+	
     userappendMessage("상담사 연결 성공! 메시지를 입력하세요.", 'bot');
 
     // (추가) 상태 저장
@@ -158,11 +159,13 @@ function endCounseling() {
     }
     // (추가) localStorage 정리
     clearChatState();
+
 }
 
 /* ========== 여기서부터는 추가된 부분(상태 저장/복구 로직) ========== */
 
-/** 메시지를 localStorage에 기록(추가) */
+const MAX_CHAT_MESSAGES = 5;
+// 메시지를 localStorage에 기록 
 function storeChatMessage(content, sender) {
     // 기존 배열 불러오기
     let chatLog = localStorage.getItem('userChatMessages');
@@ -173,6 +176,12 @@ function storeChatMessage(content, sender) {
         content,
         sender
     });
+	
+	if (messages.length > MAX_CHAT_MESSAGES) {
+        // 가장 오래된 메시지 제거
+        messages = messages.slice(-MAX_CHAT_MESSAGES);
+        console.log(`오래된 메시지 정리 완료: ${messages.length}개의 메시지가 유지됩니다.`);
+    }
 
     // 다시 저장
     localStorage.setItem('userChatMessages', JSON.stringify(messages));
