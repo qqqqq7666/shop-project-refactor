@@ -43,6 +43,10 @@
     <h2>내 문의 목록</h2>
 
     <div id="question-list">
+        <div th:if="${#lists.isEmpty(inquiries)}">
+            <p class="mb-0">작성한 문의가 없습니다.</p>
+        </div>
+
         <div th:each="inquiry : ${inquiries}" class="inquiry-container">
             <h5>
                 <span th:text="${inquiry.title}">문의 제목</span>
@@ -51,7 +55,7 @@
 
             <p class="info">작성자: <span th:text="${inquiry.member.nickname}">닉네임</span> | 작성일: <span th:text="${inquiry.date}">YYYY-MM-DD</span></p>
             <p class="info">문의 유형: <span th:text="${inquiry.type.getKoreanName()}">문의 유형</span></p>
-            <p th:text="${#strings.abbreviate(detail['inquiry'].content, 80)}">문의 내용</p>
+            <p th:text="${#strings.abbreviate(inquiry.content, 80)}">문의 내용</p>
             <a th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" class="btn btn-secondary btn-sm">상세 보기</a>
         </div>
     </div>

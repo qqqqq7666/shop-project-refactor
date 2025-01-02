@@ -51,6 +51,10 @@
     </div>
 
     <div id="question-list">
+        <div th:if="${#lists.isEmpty(inquiries)}">
+            <p class="mb-0">작성된 문의가 없습니다.</p>
+        </div>
+
         <div th:each="detail : ${inquiries}" class="inquiry-container">
             <h5>
                 <span th:text="${detail['inquiry'].title}">문의 제목</span>
