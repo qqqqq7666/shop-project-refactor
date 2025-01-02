@@ -33,7 +33,7 @@
         </div>
         <hr>
         <h5 th:text="|주문 상품 ${detailList.size()}개|"></h5>
-        <small th:text="${order.getOrderStatus()}"></small>
+        <div class="badge bg-secondary" th:text="${order.getOrderStatus()}"></div>
         <div>
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-sm-start" th:each="detail : ${detailList}">
