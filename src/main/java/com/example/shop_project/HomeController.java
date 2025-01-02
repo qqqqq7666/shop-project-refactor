@@ -26,7 +26,6 @@ public class HomeController {
     public String home(Model model){
     	List<Product> bestSellers = productRepository.findTop5BestSellersWithFirstImage();
         // DTO로 변환
-        // DTO로 변환
         List<ProductResponseDto> bestSellerDtos = bestSellers.stream().map(product -> {
             ProductResponseDto dto = new ProductResponseDto();
             dto.setProductId(product.getProductId());

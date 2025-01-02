@@ -75,3 +75,10 @@ transition: transform 0.2s ease-in-out; /* 호버 애니메이션 */
     color: #666;
     margin-top: 5px;
 }
+
+.no-products {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    margin-top: 20px;
+}
