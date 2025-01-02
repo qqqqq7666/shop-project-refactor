@@ -42,6 +42,11 @@
     border: none;
 }
 
+.btn-primary:hover {
+    background-color: #3e0074;
+    border: none;
+}
+
 .button-group {
     text-align: right;
 }

@@ -46,9 +46,19 @@
     border-color: #540099;
 }
 
+.btn-primary:hover {
+    background-color: #3e0074;
+    border-color: #3e0074;
+}
+
 .btn-danger {
     background-color: #ccc;
     border-color: #ccc;
+}
+
+.btn-danger:hover {
+    background-color: #afafaf;
+    border-color: #afafaf;
 }
 
 .button-group {

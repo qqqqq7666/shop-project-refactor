@@ -49,10 +49,12 @@ textarea {
     padding: 10px;
     resize: none;
 }
-button {
+.btn-primary {
     background-color: #540099;
-    color: white;
     border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
+}
+
+.btn-primary:hover {
+    background-color: #3e0074;
+    border: none;
 }

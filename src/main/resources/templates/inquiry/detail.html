@@ -93,7 +93,7 @@
                 <div sec:authorize="hasAuthority('ROLE_ADMIN')">
                     <form th:action="@{/products/{productId}/inquiries/{inquiryId}/comment(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" method="post">
                         <textarea name="content" placeholder="댓글을 입력하세요. (최대 500자)" required maxlength="500"></textarea>
-                        <button type="submit">댓글 작성</button>
+                        <button type="submit" class="btn btn-primary">댓글 작성</button>
                     </form>
                 </div>
             </div>
