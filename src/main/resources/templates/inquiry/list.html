@@ -4,67 +4,11 @@
     <meta charset="UTF-8">
     <title>문의 목록</title>
     <link href="/inquiry/style/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .question-board {
-            max-width: 800px;
-            margin: 50px auto;
-            /*border: 1px solid #ddd;*/
-            /*border-radius: 8px;*/
-            /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
-        }
-
-        .question-board h2 {
-            text-align: center;
-        }
-
-        .inquiry-container {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            background-color: #f9f9f9;
-        }
-
-        .inquiry-container h4 {
-            margin-bottom: 10px;
-        }
-
-        .inquiry-container p {
-            margin: 5px 0;
-        }
-
-        .inquiry-container .info {
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        .write-button {
-            margin-bottom: 20px;
-            text-align: right;
-        }
-
-        .btn-primary {
-            background-color: #540099;
-            border: none;
-        }
-
-        .button-group {
-            text-align: right;
-        }
-
-        .product-info {
-            text-align: center;
-            margin-top: 30px;
-            margin-bottom: 10px;
-        }
-
-
-    </style>
+    <link href="/inquiry/style/list.css" rel="stylesheet">
 </head>
 <body>
 <main layout:fragment="content">
-<div class="question-board">
+<div class="inquiry-list-board">
     <h2>상품 문의 목록</h2>
 
     <div class="product-info">
@@ -76,16 +20,16 @@
         </div>
     </div>
 
-    <div class="write-button">
+    <div class="inquiry-write-button">
         <a th:href="@{/products/{productId}/inquiries/create(productId=${productId})}" class="btn btn-primary">문의 작성</a>
     </div>
 
-    <div id="question-list">
+    <div id="inquiry-list">
         <div th:if="${#lists.isEmpty(inquiries)}">
             <p class="mb-0">작성된 문의가 없습니다.</p>
         </div>
 
-        <div th:each="detail : ${inquiries}" class="inquiry-container">
+        <div th:each="detail : ${inquiries}" class="inquiry-list-container">
             <h5>
                 <span th:text="${detail['inquiry'].title}">문의 제목</span>
                 <span th:if="${detail['inquiry'].commentCount > 0}" class="badge rounded-pill text-bg-secondary">답변완료</span>
