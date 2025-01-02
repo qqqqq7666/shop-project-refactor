@@ -150,12 +150,19 @@ function validateCategoryName(inputElement) {
     const errorContainer = inputElement.nextElementSibling; // 에러 메시지 요소
     const categoryName = inputElement.value.trim();
     const isValidCategoryName = /^[가-힣a-zA-Z/]+$/.test(categoryName); // 유효성 검사
+    const isWithinLength = categoryName.length <= 15; // 15자 제한
 
-    // 빈 값 or 유효성 검사 통과 X
-    if (!categoryName || !isValidCategoryName) {
+    // 빈 값 or 유효성 검사 통과 X or 15자 초과
+    if (!categoryName || !isValidCategoryName || !isWithinLength) {
         inputElement.classList.add('is-invalid');
         if (errorContainer) {
-            errorContainer.textContent = '카테고리 이름은 한글, 영어 대소문자, /만 가능하며 공백일 수 없습니다.';
+            if (!categoryName) {
+                errorContainer.textContent = '카테고리 이름은 공백일 수 없습니다.';
+            } else if (!isValidCategoryName) {
+                errorContainer.textContent = '카테고리 이름은 한글, 영어 대소문자, /만 가능합니다.';
+            } else if (!isWithinLength) {
+                errorContainer.textContent = '카테고리 이름은 최대 15자까지 입력 가능합니다.';
+            }
             errorContainer.style.display = 'block'; // 에러 메시지 표시
         }
         return false; // 유효성 검사 실패
