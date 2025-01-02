@@ -94,3 +94,18 @@ ul li {
     font-weight: bold;
 }
 
+.strike-through {
+    position: relative;
+}
+
+.strike-through::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: black;
+    transform: translateY(-50%);
+}
+

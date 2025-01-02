@@ -19,7 +19,7 @@
     <div th:if="${orderPage.isEmpty()}">
         주문이 존재하지 않습니다
     </div>
-    <div class="card mb-3 w-100" style="max-width: 540px; background-color: #ccc9d0" id="product-card"
+    <div class="card mb-3 w-100" style="max-width: 540px; background-color: #f5f2f2" id="product-card"
          th:each="order : ${orderPage}">
         <div>
             <h4 class="mx-3 my-2" th:text="${#temporals.format(order.getCreatedDate(), 'yy.MM.dd')}"></h4>

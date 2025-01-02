@@ -100,7 +100,10 @@ async function renderCart() {
     // 최종 출력
     itemCount.textContent = count.toLocaleString();
     totalPrice.textContent = total.toLocaleString();
-    finalPrice.textContent = (total + 3000).toLocaleString(); // 배송비 포함
+    if(total < 50000)
+        total += 3000;
+
+    finalPrice.textContent = (total).toLocaleString(); // 배송비 포함
 }
 // function renderCart() {
 //     const cartItems = document.getElementById("cart-items");
@@ -250,6 +253,7 @@ function initializeCart() {
     loadCart();
 
     changeProgressbar();
+    deliveryFree();
 }
 
 // 장바구니 상품 옵션 변경
@@ -272,6 +276,19 @@ function changeProgressbar(){
     document.getElementById("progress-bar").style.width = `${parseInt(document.getElementById("total-price").textContent.replace(/,/g,'')) / 500}%`
 }
 
+function deliveryFree(){
+    if(parseInt(document.getElementById("total-price").textContent.replace(/,/g,'')) >= 50000) {
+        document.getElementById("delivery-fee-div").classList.add("strike-through");
+        document.getElementById("delivery-free").textContent = "배송비 무료";
+        console.log("아니 이거 왜 안됨");
+    }
+    else {
+        document.getElementById("delivery-fee-div").classList.remove("strike-through");
+        document.getElementById("delivery-free").textContent = "";
+        console.log("십ㄹㅇㄴㅁㄻㄴㅇㄹㅇㄴㅁ");
+    }
+}
+
 // DOM이 준비되면 초기화
 document.addEventListener("DOMContentLoaded", initializeCart);
 document.getElementById("checkout").addEventListener("click", () => {
@@ -287,19 +304,20 @@ document.getElementById("option-save-button").addEventListener("click", () => {
     changeProductOption(cartIndex, optionIndex);
 });
 
-const targetNode = document.getElementById("total-price");
+const totalPriceText = document.getElementById("total-price");
 
 // MutationObserver 생성
 const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
         if (mutation.type === "characterData" || mutation.type === "childList") {
             changeProgressbar(); // textContent가 변경되면 실행될 함수
+            deliveryFree();
         }
     });
 });
 
 // MutationObserver 설정
-observer.observe(targetNode, {
+observer.observe(totalPriceText, {
     childList: true, // 자식 노드 변경 감지
     characterData: true, // 텍스트 내용 변경 감지
     subtree: true // 하위 노드까지 감지
