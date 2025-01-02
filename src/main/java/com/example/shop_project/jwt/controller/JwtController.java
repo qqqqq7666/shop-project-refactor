@@ -1,5 +1,8 @@
 package com.example.shop_project.jwt.controller;
 
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +31,8 @@ public class JwtController {
     public ResponseEntity<JwtTokenResponse> jwtLogin(@RequestBody JwtTokenLoginRequest request,
                                                      HttpServletResponse response) {
 
-        JwtTokenDto jwtTokenDto = userService.login(request); 
+        JwtTokenDto jwtTokenDto = userService.login(request);
+
         // -> Access Token, Refresh Token 생성
 
         // 1) Access Token 쿠키로 저장
