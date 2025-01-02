@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 이벤트 리스너 등록
 sizeSelect.addEventListener("change", handleOptionChange);
-colorSelect.addEventListener("change", handleOptionChange);
+//colorSelect.addEventListener("change", handleOptionChange);
 
 // 옵션 변경 시 처리 함수
 function handleOptionChange() {
@@ -134,13 +134,13 @@ function handleOptionChange() {
         return; // 둘 다 선택되지 않으면 아무 작업도 하지 않음
     }
 
-    // 기존 선택된 옵션 확인
+    /*// 기존 선택된 옵션 확인
     const existingSize = selectedOptions.find((option) => option.size === size);
 
     // 색상만 변경된 경우 처리
     if (existingSize && existingSize.color !== color) {
         return; // 색상만 변경되었을 때는 추가하지 않음
-    }
+    }*/
 
     const optionId = `${productName}-${size}-${color}`;
 

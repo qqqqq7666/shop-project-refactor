@@ -12,11 +12,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
-    <script src="/chatbot/js/chatbotSetup.js" defer></script>
+    <script src="/chatbot/js/chatbotSetup.js" defer></script> 
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-lg bg-light">
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
                 <img id="logo-img" src="/images/logo.png" alt="logo">
@@ -26,16 +26,6 @@
 
             </ul>
             <ul class="navbar-nav ms-auto my-2 my-lg-0 navbar-nav-scroll">
-                <li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
-                <li class="nav-item"><a class="nav-link" href="/mypage">마이페이지</a></li>
-                <li><div class="position-relative" style="display: inline-block;">
-                    <a href="/order/cart">
-                    <img src="/images/cart_icon.png" style="width: 50px" href="/order/cart">
-                    <div id="item-count-badge" class="badge bg-primary position-absolute bottom-0 start-100 translate-middle-x rounded-pill bg-danger">
-                        1
-                    </div>
-                    </a>
-                </div></li>
 				<!-- 로그인하지 않은 사용자 -->
 			    <li class="nav-item" sec:authorize="isAnonymous()">
 			        <a class="nav-link" href="/login">로그인</a>
@@ -53,9 +43,14 @@
 			    </li>
 
 			    <!-- 공통 메뉴 -->
-			    <li class="nav-item">
-			        <a class="nav-link" href="/order/cart">장바구니</a>
-			    </li>
+			    <li><div class="position-relative" style="display: inline-block;">
+                    <a href="/order/cart">
+                    <img src="/images/cart_icon.png" style="width: 50px" href="/order/cart">
+                    <div id="item-count-badge" class="badge bg-primary position-absolute bottom-0 start-100 translate-middle-x rounded-pill bg-danger">
+                        1
+                    </div>
+                    </a>
+                </div></li>
             </ul>
         </div>
     </nav>
