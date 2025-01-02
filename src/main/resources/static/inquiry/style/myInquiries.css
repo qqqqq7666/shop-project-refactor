@@ -1,0 +1,30 @@
+.question-board {
+    max-width: 800px;
+    margin: 50px auto;
+    /*padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+}
+
+.inquiry-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+.inquiry-container h4 {
+    margin-bottom: 10px;
+}
+
+.inquiry-container p {
+    margin: 5px 0;
+}
+
+.inquiry-container .info {
+    font-size: 0.9rem;
+    color: #555;
+}
