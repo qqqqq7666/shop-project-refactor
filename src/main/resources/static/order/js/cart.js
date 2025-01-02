@@ -29,7 +29,7 @@ async function renderCart() {
         const productOption = await (await fetch(`/api/v1/orders/product-option/${item.productId}`)).json();
         for (const [optionIndex, option] of item.option.entries()) {
             const cartItemHTML = await createCartItemTemplate(item, option, index, optionIndex, productOption);
-            cartItems.insertAdjacentHTML("afterend", cartItemHTML);
+            cartItems.insertAdjacentHTML("beforeend", cartItemHTML);
             total += option.quantity * item.price;
             count += option.quantity;
         }
@@ -187,10 +187,6 @@ function mockAddProductsToCart() {
 // 초기화
 function initializeCart() {
     document.getElementById("clear-cart").addEventListener("click", clearCart);
-    const testButton = document.getElementById("test-add-products");
-    if (testButton) {
-        testButton.addEventListener("click", mockAddProductsToCart);
-    }
     loadCart();
 
     changeProgressbar();

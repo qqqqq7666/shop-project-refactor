@@ -396,6 +396,9 @@ function checkoutFail(orderNo){
                 return response.json();
         });
 }
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("point-input").value = 0;
+});
 
 document.getElementById("checkout-btn").addEventListener("click", checkout);
 document.getElementById("total-count").innerText = cart.length;
