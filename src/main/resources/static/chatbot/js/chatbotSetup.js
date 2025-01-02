@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
             <div id="chatbot-questions" style="padding: 10px;">
                 <button class="chatbot-question-btn">배송 기간은 얼마나 되나요?</button>
                 <button class="chatbot-question-btn">환불 정책은 어떻게 되나요?</button>
-                <button class="chatbot-question-btn">어떤 결제 수단을 사용할 수 있나요?</button>
                 <button id="connect-admin-btn" class="chatbot-question-btn">상담사 연결</button>
             </div>
             <div id="chatbot-content" style="height: 280px; overflow-y: auto; border-top: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;"></div>

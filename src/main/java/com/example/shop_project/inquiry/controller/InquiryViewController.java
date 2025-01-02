@@ -35,7 +35,7 @@ public class InquiryViewController {
 
     // 특정 상품의 문의 목록 페이지 렌더링
     @GetMapping
-    public String showInquiriesByProduct(@PathVariable Long productId, Model model) {
+    public String showInquiriesByProduct(@PathVariable("productId") Long productId, Model model) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Inquiry> inquiries = inquiryService.getInquiriesByProductId(productId, currentUserEmail);
 
@@ -64,7 +64,7 @@ public class InquiryViewController {
 
     // 특정 상품의 문의 작성 페이지
     @GetMapping("/create")
-    public String showCreatePage(@PathVariable Long productId, Model model) {
+    public String showCreatePage(@PathVariable("productId") Long productId, Model model) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 상품을 찾을 수 없습니다: " + productId));
 
@@ -84,7 +84,7 @@ public class InquiryViewController {
     // 특정 상품의 문의 생성 처리
     @PostMapping
     public String createInquiry(
-            @PathVariable Long productId,
+            @PathVariable("productId") Long productId,
             @Valid @ModelAttribute InquiryRequestDto dto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         inquiryService.createInquiry(productId, dto, userEmail);
@@ -94,7 +94,7 @@ public class InquiryViewController {
 
     // 특정 상품의 특정 문의 조회
     @GetMapping("/{inquiryId}")
-    public String getInquiryById(@PathVariable Long productId, @PathVariable Long inquiryId, Model model) {
+    public String getInquiryById(@PathVariable("productId") Long productId, @PathVariable("inquiryId") Long inquiryId, Model model) {
         Inquiry inquiry = inquiryService.getInquiryByProductIdAndInquiryId(productId, inquiryId);
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
