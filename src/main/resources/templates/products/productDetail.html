@@ -80,7 +80,6 @@
                 <button id="add-product-btn"
                         th:onclick="addItem([[${product.getProductId()}]], [[${product.getProductName()}]], [[${product.getPrice()}]], 1); alert('장바구니에 상품이 담겼습니다.');"
                 >Add to cart</button>
-                <button onclick="location.href = '/order/cart'">장바구니</button>
                 <button id="favoriteButton" th:onclick="toggleFavorite([[${product.productId}]]);">찜하기</button>
                 <script>
                     function toggleFavorite(productId) {
