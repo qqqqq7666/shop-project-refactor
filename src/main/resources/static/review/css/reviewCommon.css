@@ -1,7 +1,7 @@
 #review-list {
     margin-bottom: 20px;
     padding: 30px;
-    width: 80%;
+    width: 70%;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -38,7 +38,27 @@
 
 .more-text, .less-text {
     font-size: 16px;
-    color: #6610f2;
+    color: #63009e;
     cursor: pointer;
     display: none;
+}
+
+.btn-bd-primary {
+    color: white;
+    background-color: #63009e;
+}
+
+.btn-bd-primary:hover {
+    color: white;
+    background-color: #4E007C;
+}
+
+.pagination .page-link {
+    color: #63009e;
+}
+
+.pagination .page-item.active .page-link {
+    color: white;
+    background-color: #63009e;
+    border-color: #63009e;
 }
