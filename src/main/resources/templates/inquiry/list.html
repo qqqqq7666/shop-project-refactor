@@ -29,17 +29,19 @@
             <p class="mb-0">작성된 문의가 없습니다.</p>
         </div>
 
-        <div th:each="detail : ${inquiries}" class="inquiry-list-container">
-            <h5>
-                <span th:text="${detail['inquiry'].title}">문의 제목</span>
-                <span th:if="${detail['inquiry'].commentCount > 0}" class="badge rounded-pill text-bg-secondary">답변완료</span>
-            </h5>
-           <!-- <p class="info">작성자: <span th:text="${detail['inquiry'].member.nickname}">닉네임</span> | 작성일: <span th:text="${detail['inquiry'].date}">YYYY-MM-DD</span></p>
-            <p class="info">문의 유형: <span th:text="${detail['inquiry'].type.getKoreanName()}">문의 유형</span></p>-->
-            <p class="info"><span th:text="${detail['inquiry'].type.getKoreanName()}">문의 유형</span> | <span th:text="${detail['inquiry'].member.nickname}">닉네임</span> | <span th:text="${detail['inquiry'].date}">YYYY-MM-DD</span></p>
-            <p th:text="${#strings.abbreviate(detail['inquiry'].content, 80)}">문의 내용</p>
-
-            <div class="button-group">
+        <div th:each="detail : ${inquiries}" class="inquiry-list-row">
+            <div class="inquiry-left">
+                <p class="info" th:text="${detail['inquiry'].type.getKoreanName()}">문의 유형</p>
+                <h5>
+                    <span th:text="${#strings.abbreviate(detail['inquiry'].title, 40)}">문의 제목</span>
+                    <span th:if="${detail['inquiry'].commentCount > 0}" class="badge rounded-pill text-bg-secondary">답변완료</span>
+                </h5>
+                <p class="info">
+                    <span th:text="${detail['inquiry'].member.nickname}">닉네임</span> |
+                    <span th:text="${detail['inquiry'].date}">YYYY-MM-DD</span>
+                </p>
+            </div>
+            <div class="inquiry-right">
                 <a th:if="${!detail['canView']}"
                    href="javascript:void(0);"
                    onclick="alert('비밀글입니다.');"
@@ -54,6 +56,7 @@
             </div>
         </div>
     </div>
+
 
 </div>
 </main>

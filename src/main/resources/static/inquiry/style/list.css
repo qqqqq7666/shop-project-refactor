@@ -62,3 +62,41 @@
     font-size: 1.1rem;
     color: #777;
 }
+
+#inquiry-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.inquiry-list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 15px;
+    border-bottom: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.inquiry-left {
+    flex-grow: 1;
+}
+
+.inquiry-left p.info {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.inquiry-left h5 {
+    margin: 8px 0;
+    font-size: 1.2rem;
+}
+
+.inquiry-right {
+    margin-left: 15px;
+    text-align: right;
+}
+
+.inquiry-right .btn-sm {
+    font-size: 0.95rem;
+}
