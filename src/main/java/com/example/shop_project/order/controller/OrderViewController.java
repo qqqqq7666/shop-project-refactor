@@ -40,7 +40,7 @@ public class OrderViewController {
     private ReviewService reviewService;
 
     @GetMapping("/{orderNo}")
-    public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model, Principal principal){
+    public String orderDetail(@PathVariable("orderNo") @ModelAttribute Long orderNo, Model model, Principal principal){
         OrderResponseDto orderResponseDto = orderService.getOrderByOrderNo(orderNo);
         if(!orderResponseDto.getMember().equals(memberService.findByEmail(principal.getName())))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 접근입니다.");
@@ -54,7 +54,7 @@ public class OrderViewController {
     }
 
     @GetMapping
-    public String orderList(Model model, Principal principal, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search){
+    public String orderList(Model model, Principal principal, @RequestParam(value = "page",defaultValue = "0") int page, @RequestParam(value = "search", defaultValue = "") String search){
         Page<OrderResponseDto> orderPage = orderService.getOrderPageList(principal, PageRequest.of(page, 10), search);
 
         // 리뷰 작성 여부

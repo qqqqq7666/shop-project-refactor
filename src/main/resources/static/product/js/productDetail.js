@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 5000); // 5초 대기
 });
 
-
 // 선택된 상품 옵션 목록
 const selectedOptions = [];
 const colorSelect = document.getElementById("colorSelect");
@@ -118,7 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
             sizeSelect.disabled = true;
         }
     });
-
 });
 
 
@@ -185,7 +183,7 @@ function renderSelectedOptions() {
         optionElement.classList.add("selected-option");
         optionElement.innerHTML = `
             <div class="option-info">
-                <span>${option.name} (${option.color} - ${option.size})</span>
+                <span>${option.name} (${option.size} - ${option.color})</span>
                 <div class="quantity-controls">
                     <button onclick="changeQuantity(${index}, -1)">-</button>
                     <span>${option.quantity}</span>

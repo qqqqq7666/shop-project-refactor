@@ -41,7 +41,7 @@ body, html {
     border-radius: 5px;
 }
 .btn-purple {
-    background-color: #6f42c1;
+    background-color: #63009e;
     color: #fff;
     font-size: 16px;
     height: 50px;
@@ -51,7 +51,7 @@ body, html {
     margin-bottom: 20px;
 }
 .btn-purple:hover {
-    background-color: #5a3599;
+    background-color: #4E007C;
 }
 .password-reset {
     text-align: right;

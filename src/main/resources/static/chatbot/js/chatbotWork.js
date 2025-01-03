@@ -2,6 +2,7 @@
 
 window.onload = function () {
     loadChatbotMessages();
+	cleanChatbotMessages();
 };
 
 // 초기 상태: 입력창과 전송 버튼 비활성화
@@ -72,6 +73,13 @@ function saveChatbotMessages(content, sender) {
 
     // 새 메시지 추가
     messages.push({ content, sender });
+	
+	// 예) 최대 50개까지만 저장
+	    const maxMessages = 10;
+	    if (messages.length > maxMessages) {
+	        messages = messages.slice(-maxMessages); 
+	        // 가장 최근 50개의 메시지만 남기고 나머지는 버림
+	    }
 
     // 다시 localStorage에 저장
     localStorage.setItem('chatbotMessages', JSON.stringify(messages));
@@ -109,4 +117,51 @@ function disableUserInput() {
     userInput.placeholder = "현재는 버튼으로만 상담 가능합니다.";
 }
 
+function cleanChatbotMessages(maxMessages = 10) {
+	console.log('cleanChatbotMessages 함수가 호출되었습니다.');
+	
+    let storedData = localStorage.getItem('chatbotMessages');
+    if (!storedData) return;
+
+    try {
+        let messages = JSON.parse(storedData);
+        
+        // 최대 개수를 초과하는 경우 오래된 메시지 삭제
+        if (messages.length > maxMessages) {
+            console.warn(`chatbotMessages가 ${maxMessages}개를 초과하여 오래된 메시지를 삭제합니다.`);
+            messages = messages.slice(-maxMessages); // 최신 maxMessages만 유지
+            localStorage.setItem('chatbotMessages', JSON.stringify(messages));
+        }
+    } catch (error) {
+        console.error('로컬 스토리지 정리 중 오류 발생:', error);
+        localStorage.removeItem('chatbotMessages'); // 오류 발생 시 데이터 초기화
+    }
+}
+
+// 상담 시작 시 버튼 상담 숨기기
+function hideQuestionButtons() {
+	const questionSection = document.getElementById('chatbot-questions');
+	const contentSection = document.getElementById('chatbot-content');
+
+	if (questionSection && contentSection) {
+	    questionSection.classList.add('hidden');
+		contentSection.style.flex = '1 1 auto'; // 남은 공간 채우기
+	    console.log("버튼 영역이 숨겨졌습니다.");
+	} else {
+	    console.warn("chatbot-questions 또는 chatbot-content 요소를 찾을 수 없습니다.");
+	}
+}
+
+// 상담 종료 시 버튼 상담 보이기
+function showQuestionButtons() {
+	const questionSection = document.getElementById('chatbot-questions');
+	const contentSection = document.getElementById('chatbot-content');
+
+	if (questionSection && contentSection) {
+	    questionSection.classList.remove('hidden');
+	    console.log("버튼 영역이 다시 표시되었습니다.");
+	} else {
+	    console.warn("chatbot-questions 또는 chatbot-content 요소를 찾을 수 없습니다.");
+	}
+}
 

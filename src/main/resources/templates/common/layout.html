@@ -9,10 +9,10 @@
     <script src="/common/js/categoryList.js" defer></script>
 
     <!-- 챗봇 기능 추가 -->
-<!--    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>-->
-<!--    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>-->
-<!--    <link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">-->
-<!--    <script src="/chatbot/js/chatbotSetup.js" defer></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
+    <script src="/chatbot/js/chatbotSetup.js" defer></script>
 </head>
 <body>
 <header class="sticky-sm-top">
@@ -42,13 +42,17 @@
 			    </li>
 
 			    <!-- 공통 메뉴 -->
-                <li><div class="position-relative" style="display: inline-block;">
+			    <li><div class="position-relative" style="display: inline-block;">
                     <a href="/order/cart">
                         <img src="/images/cart4.svg" style="width: 30px" href="/order/cart">
                         <div id="item-count-badge" class="badge bg-primary position-absolute bottom-0 start-100 translate-middle-x rounded-pill bg-danger">
                             0
                         </div>
                     </a>
+
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+					    <a class="nav-link" href="/admin">관리자 페이지</a>
+					</li>
                 </div></li>
             </ul>
         </div>
