@@ -10,7 +10,7 @@
 <main layout:fragment="content">
 <div class="my-inquiry-board">
     <h2>내 문의 목록</h2>
-
+    <div class="inquiry-container">
     <div id="my-inquiry-list">
         <div class="zero" th:if="${#lists.isEmpty(inquiries)}">
             <p class="mb-0">작성한 문의가 없습니다.</p>
@@ -32,6 +32,7 @@
                 <a th:href="@{/products/{productId}/inquiries/{inquiryId}(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" class="btn btn-secondary btn-sm">상세 보기</a>
             </div>
         </div>
+    </div>
     </div>
 </div>
 </main>
