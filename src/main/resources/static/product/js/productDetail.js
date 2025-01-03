@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
-        fetch('/products/detail/${productId}/confirm-view', {
+        fetch(`/products/detail/${productId}/confirm-view`, {
             method: "POST"
         })
             .then(response => {
@@ -9,9 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     console.log("View count not incremented");
                 }
-            });
+            })
+            .catch(error => console.error("Error:", error));
     }, 5000); // 5초 대기
 });
+
 
 // 선택된 상품 옵션 목록
 const selectedOptions = [];
@@ -116,12 +118,13 @@ document.addEventListener("DOMContentLoaded", () => {
             sizeSelect.disabled = true;
         }
     });
+
 });
 
 
 // 이벤트 리스너 등록
 sizeSelect.addEventListener("change", handleOptionChange);
-colorSelect.addEventListener("change", handleOptionChange);
+// colorSelect.addEventListener("change", handleOptionChange);
 
 // 옵션 변경 시 처리 함수
 function handleOptionChange() {
@@ -135,12 +138,12 @@ function handleOptionChange() {
     }
 
     // 기존 선택된 옵션 확인
-    const existingSize = selectedOptions.find((option) => option.size === size);
-
-    // 색상만 변경된 경우 처리
-    if (existingSize && existingSize.color !== color) {
-        return; // 색상만 변경되었을 때는 추가하지 않음
-    }
+    // const existingSize = selectedOptions.find((option) => option.size === size);
+    //
+    // // 색상만 변경된 경우 처리
+    // if (existingSize && existingSize.color !== color) {
+    //     return; // 색상만 변경되었을 때는 추가하지 않음
+    // }
 
     const optionId = `${productName}-${size}-${color}`;
 
@@ -182,7 +185,7 @@ function renderSelectedOptions() {
         optionElement.classList.add("selected-option");
         optionElement.innerHTML = `
             <div class="option-info">
-                <span>${option.name} (${option.size} - ${option.color})</span>
+                <span>${option.name} (${option.color} - ${option.size})</span>
                 <div class="quantity-controls">
                     <button onclick="changeQuantity(${index}, -1)">-</button>
                     <span>${option.quantity}</span>

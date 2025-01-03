@@ -113,17 +113,32 @@ customFileButton.addEventListener("click", () => {
 });
 
 // 이미지 파일 변경 이벤트
-imageInput.addEventListener("change", () => {
+imageInput.addEventListener("change", async function () {
     const files = Array.from(imageInput.files);
 
-    // 새로 추가된 이미지 처리
-    files.forEach((file) => {
-        allImages.push({
-            file,
-            type: "new", // 새로 추가된 이미지 표시
-            order: allImages.length + 1,
-        });
-    });
+    // 현재 이미지 개수 + 새로 추가된 파일 개수 확인
+    if (allImages.length + files.length > 5) {
+        alert("*** 이미지는 최대 5개까지 저장 가능합니다 ***");
+        imageInput.value = ""; // 입력값 초기화
+        return;
+    }
+
+    for (const file of files) {
+        console.log("파일 처리 시작");
+        if (file.type.startsWith("image/")) {
+            try {
+                // 이미지 압축 처리
+                const compressedFile = await compressImage(file, 0.8, 800); // 압축 실행
+                allImages.push({ file: compressedFile, type: "new", order: allImages.length + 1 }); // 압축된 파일 추가
+                console.log("압축된 파일 추가 완료");
+            } catch (error) {
+                console.error("이미지 압축 실패:", error);
+            }
+        } else {
+            images.push({ file, order: images.length + 1 }); // 이미지가 아닌 경우 원본 파일 추가
+            console.log("원본 파일 추가 완료");
+        }
+    }
 
     console.log("이미지 추가 했을때 All Images:", allImages);
 
@@ -210,6 +225,54 @@ function removeImage(index) {
 function updateFileCount() {
     fileCountMessage.textContent = `선택된 파일: ${allImages.length}개`;
 }
+
+function compressImage(file, quality = 0.8, maxWidth = 800) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+
+                // 이미지 크기 조정
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth) {
+                    height = (maxWidth / width) * height;
+                    width = maxWidth;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // 압축된 데이터 생성
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) {
+                            resolve(new File([blob], file.name, { type: blob.type }));
+                        } else {
+                            reject(new Error("이미지 압축 실패"));
+                        }
+                    },
+                    file.type,
+                    quality
+                );
+            };
+
+            img.onerror = () => reject(new Error("이미지 로드 실패"));
+        };
+
+        reader.onerror = () => reject(new Error("파일 읽기 실패"));
+    });
+}
+
 
 // 수정 API 호출
 function submitPartialUpdate() {
