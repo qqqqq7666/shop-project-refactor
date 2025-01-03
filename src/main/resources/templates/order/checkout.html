@@ -350,6 +350,7 @@
     const pointInput = document.getElementById("point-input");
     const pointDiscountAmount = document.getElementById("point-discount-amount");
     const originalTotal = parseInt(document.getElementById("total").textContent.replace(/,/g, ""));
+    const currentOrderNo = [[${recentOrderNo}]] + 1;
     pointInput.addEventListener("input", () => {
         const pointDiscount = document.getElementById("point-discount");
         if(pointInput.value === null || pointInput.value === "" || pointInput.value === "0") {

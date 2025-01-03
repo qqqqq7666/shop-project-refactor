@@ -71,6 +71,7 @@ public class OrderViewController {
     public String checkout(Principal principal, Model model){
         PointDto pointDto = pointService.getPointByMember(principal.getName());
         model.addAttribute("point", pointDto);
+        model.addAttribute("recentOrderNo", orderService.getRecentOrder().getOrderNo());
         return "order/checkout";
     }
 
