@@ -201,17 +201,21 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, usedPointRequestDto
 // 결제 요청
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
-        const pointAmount = parseInt(document.getElementById("point-input").value);
+        let pointAmount;
+        if(isNaN(parseInt(document.getElementById("point-input").value)))
+            pointAmount = 0;
+        else
+            pointAmount = parseInt(document.getElementById("point-input").value);
         let isPaidWithPoint = false;
         if(pointAmount > 0)
             isPaidWithPoint = true;
-        const orderNo = await (await fetch("/api/v1/orders/recent-order-no")).json() + 1;
 
         // 결제 도중 페이지 벗어나기 방지
         window.addEventListener("beforeunload", async (event) => {
             event.preventDefault();
         });
-        window.addEventListener("pagehide", checkoutFail.bind(orderNo));
+
+        window.addEventListener("pagehide", checkoutFail);
         const orderDetailDtoList = [];
         cart.forEach(item => {
             item.option.forEach(o => {
@@ -367,26 +371,22 @@ function usePoint(usedPointRequestDto){
     })
 }
 
-function checkoutFail(orderNo){
-    fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
-        method: "PATCH",
-        body: "FAIL",
-        headers: {
-            "Content-Type": 'application/json',
-        },
-        keepalive: true,
-    })
-        .then(response => {
-            if(response.ok)
-                return response.json();
-        });
+function checkoutFail(){
+    navigator.sendBeacon(`http://localhost:8080/api/v1/orders/${orderNo}/payment-fail`);
 }
+
+function totalCount() {
+    let cnt = 0;
+    cart.forEach(item => item.option.forEach(o => cnt += o.quantity));
+    return cnt;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("point-input").value = 0;
 });
 
 document.getElementById("checkout-btn").addEventListener("click", checkout);
-document.getElementById("total-count").innerText = cart.length;
+document.getElementById("total-count").innerText = totalCount();
 const requirementSelect = document.getElementById("requirement");
 const requireTextarea = document.getElementById("message-textarea");
 const contact = document.querySelector("input[name = 'contact']");
