@@ -21,6 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByProductNameContaining(String productName);
 
     boolean existsByCategoryId(Long categoryId);
+    int countByCategoryId(Long categoryId);
 
     @Modifying
     @Query(value = "UPDATE Product p SET p.viewCount = p.viewCount + :increment WHERE p.productId = :productId")

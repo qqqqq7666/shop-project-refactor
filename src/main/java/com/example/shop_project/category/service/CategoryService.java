@@ -169,7 +169,11 @@ public class CategoryService {
                 .map(this::toCategoryResDto)
                 .collect(Collectors.toList());
 
-        return new CategoryResDto(category.getCategoryId(), category.getCategoryName(), category.getDepth(), subCategoryDtos);
+        return new CategoryResDto(category.getCategoryId(),
+                category.getCategoryName(),
+                category.getDepth(),
+                productRepository.countByCategoryId(category.getCategoryId()),
+                subCategoryDtos);
     }
 
 

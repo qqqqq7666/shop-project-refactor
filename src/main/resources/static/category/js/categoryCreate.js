@@ -137,7 +137,7 @@ function addSubCategoryToUI(mainCategoryId, subCategory) {
             <td>
                 <span id="sub-category-${subCategory.categoryId}">${subCategory.categoryName}</span>
             </td>
-            <td>상품 수</td>
+            <td>${subCategory.productCount}</td>
             <td id="btn-container-${subCategory.categoryId}">
                 <button class="update-btn btn btn-bd-primary" onclick="editCategory('sub-category-${subCategory.categoryId}', '${subCategory.categoryId}')">수정</button>
                 <button class="delete-btn btn btn-secondary" onclick="deleteSubCategory('${subCategory.categoryId}')">삭제</button>

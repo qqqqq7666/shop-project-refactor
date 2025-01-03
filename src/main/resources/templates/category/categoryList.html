@@ -72,7 +72,7 @@
                     <tr th:each="subCategory, num : ${category.subCategories}" class="sub-category text-center align-middle">
                         <th scope="row" th:text="${num.index + 1}"></th>
                         <td><span th:id="|sub-category-${subCategory.categoryId}|" th:text="${subCategory.categoryName}">서브 카테고리 이름</span></td>
-                        <td>상품 수</td>
+                        <td th:text="${subCategory.productCount}">상품 수</td>
                         <!--서브 카테고리 수정, 삭제 버튼-->
                         <td th:id="|btn-container-${subCategory.categoryId}|">
                             <button class="update-btn btn btn-bd-primary" th:onclick="|editCategory('sub-category-${subCategory.categoryId}', '${subCategory.categoryId}')|">수정</button>
