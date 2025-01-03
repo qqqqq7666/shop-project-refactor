@@ -7,9 +7,9 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.review-box p {
-    font-size: 30px;
+.review-box h2 {
     margin: 10px 5px;
+    text-align: center;
 }
 
 .product-info {
