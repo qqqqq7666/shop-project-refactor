@@ -39,8 +39,6 @@ public class OrderViewController {
     @Autowired
     private ReviewService reviewService;
 
-    // TODO order의 멤버와 principal로 찾은 맴버를 비교해서 다르면 exception 발생
-    // TODO 결제 실패 시 우선 비공개 처리, 개선할 방법 고려
     @GetMapping("/{orderNo}")
     public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model, Principal principal){
         OrderResponseDto orderResponseDto = orderService.getOrderByOrderNo(orderNo);
