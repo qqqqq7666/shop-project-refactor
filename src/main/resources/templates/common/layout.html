@@ -62,7 +62,7 @@
 <script>
     function optionCount(cart){
         let cnt = 0;
-        cart.forEach(item => cnt += item.option.length)
+        cart.forEach(item => item.option.forEach(o => cnt += o.quantity));
         return cnt;
     }
     function countInit(){

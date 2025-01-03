@@ -18,8 +18,9 @@ function addItem(productId, name, price) {
 
     for (i = 0; i < optionText.length; i += 3){
         const optionArray = optionText[i].textContent.split(" ");
-        const size = optionArray[1].slice(1);
-        const color = optionArray[3].slice(0, -1)
+        console.log(optionArray);
+        const size = optionArray[optionArray.length - 3].slice(1);
+        const color = optionArray[optionArray.length - 1].slice(0, -1)
         const quantity = parseInt(optionText[i + 1].textContent);
         console.log(optionText[i + 1].textContent);
 
@@ -40,16 +41,6 @@ function addItem(productId, name, price) {
     } else
         cart.push({productId, name, price, option});
 
-
-
-    // option.forEach((o, i) => {
-    //     const optionArray = o.textContent.split(" ");
-    //     const size = optionArray[1].slice(1);
-    //     const color = optionArray[3].slice(0, -1)
-    //     const quantity = parseInt(document.querySelector(".quantity-controls span").textContent);
-    //
-    //
-    // });
     saveCart();
 }
 
