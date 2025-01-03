@@ -50,11 +50,15 @@
 }
 
 .profile-button button {
-    background-color: #6f42c1;
+    background-color: #63009e;
     color: #fff;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
+}
+
+.profile-button button:hover {
+    background-color: #4E007C;
 }
 
 /* 정보 테이블 */
