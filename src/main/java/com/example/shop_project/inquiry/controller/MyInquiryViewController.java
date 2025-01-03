@@ -17,7 +17,7 @@ import java.util.List;
 public class MyInquiryViewController {
     private final InquiryService inquiryService;
 
-    // 사용자가 작성한 문의 목록 조회
+    // 회원이 작성한 문의 목록 조회
     @GetMapping
     public String showMyInquiries(Model model) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
