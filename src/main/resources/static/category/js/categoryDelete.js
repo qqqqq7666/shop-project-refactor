@@ -37,9 +37,10 @@ function deleteSubCategory(categoryId) {
 
 function deleteCategoryToUI(data) {
     const subCategory = document.getElementById(`sub-category-${data.subCategoryId}`);
-    const parentElement = subCategory.parentElement;
+    const tdTag = subCategory.parentElement;
+    const trTag = tdTag.parentElement;
 
-    parentElement.remove();
+    trTag.remove();
 
     console.log(data.existMainCategory === false);
     if(data.existMainCategory === false) {
