@@ -1,10 +1,10 @@
 .common-confirm-button{
-    background-color: #4E007C;
+    background-color: #63009e;
     color: #ffffff;
 }
 
 .common-confirm-button:hover{
-    background-color: #540099;
+    background-color: #4E007C;
     color: #ffffff;
 }
 

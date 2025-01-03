@@ -102,9 +102,14 @@ async function createCartItemTemplate(item, option, index, optionIndex, productO
     return li.innerHTML = `
 <li class="cart-item">
     <img src="${productImage}" class="img-thumbnail" width="100px" height="100px">
-    <div align="center">
-        <span style="font-size: 20px">${item.name}</span><br> <span style="color: gray"> (${option.size} / ${option.color})</span><br>
+    <div align="center" class="d-flex flex-column justify-content-center align-items-center">
+        <span style="font-size: 20px">${item.name}</span> 
+        <span style="color: gray"> (${option.size} / ${option.color})</span>
         <span>${item.price.toLocaleString()}원</span>
+        <button type="button" id="${index}-${optionIndex}" class="btn option-change-button option${index}" data-bs-toggle="modal" data-bs-target="#exampleModal"
+            style="width: 60%; height: 30px; line-height: 10px">
+            옵션 변경
+        </button>
     </div>
     <h6>X</h6>
     <div class="quantity-controls d-flex flex-column">
@@ -121,11 +126,6 @@ async function createCartItemTemplate(item, option, index, optionIndex, productO
     <div class="d-flex align-items-start justify-content-center flex-column">
         <button class="btn btn-secondary" onclick="removeOption(${index}, ${optionIndex})">삭제</button>
     </div>
-</li>
-<li style="padding: 10px 0; border-bottom: 1px solid #ddd;">
-    <button type="button" id="${index}-${optionIndex}" class="btn option-change-button option${index}" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        옵션 변경
-    </button>
 </li>
             `;
 }

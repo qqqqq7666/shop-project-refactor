@@ -10,9 +10,10 @@
 <main layout:fragment="content">
 <div class="container mt-5 d-flex flex-column align-items-center">
     <h2 class="mb-4">주문내역</h2>
-    <form method="get" action="/order">
-        <input th:value="${keyword}" placeholder="상품명으로 주문을 검색하세요" style="width: 450px" name="search">
-        <button type="submit">검색</button>
+    <form method="get" action="/order" class="d-flex flex-row">
+        <input class="form-control" th:value="${keyword}" placeholder="상품명으로 주문을 검색하세요" style="width: 450px" name="search">
+        &nbsp&nbsp
+        <button class="btn btn-dark" type="submit">검색</button>
     </form>
     <br>
     <!-- Card Example -->
