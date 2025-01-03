@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/member/css/mypageStyle.css">
 	<link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
-		
+
 </head>
 <body>
 <main layout:fragment="content">
@@ -31,14 +31,17 @@
                 </div>
             </div>
             <div class="profile-button">
+                <a href="/favorites" class="favorite">
+                    <button>찜 목록</button>
+                </a>
                 <!--  <a href="/mypage/edit">
                     <button>회원정보 수정</button>
                 </a>-->
-                
+
                 <button id="edit-profile-btn">회원정보 수정</button>
             </div>
         </div>
-        
+
         <!-- 비밀번호 입력 모달 -->
 		<div id="password-modal" class="modal">
 		    <div class="modal-content">

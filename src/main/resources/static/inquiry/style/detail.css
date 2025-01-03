@@ -50,11 +50,19 @@ textarea {
     resize: none;
 }
 .btn-primary {
-    background-color: #540099;
+    background-color: #63009e;
     border: none;
 }
 
 .btn-primary:hover {
-    background-color: #3e0074;
+    background-color: #4E007C;
     border: none;
+}
+
+.btn-secondary {
+    margin-top: 10px;
+}
+
+.action-buttons {
+    text-align: right;
 }

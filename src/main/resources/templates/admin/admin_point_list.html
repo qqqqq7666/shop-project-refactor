@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>포인트 관리</title>
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
     <style>
         /* 기본 테이블 스타일 */
@@ -21,6 +21,7 @@
 <body>
 <main layout:fragment="content">
 <div class="container mt-5 d-flex flex-column align-items-center">
+    <h2 class="my-3">포인트 관리</h2>
     <form method="get" action="/admin/point" class="d-flex justify-content-between my-1" style="gap: 300px;">
         <div class="d-flex align-items-center" style="gap: 10px;">
             <input th:value="${keyword}" class="form-control" placeholder="사용자의 이메일로 검색" style="width: 300px" name="email">
@@ -36,6 +37,7 @@
             <th scope="col">회원 이름</th>
             <th scope="col">회원 이메일</th>
             <th scope="col">잔여 포인트</th>
+            <th scope="col">포인트 변경</th>
         </tr>
         </thead>
         <tbody align="center">
@@ -48,7 +50,8 @@
             <td class="member-email" th:text="${point.getMember().getEmail()}">Otto</td>
             <td th:text="${point.getBalance()}">@mdo</td>
             <td>
-                <button type="button" class="btn btn-primary point-change" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <button type="button" class="btn btn-dark point-change" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="event.stopPropagation()"
+                        style="height: 30px; line-height: 0">
                     포인트 변경
                 </button>
             </td>
@@ -85,7 +88,6 @@
             </div>
             <div id="modal-body" class="modal-body">
                 <input type="radio" name="type" value="increase" checked>포인트 지급
-                <input type="radio" name="type" value="decrease">포인트 차감
                 <br>
                 <br>
                 <div class="input-group mb-3">
@@ -95,7 +97,7 @@
                     <span class="input-group-text">P</span>
                 </div>
                 사유
-                <textarea id="message-textarea" name="reason" placeholder="포인트 지급/차감 사유" required maxlength="100"
+                <textarea id="message-textarea" name="reason" placeholder="포인트 지급 사유" required maxlength="100"
                           style="width: 100%; height: 6.25em; resize: none;"></textarea>
             </div>
             <div class="modal-footer">
@@ -125,6 +127,8 @@
                     })
 
                     console.log(document.getElementsByClassName("member-email")[i].textContent);
+                    alert("포인트 지급이 완료되었습니다.");
+                    location.reload();
                 }
 
                 if (document.querySelector("input[name='type']:checked").value === "decrease") {

@@ -3,6 +3,7 @@ package com.example.shop_project.admin.controller;
 import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.order.service.PaymentService;
+import com.example.shop_project.point.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ public class AdminOrderViewController {
     private OrderService orderService;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private PointService pointService;
 
     @GetMapping
     public String totalOrderPage(Model model, @RequestParam(defaultValue = "") String email, @RequestParam(defaultValue = "all") String orderStatus, @RequestParam(defaultValue = "0") Integer page){
@@ -33,6 +36,7 @@ public class AdminOrderViewController {
         model.addAttribute("order", orderService.getOrderByOrderNo(orderNo));
         model.addAttribute("payment", paymentService.getPaymentByOrderNo(orderNo));
         model.addAttribute("canceledOrder", orderService.getCanceledOrder(orderNo));
+        model.addAttribute("point", pointService.getUsedPointByOrderNo(orderNo));
         return "admin/admin_order_detail";
     }
 }

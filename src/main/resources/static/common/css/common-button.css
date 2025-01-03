@@ -1,0 +1,17 @@
+.common-confirm-button{
+    background-color: #63009e;
+    color: #ffffff;
+}
+
+.common-confirm-button:hover{
+    background-color: #4E007C;
+    color: #ffffff;
+}
+
+.common-cancel-button{
+    background-color: #CDCDCD;
+}
+
+.common-cancel-button:hover{
+    background-color: #AFAFAF;
+}

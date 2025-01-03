@@ -47,8 +47,8 @@
         <h1 th:text="${product.productName}">Product Name</h1>
         <p id="productPrice" th:data-price="${product.price}" th:text="'₩' + ${#numbers.formatInteger(product.price, 3, 'COMMA')}">가격</p>
 
-        <h3>Details</h3>
-        <p th:text="${product.description}">설명</p>
+        <h1>Details</h1>
+        <p style="white-space: pre-line;" th:text="${product.description}">설명</p>
 
         <!-- 사이즈 및 색상 옵션 -->
         <div class="sort-dropdown-color">
@@ -80,7 +80,6 @@
                 <button id="add-product-btn"
                         th:onclick="addItem([[${product.getProductId()}]], [[${product.getProductName()}]], [[${product.getPrice()}]], 1); alert('장바구니에 상품이 담겼습니다.');"
                 >Add to cart</button>
-                <button onclick="location.href = '/order/cart'">장바구니</button>
                 <button id="favoriteButton" th:onclick="toggleFavorite([[${product.productId}]]);">찜하기</button>
                 <script>
                     function toggleFavorite(productId) {
@@ -97,14 +96,15 @@
                             });
                     }
                 </script>
-                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/inquiries'|">상품 문의 목록</button>
-                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/reviews'|">상품 리뷰 목록</button>
+                <div class="d-flex justify-content-around">
+                    <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/reviews'|">상품 리뷰 목록</button>
+                    <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/inquiries'|">상품 문의 목록</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
     <script src="/order/js/productDetail.js"></script>
-    <script src="/product/js/productDetail.js"></script>
     <script th:inline="javascript">
         const productOptions = /*[[${product.options}]]*/ [];
         if (!productOptions.length) {
@@ -113,9 +113,9 @@
             console.log("초기 productOptions:", productOptions);
         }
     </script>
-</main>
-</body>
-    <script src="/order/js/productDetail.js"></script>
+    <script th:inline="javascript">
+        const productId = /*[[${productId}]]*/ 0; // Thymeleaf 변수가 렌더링 시 대체됨
+    </script>
     <script src="/product/js/productDetail.js"></script>
 </main>
 </body>

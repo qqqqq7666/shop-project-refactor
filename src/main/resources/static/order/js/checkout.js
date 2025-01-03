@@ -54,8 +54,8 @@ function sample6_execDaumPostcode() {
 
             // 각 주소의 노출 규칙에 따라 주소를 조합한다.
             // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-            var addr = ''; // 주소 변수
-            var extraAddr = ''; // 참고항목 변수
+            let addr = ''; // 주소 변수
+            let extraAddr = ''; // 참고항목 변수
 
             //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
             if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
@@ -201,17 +201,21 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, usedPointRequestDto
 // 결제 요청
 async function checkout() {
     if (formChecked && confirm("주문 하시겠습니까?")) {
-        const pointAmount = parseInt(document.getElementById("point-input").value);
+        let pointAmount;
+        if(isNaN(parseInt(document.getElementById("point-input").value)))
+            pointAmount = 0;
+        else
+            pointAmount = parseInt(document.getElementById("point-input").value);
         let isPaidWithPoint = false;
         if(pointAmount > 0)
             isPaidWithPoint = true;
-        const orderNo = await (await fetch("/api/v1/orders/recent-order-no")).json() + 1;
 
         // 결제 도중 페이지 벗어나기 방지
         window.addEventListener("beforeunload", async (event) => {
             event.preventDefault();
         });
-        window.addEventListener("pagehide", checkoutFail.bind(orderNo));
+
+        window.addEventListener("pagehide", checkoutFail);
         const orderDetailDtoList = [];
         cart.forEach(item => {
             item.option.forEach(o => {
@@ -367,26 +371,22 @@ function usePoint(usedPointRequestDto){
     })
 }
 
-function checkoutFail(orderNo){
-    fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
-        method: "PATCH",
-        body: "FAIL",
-        headers: {
-            "Content-Type": 'application/json',
-        },
-        keepalive: true,
-    })
-        .then(response => {
-            if(response.ok)
-                return response.json();
-        });
+function checkoutFail(){
+    navigator.sendBeacon(`http://localhost:8080/api/v1/orders/${orderNo}/payment-fail`);
 }
+
+function totalCount() {
+    let cnt = 0;
+    cart.forEach(item => item.option.forEach(o => cnt += o.quantity));
+    return cnt;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("point-input").value = 0;
 });
 
 document.getElementById("checkout-btn").addEventListener("click", checkout);
-document.getElementById("total-count").innerText = cart.length;
+document.getElementById("total-count").innerText = totalCount();
 const requirementSelect = document.getElementById("requirement");
 const requireTextarea = document.getElementById("message-textarea");
 const contact = document.querySelector("input[name = 'contact']");

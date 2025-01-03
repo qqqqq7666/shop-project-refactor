@@ -26,7 +26,7 @@ function navigationBar(categories) {
         category.subCategories.forEach(subCategory => {
             subCategoryList += `
                 <li>
-                    <a class="dropdown-item" href="#" onclick="loadProductsByCategory(${subCategory.categoryId})">${subCategory.categoryName}</a>
+                    <a class="dropdown-item" href="#" onclick="loadProductsByCategory(${subCategory.categoryId}, '${subCategory.categoryName}', false)">${subCategory.categoryName}</a>
                 </li>
             `;
         });
@@ -45,8 +45,33 @@ function navigationBar(categories) {
     navbar.innerHTML = categoryList;
 }
 
+// 카테고리 표시 업데이트
+const selectedCategoryText = document.getElementById("selectedCategoryText");
+
+// 카테고리 이름 구성
+if (mainCategoryName === "전체" || !mainCategoryName) {
+    selectedCategoryText.textContent = "전체";
+} else if (subCategoryName && subCategoryName !== "") {
+    selectedCategoryText.textContent = `${mainCategoryName} ＞ ${subCategoryName}`;
+} else {
+    selectedCategoryText.textContent = mainCategoryName;
+}
+
 // 카테고리 클릭 시 상품 로드
-function loadProductsByCategory(categoryId) {
+function loadProductsByCategory(categoryId,  categoryName, isSubCategory = false) {
+    console.log("Category ID:", categoryId);
+    console.log("Category Name:", categoryName);
+    console.log("Is Subcategory:", isSubCategory);
+
     const url = `/products/productList?categoryId=${categoryId}`;
+
+    if (selectedCategoryText) {
+        selectedCategoryText.textContent = isSubCategory
+            ? `${mainCategoryName || "전체"} ＞ ${categoryName}`
+            : categoryName;
+    } else {
+        console.error("selectedCategoryText 요소를 찾을 수 없습니다.");
+    }
+
     window.location.href = url;
 }

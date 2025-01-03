@@ -104,4 +104,11 @@ public class OrderAPIController {
     public ResponseEntity<String> productImage(Long productId){
         return ResponseEntity.ok(productService.getProductImageUrls(productId).getFirst());
     }
+
+    @PostMapping("/{orderNo}/payment-fail")
+    public ResponseEntity<Void> paymentFail(@PathVariable Long orderNo){
+        orderService.updateOrderStatus(orderNo, OrderStatus.FAIL);
+        log.warn("이거 호출됨");
+        return ResponseEntity.ok().build();
+    }
 }

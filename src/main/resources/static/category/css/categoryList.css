@@ -1,57 +1,81 @@
-h1 {
+h2 {
     margin: 20px;
-    text-align: center; /* 이름을 가운데 정렬 */
-    padding-bottom: 10px; /* 텍스트와 밑줄 사이 여백 추가 */
-    border-bottom: 2px solid #000; /* 밑줄 추가 */
+    text-align: center;
+}
+
+h4 {
+    text-align: center;
 }
 
 #add-main-cagegory {
-    margin-left: 30px;
+    width: 70%;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+form {
+    padding: 10px;
+    border: 1.5px solid #4E007C;
+    border-radius: 8px;
+}
+
+#main-category-form {
+    width: 50%;
 }
 
 #category-list {
-    margin-top: 30px;
+    width: 70%;
+    margin: 0 auto;
 }
 
 .main-category {
-    display: inline-block; /* 메인 카테고리들이 같은 줄에 위치 */
     margin: 0 20px; /* 상하좌우 여백 추가 */
     padding: 10px; /* 내부 여백 추가 */
     vertical-align: top; /* 상하 정렬 */
 }
 
-.main-category p {
+.main-category p span {
     font-size: 1.5em; /* 메인 카테고리 이름 크기 조정 */
+}
+
+.main-category p {
     text-align: center; /* 이름을 가운데 정렬 */
     padding-bottom: 5px; /* 텍스트와 밑줄 사이 여백 추가 */
     border-bottom: 2px solid #000; /* 밑줄 추가 */
     margin-top: 0px;
-    margin-bottom: 0px;
+    margin-bottom: 5px;
 }
-
-/*
-.main-category-btn {
-    display: flex;
-    justify-content: flex-end;
-}
- */
 
 .sub-category {
     margin-right: 25px;
     margin-bottom: 5px;
 }
 
-.sub-category span {
-    font-size: 1.2em; /* 서브 카테고리 이름 크기 조정 */
+.btn-bd-primary {
+    color: white;
+    background-color: #63009e;
 }
 
-button {
-    margin-top: 5px; /* 버튼 위로 여백 추가 */
+.btn-bd-primary:hover {
+    color: white;
+    background-color: #4E007C;
+}
+.add-btn {
+    color: white;
+    background-color: #c9a9e2;
 }
 
-.add-sub-category-btn {
-    display: block; /* 버튼을 블록 요소로 설정 */
-    margin: 10px auto; /* 상하 여백 추가 및 좌우 중앙 정렬 */
+.add-btn:hover {
+    color: white;
+    background-color: #b38fc7;
+}
+
+.cancel-btn {
+    background-color: #CDCDCD;
+}
+
+.cancel-btn:hover {
+    background-color: #afafaf;
 }
 
 .form-container {
