@@ -22,12 +22,12 @@ function editCategory(tagId, categoryId) {
     inputField.value = currentText;
     inputField.id = `update-${tagId}`;
     if (inputField.id.startsWith('update-main-category')) {
-        inputField.style.width = "280px";
+        inputField.style.width = "90%";
         inputField.style.fontSize = "1.4em";
         inputField.style.borderBottom = "2px solid #000";
     }
     else {
-        inputField.style.width = "120px";
+        inputField.style.width = "90%";
         inputField.style.height = "35px";
         inputField.style.fontSize = "1.1em";
     }
