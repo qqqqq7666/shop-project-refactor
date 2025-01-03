@@ -14,14 +14,7 @@
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/member/css/mypageStyle.css">
 	<link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
-
-    <!-- 챗봇 기능 추가 -->
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
-    <script src="/chatbot/js/chatbotSetup.js" defer></script>
-	
-	
+		
 </head>
 <body>
 <main layout:fragment="content">
@@ -38,11 +31,25 @@
                 </div>
             </div>
             <div class="profile-button">
-                <a href="/mypage/edit">
+                <!--  <a href="/mypage/edit">
                     <button>회원정보 수정</button>
-                </a>
+                </a>-->
+                
+                <button id="edit-profile-btn">회원정보 수정</button>
             </div>
         </div>
+        
+        <!-- 비밀번호 입력 모달 -->
+		<div id="password-modal" class="modal">
+		    <div class="modal-content">
+		        <h3>비밀번호 확인</h3>
+		        <input type="password" id="password-input" placeholder="현재 비밀번호를 입력하세요">
+		        <div class="modal-actions">
+		            <button id="password-confirm-btn">확인</button>
+		            <button id="password-cancel-btn">취소</button>
+		        </div>
+		    </div>
+		</div>
 
         <!-- 정보 테이블 -->
         <table class="info-table">
@@ -64,6 +71,7 @@
             </tbody>
         </table>
     </div>
+    <script src="/member/js/mypageModal.js"></script>
 </main>
 </body>
 </html>
