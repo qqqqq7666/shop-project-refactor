@@ -75,21 +75,43 @@ function addCategoryToUI(category) {
         toggleForm(`sub-category-form-${category.categoryId}`);
     } else { // 메인 카테고리 추가
         const mainCategoryDiv = document.createElement('div');
-        mainCategoryDiv.classList.add('main-category');
+        mainCategoryDiv.classList.add('main-category', 'd-flex', 'mb-4');
         mainCategoryDiv.innerHTML = `
-            <div>
-                <p id="main-category-${category.categoryId}">${category.categoryName}</p>
-                <button class="update-btn" onclick="editCategory('main-category-${category.categoryId}', '${category.categoryId}')">수정</button>
+            <div class="me-5" style="width: 30%">
+                <div>
+                    <p><span id="main-category-${category.categoryId}">${category.categoryName}</span></p>
+                    <div id="btn-container-${category.categoryId}" class="d-flex justify-content-center gap-2">
+                        <button class="update-btn btn btn-bd-primary" onclick="editCategory('main-category-${category.categoryId}', '${category.categoryId}')">수정</button>
+                        <button class="add-sub-category-btn add-btn btn btn-bd-primary" onclick="toggleForm('sub-category-form-${category.categoryId}')">추가</button>
+                    </div>
+                </div>
+                <form id="sub-category-form-${category.categoryId}" class="form-container needs-validation mt-3">
+                    <input type="hidden" name="mainCategoryName" value="${category.categoryName}">
+                    <label for="sub-form-category-name-${category.categoryId}" class="form-label">서브 카테고리 추가</label><br>
+                    <input type="text" id="sub-form-category-name-${category.categoryId}" class="form-control" name="subCategoryName" placeholder="서브 카테고리 이름" required>
+                    <div class="invalid-feedback"></div>
+                    <br>
+                    <button type="submit" class="btn btn-bd-primary">저장</button>
+                    <button type="button" class="btn btn-secondary" onclick="toggleForm('sub-category-form-${category.categoryId}')">취소</button>
+                </form>
             </div>
-            <ul id="sub-category-list-${category.categoryId}"></ul>
-            <form id="sub-category-form-${category.categoryId}" class="form-container">
-                <input type="hidden" name="mainCategoryName" value="${category.categoryName}">
-                <label for="sub-form-category-name-${category.categoryId}">서브 카테고리 추가</label><br>
-                <input type="text" id="sub-form-category-name-${category.categoryId}" name="subCategoryName" placeholder="서브 카테고리 이름을 입력하세요" required><br>
-                <button type="submit">저장</button>
-                <button type="button" onclick="toggleForm('sub-category-form-${category.categoryId}')">취소</button>
-            </form>
-            <button class="add-sub-category-btn" onclick="toggleForm('sub-category-form-${category.categoryId}')">+</button>
+            <table class="table">
+                <colgroup>
+                    <col style="width: 50px;">
+                    <col style="width: 100px;">
+                    <col style="width: 50px;">
+                    <col style="width: 100px;">
+                </colgroup>
+                <thead>
+                <tr class="text-center align-middle">
+                    <th scope="col">No.</th>
+                    <th scope="col">카테고리명</th>
+                    <th scope="col">상품</th>
+                    <th scope="col">관리</th>
+                </tr>
+                </thead>
+                <tbody id="sub-category-list-${category.categoryId}"></tbody>
+            </table>
         `;
         document.getElementById('category-list').appendChild(mainCategoryDiv);
 
@@ -108,12 +130,18 @@ function addSubCategoryToUI(mainCategoryId, subCategory) {
 
     // 중복된 서브 카테고리 확인
     if (!document.getElementById(`sub-category-${subCategory.categoryId}`)) {
-        const subCategoryItem = document.createElement('li');
-        subCategoryItem.classList.add('sub-category');
+        const subCategoryItem = document.createElement('tr');
+        subCategoryItem.classList.add('sub-category', 'text-center', 'align-middle');
         subCategoryItem.innerHTML = `
-            <span id="sub-category-${subCategory.categoryId}">${subCategory.categoryName}</span>
-            <button class="update-btn" onclick="editCategory('sub-category-${subCategory.categoryId}', '${subCategory.categoryId}')">수정</button>
-            <button class="delete-btn" onclick="deleteSubCategory('${subCategory.categoryId}')">삭제</button>
+            <th scope="row">${subCategoryList.children.length + 1}</th>
+            <td>
+                <span id="sub-category-${subCategory.categoryId}">${subCategory.categoryName}</span>
+            </td>
+            <td>${subCategory.productCount}</td>
+            <td id="btn-container-${subCategory.categoryId}">
+                <button class="update-btn btn btn-bd-primary" onclick="editCategory('sub-category-${subCategory.categoryId}', '${subCategory.categoryId}')">수정</button>
+                <button class="delete-btn btn btn-secondary" onclick="deleteSubCategory('${subCategory.categoryId}')">삭제</button>
+            </td>
         `;
         subCategoryList.appendChild(subCategoryItem);
     }
@@ -150,12 +178,19 @@ function validateCategoryName(inputElement) {
     const errorContainer = inputElement.nextElementSibling; // 에러 메시지 요소
     const categoryName = inputElement.value.trim();
     const isValidCategoryName = /^[가-힣a-zA-Z/]+$/.test(categoryName); // 유효성 검사
+    const isWithinLength = categoryName.length <= 15; // 15자 제한
 
-    // 빈 값 or 유효성 검사 통과 X
-    if (!categoryName || !isValidCategoryName) {
+    // 빈 값 or 유효성 검사 통과 X or 15자 초과
+    if (!categoryName || !isValidCategoryName || !isWithinLength) {
         inputElement.classList.add('is-invalid');
         if (errorContainer) {
-            errorContainer.textContent = '카테고리 이름은 한글, 영어 대소문자, /만 가능하며 공백일 수 없습니다.';
+            if (!categoryName) {
+                errorContainer.textContent = '카테고리 이름은 공백일 수 없습니다.';
+            } else if (!isValidCategoryName) {
+                errorContainer.textContent = '카테고리 이름은 한글, 영어 대소문자, /만 가능합니다.';
+            } else if (!isWithinLength) {
+                errorContainer.textContent = '카테고리 이름은 최대 15자까지 입력 가능합니다.';
+            }
             errorContainer.style.display = 'block'; // 에러 메시지 표시
         }
         return false; // 유효성 검사 실패

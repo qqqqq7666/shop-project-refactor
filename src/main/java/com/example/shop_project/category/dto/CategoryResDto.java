@@ -16,5 +16,6 @@ public class CategoryResDto {
     private Long categoryId;
     private String categoryName;
     private int depth;
+    private int productCount;
     private List<CategoryResDto> subCategories = new ArrayList<>();
 }
