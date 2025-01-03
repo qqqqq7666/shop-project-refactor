@@ -34,14 +34,11 @@
                 </div>
             </div>
 
-            <button
-                    th:if="${inquiry.member.email == userEmail}"
-                    id="delete-button"
-                    type="button"
-                    class="btn btn-primary"
-                    style="margin-top: 10px; background-color: #CDCDCD; color: white; border: none;">
-                문의 삭제
-            </button>
+            <div class="action-buttons">
+                <button th:if="${inquiry.member.email == userEmail}" id="delete-button" type="button" class="btn btn-secondary">
+                    문의 삭제
+                </button>
+            </div>
             <script>
                 document.getElementById('delete-button').addEventListener('click', function() {
                     const productId = [[${productId}]];
@@ -88,7 +85,7 @@
                               method="post"
                               onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
                             <input type="hidden" name="_method" value="delete"/>
-                            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                            <button type="submit" class="btn btn-secondary btn-sm">삭제</button>
                         </form>
                     </div>
                 </div>
@@ -97,7 +94,9 @@
                 <div sec:authorize="hasAuthority('ROLE_ADMIN')">
                     <form th:action="@{/products/{productId}/inquiries/{inquiryId}/comment(productId=${inquiry.product.getProductId()}, inquiryId=${inquiry.id})}" method="post">
                         <textarea name="content" placeholder="댓글을 입력하세요. (최대 500자)" required maxlength="500"></textarea>
-                        <button type="submit" class="btn btn-primary">댓글 작성</button>
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary">댓글 작성</button>
+                        </div>
                     </form>
                 </div>
             </div>

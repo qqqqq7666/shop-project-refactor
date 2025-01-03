@@ -1,10 +1,15 @@
-.question-board {
+.my-inquiry-board {
     max-width: 800px;
     margin: 50px auto;
     /*padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+}
+
+.my-inquiry-board h2 {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .inquiry-container {
@@ -27,4 +32,14 @@
 .inquiry-container .info {
     font-size: 0.9rem;
     color: #555;
+}
+
+.btn-detail {
+    text-align: right;
+}
+
+.zero {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #777;
 }

@@ -42,23 +42,23 @@
 }
 
 .btn-primary {
-    background-color: #540099;
-    border-color: #540099;
+    background-color: #63009e;
+    border: none;
 }
 
 .btn-primary:hover {
-    background-color: #3e0074;
-    border-color: #3e0074;
+    background-color: #4E007C;
+    border: none;
 }
 
 .btn-danger {
-    background-color: #ccc;
-    border-color: #ccc;
+    background-color: #CDCDCD;
+    border: none;
 }
 
 .btn-danger:hover {
     background-color: #afafaf;
-    border-color: #afafaf;
+    border: none;
 }
 
 .button-group {

@@ -16,7 +16,7 @@
 <!--        <img th:src="${productImage}" alt="상품 이미지" class="product-image">-->
         <div>
             <h3 th:text="${product.productName}">상품 이름</h3>
-            <p th:text="${formattedPrice} + '₩'">상품 가격</p>
+            <p th:text="${formattedPrice} + '원'">상품 가격</p>
         </div>
     </div>
 
@@ -25,7 +25,7 @@
     </div>
 
     <div id="inquiry-list">
-        <div th:if="${#lists.isEmpty(inquiries)}">
+        <div class="zero" th:if="${#lists.isEmpty(inquiries)}">
             <p class="mb-0">작성된 문의가 없습니다.</p>
         </div>
 
