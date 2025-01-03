@@ -50,6 +50,10 @@ public class productViewController {
 
         Page<ProductResponseDto> productPage = productService.getProductList(categoryId, search, sort, page, size);
 
+        String subCategoryName = categoryId != null ? categoryService.getSubCategoryName(categoryId) : "";
+        String mainCategoryName = categoryId != null ? categoryService.getMainCategoryName(categoryId) : "전체";
+
+
         // 페이지네이션 블록 설정
         int blockSize = 5; // 페이지 블록 크기 설정
         int totalPages = productPage.getTotalPages();
@@ -66,6 +70,8 @@ public class productViewController {
         model.addAttribute("search", search);
         model.addAttribute("sort", sort);
         model.addAttribute("categoryId", categoryId);
+        model.addAttribute("subCategoryName", subCategoryName);
+        model.addAttribute("mainCategoryName", mainCategoryName);
         return "products/productList";
     }
 
@@ -74,33 +80,66 @@ public class productViewController {
         // 상품 정보 로드
         ProductResponseDto product = productService.getProductDetail(productId);
         model.addAttribute("product", product);
+        model.addAttribute("productId", productId);
 
-        // Redis에 상품 ID 저장 (TTL: 5초)
-        redisTemplate.opsForValue().set("view:" + productId, "0", Duration.ofSeconds(70));
-
-
+        // Redis에 상품 ID 저장 (TTL: 10초)
+        // 조회수가 없으면 초기값 저장
+        String key = "view:" + productId;
+        if (!Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            redisTemplate.opsForValue().set(key, "1", Duration.ofSeconds(10));
+        } else {
+            // 조회수 증가
+            redisTemplate.opsForValue().increment(key);
+        }
         return "products/productDetail";
     }
 
-    // 조회수 증가 API
     @PostMapping("/detail/{productId}/confirm-view")
     public ResponseEntity<String> confirmView(@PathVariable("productId") Long productId) {
         log.debug("### API 요청 들어오는지 확인");
-        // Redis에서 키 확인
+
+        // 유효하지 않은 productId 처리
+        if (productId == null || productId <= 0) {
+            log.error("유효하지 않은 productId: {}", productId);
+            return ResponseEntity.badRequest().body("유효하지 않은 상품 ID");
+        }
+
+        // Redis 키 확인
         String key = "view:" + productId;
-        if (redisTemplate.hasKey(key)) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            String viewCountStr = redisTemplate.opsForValue().get(key);
+            if (viewCountStr == null) {
+                log.error("Redis에서 조회수를 가져오지 못했습니다. 키: {}", key);
+                return ResponseEntity.badRequest().body("조회수 정보가 없습니다.");
+            }
+
+            int viewCount;
+            try {
+                viewCount = Integer.parseInt(viewCountStr);
+            } catch (NumberFormatException e) {
+                log.error("조회수 변환 실패. 키: {}, 값: {}", key, viewCountStr, e);
+                return ResponseEntity.badRequest().body("조회수 데이터 오류");
+            }
+
             // 조회수 증가
-            // productService.incrementViewCount(productId);
+            productService.incrementViewCount(productId, viewCount);
+            log.info("조회수 증가: productId={}, 증가량={}", productId, viewCount);
 
             // Redis 키 삭제
-            redisTemplate.delete(key);
+            if (Boolean.TRUE.equals(redisTemplate.delete(key))) {
+                log.debug("Redis 키 삭제 성공: {}", key);
+            } else {
+                log.warn("Redis 키 삭제 실패: {}", key);
+            }
 
             return ResponseEntity.ok("조회수 증가");
         }
 
+        log.warn("조회수 증가 요청, Redis 키 없음: {}", key);
         return ResponseEntity.badRequest().body("조회수 증가 X");
     }
 
+    /*
     @Transactional
     @Scheduled(fixedRate = 6000) // 1분마다 실행
     public void syncViewCountsToDB() {
@@ -136,7 +175,7 @@ public class productViewController {
             log.debug("No keys found in Redis for view counts.");
         }
     }
-
+*/
 
 
 

@@ -10,10 +10,9 @@
     <h1>상품 관리 페이지</h1>
 
     <!-- 검색 폼 -->
-    <!-- 검색 폼 -->
     <div class="search-box">
         <form th:action="@{/admin/products}" method="get" id="searchForm">
-            <input type="text" name="search" placeholder="검색어를 입력하세요" th:value="${search}">
+            <input type="text" name="search" placeholder="상품명을 입력하세요" th:value="${search}">
             <button type="submit">검색</button>
         </form>
     </div>
