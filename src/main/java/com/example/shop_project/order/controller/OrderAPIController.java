@@ -77,9 +77,9 @@ public class OrderAPIController {
     }
 
     @PostMapping("/{orderNo}/canceled-order")
-    public RedirectView cancelOrder(@PathVariable("orderNo") Long orderNo, String reason, OrderStatus orderStatus){
+    public RedirectView cancelOrder(@PathVariable("orderNo") Long orderNo, String reason){
         CanceledOrder response = orderService.createCanceledOrder(orderNo, reason);
-        orderService.updateOrderStatus(orderNo, orderStatus);
+        orderService.updateOrderStatus(orderNo, OrderStatus.REFUND_REQUIRE);
         return new RedirectView("/order/" + orderNo);
     }
 

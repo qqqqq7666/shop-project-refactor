@@ -200,7 +200,7 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, usedPointRequestDto
 
 // 결제 요청
 async function checkout() {
-    if (formChecked && confirm("주문 하시겠습니까?")) {
+    if (formChecked) {
         const orderNo = currentOrderNo;
         let pointAmount;
         if(isNaN(parseInt(document.getElementById("point-input").value)))

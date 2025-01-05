@@ -1,4 +1,4 @@
-const statusButton = document.getElementsByClassName("btn");
+
 
 // Array.from(statusButton).forEach(btn => {
 //     const orderStatus = btn.value;
