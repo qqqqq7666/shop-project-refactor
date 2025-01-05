@@ -422,3 +422,5 @@ contact.addEventListener('input', () => {
     contact.value = value;
 });
 renderProduct();
+
+localStorage.setItem("theme", "light");
