@@ -75,6 +75,7 @@ function addCategoryToUI(category) {
         toggleForm(`sub-category-form-${category.categoryId}`);
     } else { // 메인 카테고리 추가
         const mainCategoryDiv = document.createElement('div');
+        mainCategoryDiv.id = `main-category-box-${category.categoryId}`;
         mainCategoryDiv.classList.add('main-category', 'd-flex', 'mb-4');
         mainCategoryDiv.innerHTML = `
             <div class="me-5" style="width: 30%">
