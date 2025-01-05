@@ -106,7 +106,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">환불 요청</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -121,7 +121,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                            <button type="submit" class="btn btn-primary">환불 요청</button>
+                            <button type="submit" class="btn btn-dark">환불 요청</button>
                         </div>
                     </form>
                 </div>
@@ -136,7 +136,7 @@
         const email = `[[${memberEmail}]]`;
         const confirmed = confirm("구매 확정을 하면 교환 및 환불이 불가합니다.");
         let saveReason
-        if([[${detailList.size() - 1}]] === 1)
+        if([[${detailList.size()}]] === 1)
             saveReason = `[[${detailList.get(0).getProduct().getProductName()}]] 구매 확정`
         else
             saveReason = `[[${detailList.get(0).getProduct().getProductName()}]] 외 [[${detailList.size() - 1}]] 개 구매 확정`;
