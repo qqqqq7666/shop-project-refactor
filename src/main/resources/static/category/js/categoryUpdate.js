@@ -56,8 +56,8 @@ function editCategory(tagId, categoryId) {
     // 입력 필드, 에러메세지 컨테이너, 저장 삭제 버튼 추가
     parentElement.appendChild(inputField);
     parentElement.appendChild(errorContainer);
-    btnContainer.appendChild(saveButton);
     btnContainer.appendChild(cancelButton);
+    btnContainer.appendChild(saveButton);
 }
 
 // 저장 버튼 클릭 시

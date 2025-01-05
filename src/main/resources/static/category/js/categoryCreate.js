@@ -92,8 +92,8 @@ function addCategoryToUI(category) {
                     <input type="text" id="sub-form-category-name-${category.categoryId}" class="form-control" name="subCategoryName" placeholder="서브 카테고리 이름" required>
                     <div class="invalid-feedback"></div>
                     <br>
-                    <button type="submit" class="btn btn-bd-primary">저장</button>
                     <button type="button" class="btn btn-secondary" onclick="toggleForm('sub-category-form-${category.categoryId}')">취소</button>
+                    <button type="submit" class="btn btn-bd-primary">저장</button>
                 </form>
             </div>
             <table class="table">
@@ -139,7 +139,7 @@ function addSubCategoryToUI(mainCategoryId, subCategory) {
                 <span id="sub-category-${subCategory.categoryId}">${subCategory.categoryName}</span>
             </td>
             <td>${subCategory.productCount}</td>
-            <td id="btn-container-${subCategory.categoryId}">
+            <td id="btn-container-${subCategory.categoryId}" class="d-flex justify-content-center gap-2">
                 <button class="update-btn btn btn-bd-primary" onclick="editCategory('sub-category-${subCategory.categoryId}', '${subCategory.categoryId}')">수정</button>
                 <button class="delete-btn btn btn-secondary" onclick="deleteSubCategory('${subCategory.categoryId}')">삭제</button>
             </td>
