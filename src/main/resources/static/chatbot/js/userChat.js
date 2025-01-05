@@ -62,6 +62,10 @@ function startCounseling() {
     connectWebSocket();
     enableUserInput();
 	
+	if (typeof hideQuestionButtons === 'function') {
+	    hideQuestionButtons(); // 버튼 숨기기 + 콘텐츠 확장
+	}
+	
     userappendMessage("상담사 연결 성공! 메시지를 입력하세요.", 'bot');
 
     // (추가) 상태 저장
@@ -151,6 +155,10 @@ function endCounseling() {
     currentRoomId = null;
     disableUserInput();
 
+	if (typeof showQuestionButtons === 'function') {
+	    showQuestionButtons(); // 버튼 다시 표시 + 콘텐츠 복구
+	}
+	
     // WebSocket 연결 해제
     if (stompClient) {
         stompClient.disconnect(() => {

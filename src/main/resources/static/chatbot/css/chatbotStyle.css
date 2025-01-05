@@ -1,11 +1,10 @@
-/* 챗봇 아이콘 스타일 */
 #chatbot-icon {
     position: fixed;
     bottom: 20px;
     right: 20px;
     width: 60px;
     height: 60px;
-    background-color: #4b0082; /* 보라색 배경 */
+    background-color: #63009e; /* 보라색 배경 */
     border-radius: 50%; /* 원형 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -30,17 +29,17 @@
 
 /* 챗봇 위젯 */
 #chatbot-widget { 
+	display: flex;
+    flex-direction: column;
     position: fixed;
     bottom: 80px;
     right: 20px;
     width: 350px;
-    height: 500px;
+    height: 600px;
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     background-color: #fff;
-    display: flex;
-    flex-direction: column;
     z-index: 1000;
     overflow: hidden;
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
@@ -56,7 +55,7 @@
 
 /* 챗봇 헤더 */
 #chatbot-header {
-    background-color: #4b0082;
+    background-color: #63009e;
     color: #fff;
     padding: 10px;
     text-align: center;
@@ -65,35 +64,47 @@
 
 /* 질문 리스트 (상단 고정) */
 #chatbot-questions {
-    flex: 0 0 auto; /* 고정 높이 */
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     gap: 5px;
     padding: 10px;
     border-bottom: 1px solid #ccc;
     background-color: #f1f1f1;
-    overflow-y: auto;
-    max-height: 120px;
+    max-height: 120px; /* 최대 높이 설정 */
+    overflow: hidden;  /* 스크롤 제거 */
+}
+
+#chatbot-questions.hidden {
+    height: 0; /* 높이를 0으로 설정 */
+    padding: 0; /* 패딩 제거 */
+    border: none; /* 테두리 제거 */
+    opacity: 0; /* 투명도 조정 */
+    overflow: hidden;
 }
 
 /* 대화 내용 */
 #chatbot-content {
-    flex: 1; /* 남은 모든 공간 차지 */
+    flex: 1 1 auto; /* 남은 모든 공간 차지 */
     padding: 10px;
     overflow-y: auto;
     background-color: #f9f9f9;
 }
 
+#chatbot-questions.hidden + #chatbot-content {
+    flex: 1 1 100%; /* 전체 영역을 차지 */
+}
+
 /* 입력 영역 */
 #chatbot-input {
-    flex: 0 0 60px; /* 고정 높이 */
+    flex: 0 0 60px;
     display: flex;
     align-items: center;
     gap: 5px;
     padding: 10px;
     border-top: 1px solid #ccc;
     background-color: #fff;
-    box-sizing: border-box; /* 패딩 포함 */
+    box-sizing: border-box;
 }
 
 #chatbot-input input {
@@ -107,14 +118,14 @@
 #chatbot-input button {
     padding: 8px 12px;
     border: none;
-    background-color: #4b0082;
+    background-color: #63009e;
     color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
 #chatbot-input button:hover {
-    background-color: #6a0dad;
+    background-color: #4E007C;
 }
 
 /* 메시지 스타일 */

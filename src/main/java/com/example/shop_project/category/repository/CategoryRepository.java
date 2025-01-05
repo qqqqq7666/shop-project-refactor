@@ -24,4 +24,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     // 특정 메인 카테고리에 해당하는 서브 카테고리 조회
     List<Category> findByParentCategory_CategoryId(Long parentId);
+
 }

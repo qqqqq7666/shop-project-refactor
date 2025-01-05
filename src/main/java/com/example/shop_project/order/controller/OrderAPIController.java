@@ -40,7 +40,7 @@ public class OrderAPIController {
     }
 
     @GetMapping("/{orderNo}/order-detail")
-    public ResponseEntity<List<OrderDetail>> getOrderDetails(@PathVariable Long orderNo){
+    public ResponseEntity<List<OrderDetail>> getOrderDetails(@PathVariable("orderNo") Long orderNo){
         return ResponseEntity.ok(orderService.getOrderDetailList(orderNo));
     }
 
@@ -52,13 +52,13 @@ public class OrderAPIController {
     }
 
     @DeleteMapping("{orderNo}/delete")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long orderNo){
+    public ResponseEntity<Void> deleteOrder(@PathVariable("orderNo") Long orderNo){
         orderService.deleteOrder(orderNo);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{orderNo}/update-status")
-    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long orderNo, @RequestBody OrderStatus orderStatus){
+    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable("orderNo") Long orderNo, @RequestBody OrderStatus orderStatus){
         OrderResponseDto response = orderService.updateOrderStatus(orderNo, orderStatus);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
@@ -77,14 +77,14 @@ public class OrderAPIController {
     }
 
     @PostMapping("/{orderNo}/canceled-order")
-    public RedirectView cancelOrder(@PathVariable Long orderNo, String reason, OrderStatus orderStatus){
+    public RedirectView cancelOrder(@PathVariable("orderNo") Long orderNo, String reason, OrderStatus orderStatus){
         CanceledOrder response = orderService.createCanceledOrder(orderNo, reason);
         orderService.updateOrderStatus(orderNo, orderStatus);
         return new RedirectView("/order/" + orderNo);
     }
 
     @GetMapping("/product-option/{productId}")
-    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId){
+    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable("productId") Long productId){
         return ResponseEntity.ok(productService.getProductById(productId));
     }
 
@@ -103,5 +103,12 @@ public class OrderAPIController {
     @GetMapping("/product-image")
     public ResponseEntity<String> productImage(Long productId){
         return ResponseEntity.ok(productService.getProductImageUrls(productId).getFirst());
+    }
+
+    @PostMapping("/{orderNo}/payment-fail")
+    public ResponseEntity<Void> paymentFail(@PathVariable Long orderNo){
+        orderService.updateOrderStatus(orderNo, OrderStatus.FAIL);
+        log.warn("이거 호출됨");
+        return ResponseEntity.ok().build();
     }
 }

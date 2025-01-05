@@ -1,5 +1,6 @@
 package com.example.shop_project.member.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByNickname(String nickname);
     
     long countByRole(Role role);
+    
+ // withdraw가 true이면서 withdrawDate가 주어진 날짜 이전인 회원 찾기
+    List<Member> findByWithdrawTrueAndWithdrawDateBefore(LocalDateTime dateTime);
 }

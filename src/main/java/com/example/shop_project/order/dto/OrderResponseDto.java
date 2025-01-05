@@ -39,5 +39,7 @@ public class OrderResponseDto {
     private Member member;
     @NotNull
     private List<OrderDetail> orderDetailList;
+    @NotNull
+    private Boolean isPaidWithPoint;
 
 }

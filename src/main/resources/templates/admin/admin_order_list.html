@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/common/css/common-button.css">
     <style>
         /* 기본 테이블 스타일 */
         table {
@@ -21,6 +22,7 @@
 <body>
 <main layout:fragment="content">
 <div class="container mt-5 d-flex flex-column align-items-center">
+    <h2>주문 관리</h2>
     <form method="get" action="/admin/orders" class="d-flex justify-content-between my-3" style="gap: 300px;">
         <div class="d-flex align-items-center" style="gap: 10px;">
             <div style="white-space: nowrap">
@@ -69,7 +71,7 @@
             <td th:text="${order.getOrderStatus()}">@mdo</td>
             <td><form id="cancel-form" th:action="|/api/v1/admin/orders/${order.getOrderNo()}/delete|" method="post">
                 <input type="hidden" name="_method" value="delete">
-                <button type="submit" class="">주문 취소</button>
+                <button type="submit" class="btn common-cancel-button" style="height: 30px; line-height: 0">주문 취소</button>
             </form>
             </td>
         </tr>

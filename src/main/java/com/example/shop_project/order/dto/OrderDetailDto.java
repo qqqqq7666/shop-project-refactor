@@ -19,5 +19,5 @@ public class OrderDetailDto {
     @NotNull
     private String color;
     @NotNull
-    private Long quantity;
+    private Long quantity; 
 }

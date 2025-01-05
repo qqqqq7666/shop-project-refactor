@@ -169,7 +169,11 @@ public class CategoryService {
                 .map(this::toCategoryResDto)
                 .collect(Collectors.toList());
 
-        return new CategoryResDto(category.getCategoryId(), category.getCategoryName(), category.getDepth(), subCategoryDtos);
+        return new CategoryResDto(category.getCategoryId(),
+                category.getCategoryName(),
+                category.getDepth(),
+                productRepository.countByCategoryId(category.getCategoryId()),
+                subCategoryDtos);
     }
 
 
@@ -206,5 +210,22 @@ public class CategoryService {
         return subCategories.stream()
                 .map(this::toCategoryResDto)
                 .collect(Collectors.toList());
+    }
+
+    public String getSubCategoryName(Long categoryId) {
+        Category category = categoryRepository.findByCategoryId(categoryId);
+        if (category == null) {
+            throw new IllegalArgumentException("해당 카테고리를 찾을 수 없습니다: " + categoryId);
+        }
+        return category.getCategoryName();
+    }
+
+    public String getMainCategoryName(Long categoryId) {
+        Category category = categoryRepository.findByCategoryId(categoryId);
+        if (category == null) {
+            throw new IllegalArgumentException("해당 카테고리를 찾을 수 없습니다: " + categoryId);
+        }
+        Category parentCategory = category.getParentCategory();
+        return parentCategory.getCategoryName();
     }
 }

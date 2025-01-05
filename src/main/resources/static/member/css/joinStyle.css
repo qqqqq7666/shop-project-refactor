@@ -94,7 +94,7 @@ body {
     padding: 10px;
     font-size: 16px;
     color: #fff;
-    background-color: #6f42c1;
+    background-color: #63009e;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -102,7 +102,7 @@ body {
 }
 
 .btn-purple:hover {
-    background-color: #5a3599;
+    background-color: #4E007C;
 }
 
 /* 버튼 컨테이너 스타일 */

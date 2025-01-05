@@ -115,7 +115,7 @@ h1 {
     justify-content: space-between; /* 양 끝으로 정렬 */
     width: 100%; /* 부모 컨테이너 기준으로 꽉 차도록 */
     padding: 10px;
-    border-bottom: 1px solid #ddd; /* 구분선 추가 */
+    /*border-bottom: 1px solid #ddd; !* 구분선 추가 *!*/
 }
 
 .img-thumbnail {
@@ -134,4 +134,14 @@ span.price {
         flex-direction: column; /* 작은 화면에서는 세로 배치 */
         align-items: flex-start;
     }
+}
+
+.option-change-button{
+    width: 100%;
+    border: 1px solid;
+}
+
+.option-change-button:hover{
+    background-color: #e2dfe6;
+    border: 1px solid;
 }

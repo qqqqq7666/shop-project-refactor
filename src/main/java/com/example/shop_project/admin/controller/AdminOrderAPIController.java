@@ -9,6 +9,7 @@ import com.example.shop_project.order.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.URI;
 import java.util.List;
@@ -29,9 +30,9 @@ public class AdminOrderAPIController {
     }
 
     @DeleteMapping("/{orderNo}/delete")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long orderNo){
+    public RedirectView deleteOrder(@PathVariable Long orderNo){
         orderService.deleteOrder(orderNo);
-        return ResponseEntity.ok().location(URI.create("/admin/orders")).build();
+        return new RedirectView("/admin/orders");
     }
 
     @GetMapping("/{orderNo}")

@@ -127,3 +127,18 @@ body {
     margin-top : -5px
 }
 
+.selected-category #selectedCategoryText {
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+    display: block;   /* 블록 요소로 변경 (필요 시) */
+    margin-left: 0;   /* 추가로 왼쪽 여백을 설정 */
+    font-size: 1rem;  /* 글씨 크기 (원하는 대로 설정) */
+    margin-right : 600px;
+    font-family : sans-serif;
+}
+
+.selected-category {
+    display: flex;
+    justify-content: flex-start; /* 자식 요소 왼쪽 정렬 */
+    align-items: center;         /* 세로 방향 정렬 */
+}
+

@@ -36,10 +36,6 @@
   <!-- 포인트 내역 -->
   <div id="all" class="tab-contents">
     <div th:each="pointHistory : ${pointHistoryList}">
-        <div align="end" class="my-1">
-            <button th:if="${!pointHistory.getIsUsed()}" type="button" name="savedPointId" th:value="${pointHistory.getPointId()}" class="btn-close savedpoint-delete-button"></button>
-            <button th:if="${pointHistory.getIsUsed()}" type="button" name="savedPointId" th:value="${pointHistory.getPointId()}" class="btn-close usedpoint-delete-button"></button>
-        </div>
       <div class="point-item">
         <div class="point-info">
           <div class="type" th:if="${pointHistory.getIsUsed()}">결제시 사용</div>
@@ -47,8 +43,14 @@
           <div><small class="reason" th:text="${pointHistory.getReason()}"></small></div>
           <div class="date" th:text="${#temporals.format(pointHistory.getCreatedDate(), 'yyyy.MM.dd')}">2024-12-25</div>
         </div>
-        <div class="points" style="color: #bbbbbb" th:if="${pointHistory.getIsUsed()}" th:text="|-${#numbers.formatInteger(pointHistory.getAmount(), 0, 'COMMA')}P|">5,000원</div>
-        <div class="points" style="color: #6579df" th:if="${!pointHistory.getIsUsed()}" th:text="|+${#numbers.formatInteger(pointHistory.getAmount(), 0, 'COMMA')}P|">5,000원</div>
+        <div>
+          <div align="end" class="my-3">
+            <button th:if="${!pointHistory.getIsUsed()}" type="button" name="savedPointId" th:value="${pointHistory.getPointId()}" class="btn-close savedpoint-delete-button" style="width: 7px; height: 7px"></button>
+            <button th:if="${pointHistory.getIsUsed()}" type="button" name="savedPointId" th:value="${pointHistory.getPointId()}" class="btn-close usedpoint-delete-button" style="width: 7px; height: 7px"></button>
+          </div>
+          <div class="points" style="color: #bbbbbb" th:if="${pointHistory.getIsUsed()}" th:text="|-${#numbers.formatInteger(pointHistory.getAmount(), 0, 'COMMA')}P|">5,000원</div>
+          <div class="points" style="color: #6579df" th:if="${!pointHistory.getIsUsed()}" th:text="|+${#numbers.formatInteger(pointHistory.getAmount(), 0, 'COMMA')}P|">5,000원</div>
+        </div>
       </div>
     </div>
   </div>

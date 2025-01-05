@@ -8,5 +8,5 @@ document.addEventListener('DOMContentLoaded', () => {
         slides[currentSlide].classList.add('active'); // 다음 슬라이드 표시
     }
 
-    setInterval(showNextSlide, 2000); // 2초마다 슬라이드 변경
+    setInterval(showNextSlide, 5000); // 2초마다 슬라이드 변경
 });

@@ -26,7 +26,7 @@
         <hr>
         <h5 th:text="|주문 상품 ${detailList.size()}개|"></h5>
         <small th:text="${order.getOrderStatus()}"></small>
-        <select id="orderStatus" name="orderStatus">
+        <select id="orderStatus" name="orderStatus" class="form-select" style="width: 20px">
             <option value="NEW">신규 주문</option>
             <option value="PREPARING">배송 준비 중</option>
             <option value="IN_SHIPPING">배송중</option>
@@ -61,11 +61,12 @@
         <h5>결제 정보</h5>
         <div class="d-flex justify-content-between">
             <p>상품 금액</p>
-            <p th:text="|${order.getTotalPrice()}원|">총 상품 금액</p>
+            <p th:text="|${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')}원|">총 상품 금액</p>
         </div>
         <div class="d-flex justify-content-between">
-            <p>포인트 적립</p>
-            <p>n포인트</p>
+            <p>포인트 사용</p>
+            <p th:if="${point.getAmount() > 0}" th:text="|-${#numbers.formatInteger(point.getAmount(), 0, 'COMMA')}P|"></p>
+            <p th:if="${point.getAmount() <= 0}">-</p>
         </div>
         <div class="d-flex justify-content-between">
             <p>배송비</p>
@@ -75,7 +76,7 @@
         <div th:if="${payment.getPayStatus() != payment.getPayStatus().FAIL}">
         <div class="d-flex justify-content-between">
             <p style="font-size: 20px">결제 금액</p>
-            <p th:text="|${payment.getAmount()}원|">총 결제 금액</p>
+            <p th:text="|${#numbers.formatInteger(payment.getAmount(), 0, 'COMMA')}원|">총 결제 금액</p>
         </div>
         <!-- TODO 상품 상세 제대로 표시하기 -->
         <div class="d-flex justify-content-between">

@@ -85,25 +85,43 @@ customFileButton.addEventListener("click", () => {
     imageInput.click(); // 실제 파일 선택 필드 클릭
 });
 
-imageInput.addEventListener("change", () => {
-    const newFiles = Array.from(imageInput.files);
+imageInput.addEventListener("change", async function (event) {
+    const files = Array.from(imageInput.files);
+    console.log("선택된 파일 목록:", images); // 파일 데이터 출력
 
     // 현재 이미지 개수 + 새로 추가된 파일 개수 확인
-    if (images.length + newFiles.length > 5) {
+    if (images.length + files.length > 5) {
         alert("*** 이미지는 최대 5개까지 저장 가능합니다 ***");
         imageInput.value = ""; // 입력값 초기화
         return;
     }
 
-    // 새 파일을 기존 배열에 추가
-    newFiles.forEach((file) => {
-        images.push({ file, order: images.length + 1 }); // 새로운 파일 추가
-    });
+    for (const file of files) {
+        console.log("파일 처리 시작");
+        if (file.type.startsWith("image/")) {
+            try {
+                // 이미지 압축 처리
+                const compressedFile = await compressImage(file, 0.8, 800); // 압축 실행
+                images.push({ file: compressedFile, order: images.length + 1 }); // 압축된 파일 추가
+                console.log("압축된 파일 추가 완료");
+            } catch (error) {
+                console.error("이미지 압축 실패:", error);
+            }
+        } else {
+            images.push({ file, order: images.length + 1 }); // 이미지가 아닌 경우 원본 파일 추가
+            console.log("원본 파일 추가 완료");
+        }
+    }
 
-    console.log("선택된 파일 목록:", images); // 파일 데이터 출력
+    // 이미지 미리보기 렌더링
     renderImagePreviews();
-    fileCountMessage.textContent = `선택된 파일: ${images.length}개`; // 파일 개수 표시
-    imageInput.value = ""; // 같은 파일 재선택 가능하도록 초기화
+    console.log("최종 선택된 파일 목록:", images);
+
+    // 파일 개수 표시
+    fileCountMessage.textContent = `선택된 파일: ${images.length}개`;
+
+    // 입력값 초기화로 같은 파일 재선택 가능하도록 설정
+    imageInput.value = "";
 });
 
 function renderImagePreviews() {
@@ -178,34 +196,6 @@ function removeImage(index) {
     images.forEach((image, i) => (image.order = i + 1)); // order 재정렬
     renderImagePreviews();
 }
-
-imageInput.addEventListener("change", async function (event) {
-    const files = event.target.files;
-    console.log("imageInput.files : ", imageInput.files);
-    console.log("images.file : ", images.file);
-    console.log("images.files : ", images.files);
-    console.log("event.target.files :", event.target.files);
-
-    for (const file of files) {
-        console.log("for문 통과");
-        if (file.type.startsWith("image/")) {
-            try {
-                const compressedFile = await compressImage(file, 0.8, 800); // 압축 실행
-                images.push({ file: compressedFile, order: images.length + 1 }); // 압축된 파일 추가
-                console.log("압축된 파일 추가");
-            } catch (error) {
-                console.error("이미지 압축 실패:", error);
-            }
-        } else {
-            images.push({ file, order: images.length + 1 }); // 원본 파일 추가
-            console.log("원본 파일 추가");
-        }
-    }
-
-    renderImagePreviews(); // 미리보기 렌더링
-    console.log("압축된 파일 목록:", images);
-    fileCountMessage.textContent = `선택된 파일: ${images.length}개`;
-});
 
 
 function compressImage(file, quality = 0.8, maxWidth = 800) {

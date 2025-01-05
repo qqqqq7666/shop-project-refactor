@@ -13,6 +13,10 @@
 <div class="container">
   <!-- 상단 정렬과 검색 -->
   <div class="top-bar">
+    <!-- 카테고리 무엇을 선택했는지 렌더링 (기본 : 전체) -->
+    <div class="selected-category">
+      <span id="selectedCategoryText">전체</span> <!-- 선택된 카테고리를 표시할 요소 -->
+    </div>
     <div class="sort-dropdown">
       <label for="sort">정렬:</label>
       <select id="sort" name="sort">
@@ -66,6 +70,10 @@
     window.location.href = url;
   });
 </script>
+  <script th:inline="javascript">
+    const mainCategoryName = /*[[${mainCategoryName ?: '전체'}]]*/ "전체"; // 메인 카테고리
+    const subCategoryName = /*[[${subCategoryName ?: ''}]]*/ ""; // 서브 카테고리
+  </script>
 </main>
 </body>
 </html>
