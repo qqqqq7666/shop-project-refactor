@@ -27,15 +27,15 @@
 
   <!-- 페이지네이션 -->
   <div class="pagination" th:if="${totalPages > 0}">
-    <a th:if="${currentPage > 0}" th:href="@{/favorite(page=0, search=${search}, sort=${sort}, categoryId=${categoryId})}">&lt;&lt;</a>
-    <a th:if="${currentPage > 0}" th:href="@{/favorite(page=${currentPage - 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}">&lt;</a>
+    <a th:if="${currentPage > 0}" th:href="@{/favorites(page=0, search=${search}, sort=${sort}, categoryId=${categoryId})}">&lt;&lt;</a>
+    <a th:if="${currentPage > 0}" th:href="@{/favorites(page=${currentPage - 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}">&lt;</a>
     <span th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
-        <a th:href="@{/favorite(page=${pageNum - 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}"
+        <a th:href="@{/favorites(page=${pageNum - 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}"
            th:classappend="${currentPage == pageNum - 1} ? 'active' : ''"
            th:text="${pageNum}"></a>
     </span>
-    <a th:if="${currentPage < totalPages - 1}" th:href="@{/favorite(page=${currentPage + 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}">&gt;</a>
-    <a th:if="${currentPage < totalPages - 1}" th:href="@{/favorite(page=${totalPages - 1}, search=${search}, sort=${sort}, categoryId=${categoryId})}">&gt;&gt;</a>
+    <a th:if="${currentPage < totalPages - 1}" th:href="@{/favorites(page=${currentPage + 1}, search=${search}, sort=${sort})}">&gt;</a>
+    <a th:if="${currentPage < totalPages - 1}" th:href="@{/favorites(page=${totalPages - 1}, search=${search}, sort=${sort})}">&gt;&gt;</a>
   </div>
 </div>
 

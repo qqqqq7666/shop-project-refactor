@@ -27,7 +27,9 @@ public class FavoriteViewController {
 
     // 찜 목록 조회
     @GetMapping
-    public String favoriteListPage(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+    public String favoriteListPage(@RequestParam(value = "search", required = false, defaultValue = "") String search,
+                                   @RequestParam(value = "sort", required = false, defaultValue = "") String sort,
+                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                    @RequestParam(value = "size", required = false, defaultValue = "8") int size,
                                    Principal principal, Model model) {
         Long memberId = getMemberIdFromPrincipal(principal);
@@ -48,6 +50,7 @@ public class FavoriteViewController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        model.addAttribute("search", search);
 
         return "favorite/favoriteList";
     }
