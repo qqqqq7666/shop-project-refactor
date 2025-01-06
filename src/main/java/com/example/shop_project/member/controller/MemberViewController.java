@@ -1,6 +1,7 @@
 package com.example.shop_project.member.controller;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
@@ -120,6 +121,7 @@ public class MemberViewController {
         Member member = memberRepository.findByEmail(username).orElseThrow();
 
         member.setWithdraw(true);
+        member.setWithdrawDate(LocalDateTime.now());
         memberRepository.save(member);
         
         SecurityContextHolder.clearContext(); // Spring Security 인증 정보 삭제

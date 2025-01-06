@@ -12,11 +12,6 @@ window.onload = function () {
 
 // 상담사 연결 버튼
 document.getElementById('connect-admin-btn').addEventListener('click', function() {
-    // 이미 상담 중인 경우 중복 연결 방지
-    if (isCounseling) {
-        console.log("이미 상담 중입니다.");
-        return;
-    }
 
     // (기존 로직) 상담방 생성
     fetch('/api/v1/chat/connection', {
@@ -62,9 +57,9 @@ function startCounseling() {
     connectWebSocket();
     enableUserInput();
 	
-	if (typeof hideQuestionButtons === 'function') {
+	/*if (typeof hideQuestionButtons === 'function') {
 	    hideQuestionButtons(); // 버튼 숨기기 + 콘텐츠 확장
-	}
+	}*/
 	
     userappendMessage("상담사 연결 성공! 메시지를 입력하세요.", 'bot');
 
@@ -155,9 +150,9 @@ function endCounseling() {
     currentRoomId = null;
     disableUserInput();
 
-	if (typeof showQuestionButtons === 'function') {
+	/*if (typeof showQuestionButtons === 'function') {
 	    showQuestionButtons(); // 버튼 다시 표시 + 콘텐츠 복구
-	}
+	}*/
 	
     // WebSocket 연결 해제
     if (stompClient) {
