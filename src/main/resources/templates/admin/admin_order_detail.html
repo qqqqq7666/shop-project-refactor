@@ -15,14 +15,30 @@
             <h3 th:text="${#temporals.format(order.getCreatedDate(), 'yyyy.MM.dd HH:mm')}"></h3>
             <small th:text="|주문번호 ${orderNo}|"></small>
         </div>
-        <div th:if="${canceledOrder != null && order.getOrderStatus() != order.getOrderStatus().REFUND && order.getOrderStatus() != order.getOrderStatus().EXCHANGE}">
-            사유<br><span th:text="${canceledOrder.getReason()}"></span>
-            <form action="/api/v1/admin/orders/refund" onsubmit="return confirm('요청을 수락하시겠습니까?')" method="post">
-                <input type="hidden" name="_method" value="patch">
-                <input type="hidden" name="orderNo" th:value="${orderNo}">
-                <button type="submit">요청 처리</button>
-            </form>
+        <br>
+        <div th:if="${canceledOrder != null && order.getOrderStatus() != order.getOrderStatus().REFUND && order.getOrderStatus() != order.getOrderStatus().EXCHANGE}" class="card">
+            <div class="card-header">
+                환불 사유
+            </div>
+            <div class="card-body">
+                <p th:text="${canceledOrder.getReason()}" class="card-text">content</p>
+                <form action="/api/v1/admin/orders/refund" onsubmit="return confirm('요청을 수락하시겠습니까?')" method="post">
+                    <input type="hidden" name="_method" value="patch">
+                    <input type="hidden" name="orderNo" th:value="${orderNo}">
+                    <div align="end">
+                    <button class="btn btn-dark" type="submit">요청 처리</button>
+                    </div>
+                </form>
+            </div>
         </div>
+<!--        <div>-->
+<!--            사유<br><span th:text="${canceledOrder.getReason()}"></span>-->
+<!--            <form action="/api/v1/admin/orders/refund" onsubmit="return confirm('요청을 수락하시겠습니까?')" method="post">-->
+<!--                <input type="hidden" name="_method" value="patch">-->
+<!--                <input type="hidden" name="orderNo" th:value="${orderNo}">-->
+<!--                <button type="submit">요청 처리</button>-->
+<!--            </form>-->
+<!--        </div>-->
         <br>
         <div class="d-flex flex-row justify-content-between">
             <select id="orderStatus" name="orderStatus" class="form-select" style="width: 20%">

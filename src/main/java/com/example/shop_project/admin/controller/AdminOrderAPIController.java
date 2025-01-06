@@ -41,9 +41,9 @@ public class AdminOrderAPIController {
     }
 
     @PatchMapping("/refund")
-    public ResponseEntity<Void> refund(@RequestParam Long orderNo){
+    public RedirectView refund(@RequestParam Long orderNo){
         orderService.refund(orderNo);
         paymentService.cancelPay(orderNo);
-        return ResponseEntity.ok().build();
+        return new RedirectView("/admin/orders/" + orderNo);
     }
 }
