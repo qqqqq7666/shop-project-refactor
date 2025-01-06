@@ -43,7 +43,7 @@
                     <p class="card-text mb-1"
                        th:text="|(${detail.getColor()} / ${detail.getSize()}) / ${detail.getQuantity()}개|">
                         Size/Quantity</p>
-                    <p class="card-text" th:text="|${detail.getPrice()}원|">Price: <strong>price</strong></p>
+                    <p class="card-text" th:text="|${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')}원|">Price: <strong>price</strong></p>
                 </div>
                 <!-- review button -->
                 <div class="review-btn-container"
