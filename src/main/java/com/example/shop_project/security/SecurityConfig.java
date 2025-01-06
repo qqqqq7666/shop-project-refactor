@@ -55,7 +55,7 @@ public class SecurityConfig {
                                 "/signup/**",
                                 "/chatbot",
 								"/common/**",
-								"/**"
+								"/password-reset"
                         ).permitAll()
                         .requestMatchers("/mypage").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
