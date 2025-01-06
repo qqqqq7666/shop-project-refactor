@@ -131,8 +131,11 @@ function renderProduct() {
     if (total >= 50000) {
         const discount = document.getElementById("discount");
         discount.style.removeProperty("display");
-    } else
+        document.getElementById("delivery-fee").textContent = "무료"
+    } else {
+        document.getElementById("delivery-fee").textContent = "3,000원";
         total += 3000;
+    }
 
     document.getElementById("total").innerText = `${total.toLocaleString()}원`;
 }
