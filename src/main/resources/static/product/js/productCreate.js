@@ -247,12 +247,17 @@ function compressImage(file, quality = 0.8, maxWidth = 800) {
 }
 
 
-
 // 폼 제출 처리
 document.getElementById('productForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
     const formData = new FormData();
+
+    if(images.length === 0) {
+        fileCountMessage.textContent = '최소 1개의 이미지를 선택해야 합니다.';
+        fileCountMessage.style.color = 'red';
+    }
+
 
     // ProductRequestDto 생성
     const productRequestDto = {

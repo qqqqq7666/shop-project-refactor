@@ -52,32 +52,31 @@ document.getElementById('productForm').addEventListener('submit', function (even
         priceError.textContent = "";
     }
 
-    // 색상 및 재고 검증
-    const colorInputs = document.querySelectorAll('input[name="colors[]"]');
-    const stockInputs = document.querySelectorAll('input[name="stocks[]"]');
-    let hasColorError = false;
-    let hasStockError = false;
+    // 사이즈, 색상, 재고 유효성 검사
+    const sizeColorStockGroups = document.querySelectorAll('.size-color-stock-group');
+    sizeColorStockGroups.forEach((group) => {
+        const sizeSelect = group.querySelector('select[name="sizes[]"]');
+        const colorInput = group.querySelector('input[name="colors[]"]');
+        const stockInput = group.querySelector('input[name="stocks[]"]');
+        const errorMessage = group.querySelector('.error-message');
 
-    colorInputs.forEach((input, index) => {
-        const errorElement = input.parentElement.querySelector('.error-message'); // 색상 필드 아래의 에러 메시지
-        if (!input.value.trim() || input.value==="") {
-            console.log("input.value : ", input.value);
-            errorElement.textContent = "색상은 필수 입력 항목입니다.";
+        // 초기화
+        errorMessage.textContent = '';
+
+        // 사이즈 선택 확인
+        if (!sizeSelect.value) {
+            errorMessage.textContent = '사이즈를 선택하세요.';
             isValid = false;
-            hasColorError = true;
-        } else {
-            errorElement.textContent = "";
         }
-    });
-
-    stockInputs.forEach((input, index) => {
-        const errorElement = input.parentElement.querySelector('.error-message'); // 재고 필드 아래의 에러 메시지
-        if (!input.value || input.value <= 0) {
-            errorElement.textContent = "재고는 1 이상이어야 합니다.";
+        // 색상 입력 확인
+        else if (!colorInput.value.trim()) {
+            errorMessage.textContent = '색상을 입력하세요.';
             isValid = false;
-            hasStockError = true;
-        } else {
-            errorElement.textContent = "";
+        }
+        // 재고 입력 확인
+        else if (!stockInput.value || stockInput.value < 0) {
+            errorMessage.textContent = '유효한 재고를 입력하세요.';
+            isValid = false;
         }
     });
 
