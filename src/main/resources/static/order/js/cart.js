@@ -107,7 +107,7 @@ async function createCartItemTemplate(item, option, index, optionIndex, productO
         <span style="color: gray"> (${option.size} / ${option.color})</span>
         <span>${item.price.toLocaleString()}원</span>
         <button type="button" id="${index}-${optionIndex}" class="btn option-change-button option${index}" data-bs-toggle="modal" data-bs-target="#exampleModal"
-            style="width: 60%; height: 30px; line-height: 10px">
+            style="width: 100%; height: 30px; line-height: 10px">
             옵션 변경
         </button>
     </div>
