@@ -15,6 +15,7 @@
         <!--        <img th:src="${product.images}" alt="상품 이미지" class="product-image">-->
 <!--        <img th:src="${productImage}" alt="상품 이미지" class="product-image">-->
         <div>
+            <img id="productImage" th:src="@{${product.imageUrls[0]}}" alt="Product Image">
             <h3 th:text="${product.productName}">상품 이름</h3>
             <p th:text="${formattedPrice} + '원'">상품 가격</p>
         </div>

@@ -109,3 +109,9 @@
 .inquiry-list-row:last-child {
     border-bottom: none;
 }
+
+.product-info img {
+    width: 300px; /* 부모 요소의 너비에 맞춤 */
+    height: 300px; /* 부모 요소의 높이에 맞춤 */
+    object-fit: contain; /* 비율 유지, 넘치는 부분 잘라냄 */
+}
