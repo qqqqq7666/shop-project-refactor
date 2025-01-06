@@ -5,6 +5,10 @@ import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.repository.OrderDetailRepository;
+import com.example.shop_project.product.entity.Product;
+import com.example.shop_project.product.entity.ProductImage;
+import com.example.shop_project.product.repository.ProductRepository;
+import com.example.shop_project.product.repository.productImageRepository;
 import com.example.shop_project.review.dto.ReviewRequestDto;
 import com.example.shop_project.review.dto.ReviewResponseDto;
 import com.example.shop_project.review.entity.Review;
@@ -27,6 +31,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final ProductRepository productRepository;
+    private final productImageRepository productImageRepository;
 
     // 리뷰 저장
     @Transactional
@@ -56,7 +62,21 @@ public class ReviewService {
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by("date").descending());
         Page<Review> reviews = reviewRepository.findByMember(member, pageable);
-        return reviews.map(this::toReviewResponseDto);
+
+        return reviews.map(review -> {
+            ReviewResponseDto reviewResponseDto = toReviewResponseDto(review); // dto 변환
+
+            Product product = productRepository.findById(review.getProductId())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다: " + review.getProductId()));
+
+            // 상품 이미지 추가
+            ProductImage productImage = productImageRepository.findFirstByProductAndSortOrder(product, 1);
+            if (productImage != null) {
+                reviewResponseDto.setImageUrl(productImage.getImageUrl());
+            }
+
+            return reviewResponseDto;
+        });
     }
 
     // 회원별 리뷰 수 조회

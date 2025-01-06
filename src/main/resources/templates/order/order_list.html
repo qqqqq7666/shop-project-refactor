@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문 내역</title>
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/common/css/common-button.css">
 </head>
 <body>
 <main layout:fragment="content">
@@ -20,7 +21,7 @@
     <div th:if="${orderPage.isEmpty()}">
         주문이 존재하지 않습니다
     </div>
-    <div class="card mb-3 w-100" style="max-width: 720px; background-color: #f5f2f2" id="product-card"
+    <div class="card mb-3 w-100" style="max-width: 720px; background-color: #f5f2f2; padding: 15px" id="product-card"
          th:each="order : ${orderPage}">
         <div>
             <h4 class="mx-3 my-2" th:text="${#temporals.format(order.getCreatedDate(), 'yy.MM.dd')}"></h4>
@@ -47,7 +48,7 @@
                 <div class="review-btn-container"
                      th:if="${#strings.equals(order.getOrderStatus().toString(), '구매 확정')
                      && T(java.time.temporal.ChronoUnit).DAYS.between(detail.updatedDate.toLocalDate(), T(java.time.LocalDate).now()) <= 30}">
-                    <button type="button" class="review-btn btn btn-outline-dark" style="margin-left: 15px;"
+                    <button type="button" class="review-btn btn btn-outline-dark common-confirm-button" style="margin-left: 15px;"
                             th:if="${not reviewStatus.get(detail.getOrderDetailId())}"
                             th:data-order-detail-id="${detail.getOrderDetailId()}"
                             th:data-product-name="${detail.getProduct().getProductName()}"
@@ -55,9 +56,8 @@
                             th:data-product-size="${detail.getSize()}">리뷰 작성</button>
                     <span th:if="${reviewStatus.get(detail.getOrderDetailId())}" class="text-success" style="margin-left: 15px;">리뷰 작성 완료</span>
                 </div>
-                <br>
-                <br>
             </div>
+            <hr th:if="${detail != order.getOrderDetailList().getLast()}" class="my-4">
         </div>
     </div>
     <nav aria-label="Page navigation example" th:if="${!orderPage.isEmpty()}">

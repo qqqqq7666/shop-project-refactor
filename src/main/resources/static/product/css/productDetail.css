@@ -156,7 +156,7 @@ body {
 
 .option-info {
     display: grid;
-    grid-template-columns: auto 150px 100px 50px; /* 각 열의 너비 설정 */
+    grid-template-columns: 150px 150px 100px 50px; /* 각 열의 너비 설정 */
     align-items: center; /* 세로축 정렬 */
     gap: 20px; /* 열 간격 */
     padding: 10px 0;

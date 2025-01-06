@@ -24,8 +24,8 @@
             <input type="text" id="sub-category-name" name="subCategoryName" class="form-control" placeholder="서브 카테고리 이름을 입력하세요" required>
             <div class="invalid-feedback"></div>
             <br>
-            <button type="submit" class="btn btn-bd-primary">저장</button>
             <button type="button" class="btn cancel-btn" onclick="toggleForm('main-category-form')">취소</button>
+            <button type="submit" class="btn btn-bd-primary">저장</button>
         </form>
     </div>
 
@@ -49,8 +49,8 @@
                     <input type="text" th:id="|sub-form-category-name-${category.categoryId}|" class="form-control" name="subCategoryName" placeholder="서브 카테고리 이름" required>
                     <div class="invalid-feedback"></div>
                     <br>
-                    <button type="submit" class="btn btn-bd-primary">저장</button>
                     <button type="button" class="btn btn-secondary" th:onclick="|toggleForm('sub-category-form-${category.categoryId}')|">취소</button>
+                    <button type="submit" class="btn btn-bd-primary">저장</button>
                 </form>
             </div>
             <table class="table">
@@ -74,7 +74,7 @@
                         <td><span th:id="|sub-category-${subCategory.categoryId}|" th:text="${subCategory.categoryName}">서브 카테고리 이름</span></td>
                         <td th:text="${subCategory.productCount}">상품 수</td>
                         <!--서브 카테고리 수정, 삭제 버튼-->
-                        <td th:id="|btn-container-${subCategory.categoryId}|">
+                        <td th:id="|btn-container-${subCategory.categoryId}|" class="d-flex justify-content-center gap-2">
                             <button class="update-btn btn btn-bd-primary" th:onclick="|editCategory('sub-category-${subCategory.categoryId}', '${subCategory.categoryId}')|">수정</button>
                             <button class="delete-btn btn btn-secondary" th:onclick="|deleteSubCategory('${subCategory.categoryId}')|">삭제</button>
                         </td>

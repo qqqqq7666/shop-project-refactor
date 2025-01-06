@@ -56,8 +56,8 @@ function editCategory(tagId, categoryId) {
     // 입력 필드, 에러메세지 컨테이너, 저장 삭제 버튼 추가
     parentElement.appendChild(inputField);
     parentElement.appendChild(errorContainer);
-    btnContainer.appendChild(saveButton);
     btnContainer.appendChild(cancelButton);
+    btnContainer.appendChild(saveButton);
 }
 
 // 저장 버튼 클릭 시
@@ -137,7 +137,9 @@ function cancelEditCategory(tagId, categoryId) {
     // 입력 필드, 에러 컨테이너 제거
     const inputField = document.getElementById(`update-${tagId}`);
     const errorContainer = inputField.nextElementSibling; // 에러 메시지 요소
-    errorContainer.remove();
+    if (errorContainer) {
+        errorContainer.remove();
+    }
     inputField.remove();
 
     // 저장, 취소 버튼 제거

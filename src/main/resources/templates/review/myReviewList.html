@@ -17,10 +17,15 @@
             <p class="mb-0">작성한 리뷰가 없습니다.</p>
         </div>
         <div class="review" th:each="review : ${reviews}">
-            <p class="review-info d-flex align-items-center">
-                <span class="fs-4" th:text="${review.productName}"></span>
-                <span class="mx-2" th:text="|${review.color} / ${review.size}|"></span>
-            </p>
+            <div class="review-info d-flex align-items-center">
+                <div class="me-3">
+                    <img th:src="|http://localhost:8080${review.imageUrl}|" alt="Product Image" style="max-width: 100px; height: auto; border-radius: 5px;">
+                </div>
+                <div>
+                    <p class="fs-4 mb-2" th:text="${review.productName}"></p>
+                    <p class="ms-1 mb-0" th:text="|${review.color} / ${review.size}|"></p>
+                </div>
+            </div>
             <p class="review-info">
                 <span th:each="i : ${#numbers.sequence(1, review.stars)}">★</span>
                 <span class="create-date" th:text="${review.date}"></span>

@@ -111,6 +111,10 @@
             align-items: center;
             gap: 10px;
         }
+
+        .hidePoint{
+            display: none !important;
+        }
     </style>
 
 
@@ -157,8 +161,8 @@
                                 <span class="my-0" style="font-size: 14px; color: gray">3,000원</span>
                             </div>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between bg-body-tertiary" id="point-discount"
-                        style="font-size: 14px; color: gray">
+                        <li class="list-group-item d-flex justify-content-between bg-body-tertiary hidePoint" id="point-discount"
+                        style="font-size: 14px; color: gray;;">
                             <div>
                                 포인트
                             </div>
@@ -350,21 +354,21 @@
     const pointInput = document.getElementById("point-input");
     const pointDiscountAmount = document.getElementById("point-discount-amount");
     const originalTotal = parseInt(document.getElementById("total").textContent.replace(/,/g, ""));
+    const currentOrderNo = [[${recentOrderNo}]] + 1;
     pointInput.addEventListener("input", () => {
         const pointDiscount = document.getElementById("point-discount");
         if(pointInput.value === null || pointInput.value === "" || pointInput.value === "0") {
-            pointDiscount.style.display = "none !important";
-            pointInput.value = 0;
+            pointDiscount.classList.add("hidePoint");
         }
         else
-            pointDiscount.style.display = "block";
+            pointDiscount.classList.remove("hidePoint");
 
         if(pointInput.value > [[${point.getBalance()}]]){
             alert("보유 포인트보다 높은 금액을 입력할 수 없습니다.");
             pointInput.value = [[${point.getBalance()}]];
         }
 
-        pointDiscountAmount.textContent = `-${pointInput.value.toLocaleString()}원`;
+        pointDiscountAmount.textContent = `-${parseInt(pointInput.value).toLocaleString()}원`;
     });
 
     pointInput.addEventListener("focus", () => {
@@ -381,6 +385,8 @@
         const totalPay = document.getElementById("total");
         totalPay.textContent = `${(originalTotal - pointInput.value).toLocaleString()}원`
     }
+
+    // function display()
 
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {

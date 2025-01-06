@@ -4,6 +4,7 @@ import com.example.shop_project.category.dto.CategoryResDto;
 import com.example.shop_project.category.service.CategoryService;
 import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,26 +77,27 @@ public class productViewController {
     }
 
     @GetMapping("/detail/{productId}")
-    public String getProductDetail(@PathVariable("productId") Long productId, Model model, HttpSession session) {
+    public String getProductDetail(@PathVariable("productId") Long productId, Model model, HttpSession session, HttpServletRequest request) {
         // 상품 정보 로드
         ProductResponseDto product = productService.getProductDetail(productId);
         model.addAttribute("product", product);
         model.addAttribute("productId", productId);
 
-        // Redis에 상품 ID 저장 (TTL: 10초)
+        // Redis에 상품 ID 저장 (TTL: 1시간)
         // 조회수가 없으면 초기값 저장
-        String key = "view:" + productId;
-        if (!Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
-            redisTemplate.opsForValue().set(key, "1", Duration.ofSeconds(10));
-        } else {
-            // 조회수 증가
-            redisTemplate.opsForValue().increment(key);
+        String clientIp = productService.getClientIp(request);
+        String key = "view:" + productId + ":" + clientIp;
+        if (!Boolean.TRUE.equals(redisTemplate.hasKey(key))) { // 처음 조회된 ip
+            redisTemplate.opsForValue().set(key, "1", Duration.ofHours(1));
+            // 처음 조회된 ip일때만 해당 productId에 대해 totalView를 증가시킴
+            String totalViewKey = "view:total:" + productId;
+            redisTemplate.opsForValue().increment(totalViewKey);
         }
         return "products/productDetail";
     }
 
     @PostMapping("/detail/{productId}/confirm-view")
-    public ResponseEntity<String> confirmView(@PathVariable("productId") Long productId) {
+    public ResponseEntity<String> confirmView(@PathVariable("productId") Long productId, HttpServletRequest request) {
         log.debug("### API 요청 들어오는지 확인");
 
         // 유효하지 않은 productId 처리
@@ -104,39 +106,31 @@ public class productViewController {
             return ResponseEntity.badRequest().body("유효하지 않은 상품 ID");
         }
 
-        // Redis 키 확인
-        String key = "view:" + productId;
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
-            String viewCountStr = redisTemplate.opsForValue().get(key);
-            if (viewCountStr == null) {
-                log.error("Redis에서 조회수를 가져오지 못했습니다. 키: {}", key);
-                return ResponseEntity.badRequest().body("조회수 정보가 없습니다.");
-            }
+        // 총 조회수 Redis 키 확인 및 증가
+        String totalViewKey = "view:total:" + productId;
+        String totalViewCountStr = redisTemplate.opsForValue().get(totalViewKey);
 
-            int viewCount;
-            try {
-                viewCount = Integer.parseInt(viewCountStr);
-            } catch (NumberFormatException e) {
-                log.error("조회수 변환 실패. 키: {}, 값: {}", key, viewCountStr, e);
-                return ResponseEntity.badRequest().body("조회수 데이터 오류");
-            }
-
-            // 조회수 증가
-            productService.incrementViewCount(productId, viewCount);
-            log.info("조회수 증가: productId={}, 증가량={}", productId, viewCount);
-
-            // Redis 키 삭제
-            if (Boolean.TRUE.equals(redisTemplate.delete(key))) {
-                log.debug("Redis 키 삭제 성공: {}", key);
-            } else {
-                log.warn("Redis 키 삭제 실패: {}", key);
-            }
-
-            return ResponseEntity.ok("조회수 증가");
+        if (totalViewCountStr == null) {
+            log.error("총 조회수 데이터가 없습니다. productId={}", productId);
+            return ResponseEntity.badRequest().body("총 조회수 데이터가 없습니다.");
         }
 
-        log.warn("조회수 증가 요청, Redis 키 없음: {}", key);
-        return ResponseEntity.badRequest().body("조회수 증가 X");
+        int totalViewCount;
+        try {
+            totalViewCount = Integer.parseInt(totalViewCountStr);
+        } catch (NumberFormatException e) {
+            log.error("총 조회수 변환 실패. productId={}, 값: {}", productId, totalViewCountStr, e);
+            return ResponseEntity.badRequest().body("총 조회수 데이터 오류");
+        }
+
+        // 조회수 증가
+        productService.incrementViewCount(productId, totalViewCount);
+        log.info("조회수 최종 반영: productId={}, 총 조회수={}", productId, totalViewCount);
+
+        // Redis에서 조회수 초기화
+        redisTemplate.delete(totalViewKey);
+
+        return ResponseEntity.ok("조회수 최종 반영 완료");
     }
 
     /*

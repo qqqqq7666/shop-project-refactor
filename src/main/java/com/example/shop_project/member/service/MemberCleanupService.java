@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class MemberCleanupService {
 	private final MemberRepository memberRepository;
 
-    // cron: 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7 or SUN-SAT)
     @Scheduled(cron = "0 0 2 * * ?") // 매일 새벽 2시에 실행
     public void deleteOldWithdrawnMembers() {
         LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);

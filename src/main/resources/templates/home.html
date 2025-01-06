@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Eclipse</title>
 	<link rel="stylesheet" href="/mainpage/css/mainPageStyle.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
 
 
 	<section class="best-seller-container">
-	    <h2 class="best-seller-title"> 베스트 셀러 </h2>
+	    <h2 class="best-seller-title"> BEST ITEMS </h2>
 	    <div class="best-seller-list">
 	        <!-- 상품이 있을 때 -->
 	        <div th:if="${#lists.size(bestSellers) > 0}" th:each="product : ${bestSellers}" class="best-seller-card">
