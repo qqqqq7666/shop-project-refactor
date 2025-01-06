@@ -9,8 +9,8 @@ document.getElementById('productForm').addEventListener('submit', function (even
     if (!productName.value) {
         productNameError.textContent = "제품 이름은 필수 입력 항목입니다.";
         isValid = false;
-    } else if (productName.value.length > 20) {
-        productNameError.textContent = "제품 이름은 최대 20자까지 가능합니다.";
+    } else if (productName.value.length > 50) {
+        productNameError.textContent = "제품 이름은 최대 50자까지 가능합니다.";
         isValid = false;
     } else {
         productNameError.textContent = ""; // 에러 메시지 초기화
@@ -32,8 +32,8 @@ document.getElementById('productForm').addEventListener('submit', function (even
     if (!description.value) {
         descriptionError.textContent = "상세 설명은 필수 입력 항목입니다.";
         isValid = false;
-    } else if (description.value.length > 100) {
-        descriptionError.textContent = "상세 설명은 최대 100자까지 가능합니다.";
+    } else if (description.value.length > 500) {
+        descriptionError.textContent = "상세 설명은 최대 500자까지 가능합니다.";
         isValid = false;
     } else {
         descriptionError.textContent = "";

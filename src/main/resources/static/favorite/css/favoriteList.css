@@ -84,8 +84,13 @@ h1 {
 
 button {
     padding: 5px 5px;
-    background-color: black;
-    color: white;
+    background-color: rgb(161 161 161 / 28%);
+    color: #000000;
     border: none;
     cursor: pointer;
+}
+
+.remove-favorite-btn {
+    display: block;
+    margin-left: auto;
 }
