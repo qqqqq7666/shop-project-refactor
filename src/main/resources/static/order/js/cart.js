@@ -257,3 +257,6 @@ observer.observe(totalPriceText, {
     characterData: true, // 텍스트 내용 변경 감지
     subtree: true // 하위 노드까지 감지
 });
+
+if(localStorage.getItem("cart") === null || localStorage.getItem("cart") === "[]")
+    document.getElementById("product-info-container").innerText = "장바구니가 비어 있습니다."
