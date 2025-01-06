@@ -109,7 +109,11 @@ body {
 }
 
 .product-purchase {
-    margin-top: 50px;
+    margin-top: 20px;
+    display: flex; /* Flexbox 활성화 */
+    justify-content: space-between; /* 버튼 사이 간격 균등 */
+    flex-wrap: wrap; /* 버튼이 공간 부족 시 다음 줄로 이동 */
+    gap: 10px; /* 버튼 사이 간격 */
 }
 
 .product-purchase strong {
@@ -123,13 +127,15 @@ body {
 
 
 .product-purchase button {
-    margin-top: 30px;
-    padding: 10px 20px;
+    flex: 1; /* 버튼이 부모 크기에 맞춰 고르게 나눠짐 */
+    min-width: 100px; /* 버튼 최소 너비 설정 */
+    padding: 1px; /* 안쪽 여백 */
     background-color: black;
     color: white;
     border: none;
     cursor: pointer;
-    margin-right: 10px;
+    text-align: center;
+    box-sizing: border-box; /* 패딩 포함 너비 계산 */
 }
 
 
@@ -251,4 +257,38 @@ body {
     border-radius: var(--bs-border-radius);
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     margin-left : 37px
+}
+
+.d-flex input {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.d-flex button {
+    padding: 5px;
+    margin: 0 5px;
+    cursor: pointer;
+    border : none;
+    background-color: white;
+}
+
+.product-review {
+    margin-top: 15px;
+    display: flex; /* Flexbox 활성화 */
+    justify-content: space-between; /* 버튼 사이 간격 균등 */
+    flex-wrap: wrap; /* 버튼이 공간 부족 시 다음 줄로 이동 */
+    gap: 10px; /* 버튼 사이 간격 */
+}
+
+.product-review button {
+    flex: 1; /* 버튼이 부모 크기에 맞춰 고르게 나눠짐 */
+    min-width: 100px; /* 버튼 최소 너비 설정 */
+    padding: 1px; /* 안쪽 여백 */
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    box-sizing: border-box; /* 패딩 포함 너비 계산 */
 }

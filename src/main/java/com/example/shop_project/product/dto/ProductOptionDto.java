@@ -14,6 +14,7 @@ public class ProductOptionDto {
     @NotNull(message = "사이즈는 선택 필수 항목입니다.")
     private Size size;
 
+    @NotNull(message = "색상은 선택 필수 항목입니다.")
     private String color;
 
     @Min(value = 1, message = "재고는 1 이상이어야 합니다.")

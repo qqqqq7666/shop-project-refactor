@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>상품 관리 페이지</title>
     <link rel="stylesheet" href="/product/css/productManage.css">
 </head>
 <body>
+<main layout:fragment="content">
 <div class="container">
     <h1>상품 관리 페이지</h1>
 
@@ -79,5 +80,6 @@
 
 </div>
 <script src="/product/js/productManage.js"></script>
+</main>
 </body>
 </html>

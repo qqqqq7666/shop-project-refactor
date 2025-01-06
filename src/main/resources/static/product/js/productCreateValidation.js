@@ -60,7 +60,8 @@ document.getElementById('productForm').addEventListener('submit', function (even
 
     colorInputs.forEach((input, index) => {
         const errorElement = input.parentElement.querySelector('.error-message'); // 색상 필드 아래의 에러 메시지
-        if (!input.value) {
+        if (!input.value.trim() || input.value==="") {
+            console.log("input.value : ", input.value);
             errorElement.textContent = "색상은 필수 입력 항목입니다.";
             isValid = false;
             hasColorError = true;

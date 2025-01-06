@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Product Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/order/css/cart.css">
+    <link rel="stylesheet" href="/common/css/common-button.css">
+    <link href="/common/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
     <link rel="stylesheet" href="/product/css/productDetail.css">
 </head>
@@ -81,7 +85,7 @@
                 <button id="add-product-btn"
                         th:onclick="addItem([[${product.getProductId()}]], [[${product.getProductName()}]], [[${product.getPrice()}]], 1); alert('장바구니에 상품이 담겼습니다.');"
                 >Add to cart</button>
-                <button id="favoriteButton" th:onclick="toggleFavorite([[${product.productId}]]);">찜하기</button>
+                <button id="favoriteButton" th:onclick="toggleFavorite([[${product.productId}]]);"><i class="bi bi-heart"></i></button>
                 <script>
                     function toggleFavorite(productId) {
                         fetch(`/api/favorites/${productId}`, {
@@ -97,10 +101,10 @@
                             });
                     }
                 </script>
-                <div class="d-flex justify-content-around">
-                    <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/reviews'|">상품 리뷰 목록</button>
-                    <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/inquiries'|">상품 문의 목록</button>
-                </div>
+            </div>
+            <div class="product-review">
+                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/reviews'|">Review</button>
+                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/inquiries'|">Q&A</button>
             </div>
         </div>
     </div>

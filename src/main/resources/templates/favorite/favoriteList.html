@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}" lang="en">
 <head>
   <title>찜한 상품 목록</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="/favorite/css/favoriteList.css">
 </head>
 <body>
-
+<main layout:fragment="content">
 <div class="container">
   <h1>찜한 상품 목록</h1>
   <!-- 제품 목록 -->
@@ -41,5 +41,6 @@
 
 
 <script src="/favorite/js/favoriteList.js"></script>
+</main>
 </body>
 </html>

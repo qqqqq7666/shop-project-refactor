@@ -19,6 +19,7 @@ public class ProductOption {
     @Enumerated(EnumType.STRING) // Enum 값을 문자열로 저장
     private Size size;
 
+    @Column(nullable = false)
     private String color;
 
     @Column(nullable = false)
