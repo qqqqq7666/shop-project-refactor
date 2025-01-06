@@ -38,7 +38,7 @@
                     <p class="card-text text-muted"
                        style="position: absolute; top: 0; right: 0; margin: 10px; font-size: 0.9em;">
                         <button class="btn btn-dark"
-                        th:href="|order/${order.getOrderNo()}|">주문 상세</button></p>
+                                th:onclick="|location.href='@{/order/{orderNo}(orderNo=${order.getOrderNo()})}'|">주문 상세</button></p>
                     <h5 class="card-title" th:text="${detail.getProduct().getProductName()}">Product Name</h5>
                     <p class="card-text mb-1"
                        th:text="|(${detail.getColor()} / ${detail.getSize()}) / ${detail.getQuantity()}개|">
