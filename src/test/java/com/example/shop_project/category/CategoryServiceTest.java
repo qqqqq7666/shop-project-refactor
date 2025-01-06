@@ -96,7 +96,7 @@ public class CategoryServiceTest {
     void createSubCategory() {
         // given
         CategoryCreateReqDto reqDto = new CategoryCreateReqDto("MainCategory", "NewSubCategory", false);
-        Mockito.when(categoryRepository.findByCategoryName("MainCategory")).thenReturn(mainCategory);
+        Mockito.when(categoryRepository.findByCategoryNameAndDepth("MainCategory", 0)).thenReturn(mainCategory);
 
         // when
         CategoryResDto result = categoryService.createSubCategory(reqDto);
