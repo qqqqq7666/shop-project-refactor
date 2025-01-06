@@ -10,19 +10,21 @@
     <!-- TODO 배송지 유효성 검사 -->
     <div class="container" style="padding: 20px; width: 35%;">
         <h4 class="mb-3">배송지</h4>
-        <div id="checkout-form">
+        <div>
 
-            <div id="post-form-view">
-                <form id="post-form" class="row g-3" novalidate>
+            <div id="post-form-view" class="">
+                <form id="delivery-form" class="row g-3 needs-validation was-validated" novalidate>
                     <div>
                         <div class="gy-3">
-                            <input type="text" name="addressee" class="form-control" placeholder="수령인"
+                            <input type="text" name="addressee" class="form-control was-validated" placeholder="수령인"
                                    required pattern=^[가-힣a-zA-Z]+$>
+                            <div class="invalid-feedback">이름은 문자로만 구성되어야 합니다.</div>
                         </div>
                         <br>
                         <div class="gy-3">
-                            <input type="text" name="contact" class="form-control" placeholder="연락처"
-                                   required minlength="11">
+                            <input type="text" id="contact" name="contact" class="form-control" placeholder="연락처"
+                                   required pattern=".{13}">
+                            <div class="invalid-feedback">연락처는 필수 입력 사항입니다.</div>
                         </div>
                         <br>
                         <div class="md-5 d-flex justify-content-between" style="width: 40%">
@@ -176,9 +178,18 @@
             event.preventDefault();
         });
 
+        document.getElementById("contact").addEventListener('input', () => {
+            let value = contact.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+            if (value.length > 3 && value.length <= 7)
+                value = value.slice(0, 3) + '-' + value.slice(3);
+            else if (value.length > 7)
+                value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+
+            contact.value = value;
+        });
+
         (() => {
             'use strict'
-
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
             const saveButton = document.getElementById("save-button");
 
@@ -190,12 +201,9 @@
                         event.preventDefault()
                         event.stopPropagation()
                     }
-                    formChecked &&= form.checkValidity();
-                    console.log("form.checkValidity() = " + form.checkValidity());
 
                     form.classList.add('was-validated');
                 })
-                console.log("formChecked = " + formChecked);
             }, false)
 
         })();
