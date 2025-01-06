@@ -218,10 +218,10 @@ function changeProgressbar() {
 
 function deliveryFree() {
     if (parseInt(document.getElementById("total-price").textContent.replace(/,/g, '')) >= 50000) {
-        document.getElementById("delivery-fee-div").classList.add("strike-through");
+        document.getElementById("delivery-fee-div").classList.add("hidden");
         document.getElementById("delivery-free").textContent = "배송비 무료";
     } else {
-        document.getElementById("delivery-fee-div").classList.remove("strike-through");
+        document.getElementById("delivery-fee-div").classList.remove("hidden");
         document.getElementById("delivery-free").textContent = "";
     }
 }

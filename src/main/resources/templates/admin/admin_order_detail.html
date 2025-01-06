@@ -11,10 +11,29 @@
 <div class="container mt-5">
     <div class="content-container">
         <h2 class="text-center mb-4">주문 상세내역</h2>
-
         <div>
             <h3 th:text="${#temporals.format(order.getCreatedDate(), 'yyyy.MM.dd HH:mm')}"></h3>
             <small th:text="|주문번호 ${orderNo}|"></small>
+        </div>
+        <div th:if="${canceledOrder != null && order.getOrderStatus() != order.getOrderStatus().REFUND && order.getOrderStatus() != order.getOrderStatus().EXCHANGE}">
+            사유<br><span th:text="${canceledOrder.getReason()}"></span>
+            <form action="/api/v1/admin/orders/refund" onsubmit="return confirm('요청을 수락하시겠습니까?')" method="post">
+                <input type="hidden" name="_method" value="patch">
+                <input type="hidden" name="orderNo" th:value="${orderNo}">
+                <button type="submit">요청 처리</button>
+            </form>
+        </div>
+        <br>
+        <div class="d-flex flex-row justify-content-between">
+            <select id="orderStatus" name="orderStatus" class="form-select" style="width: 20%">
+                <option value="NEW">신규 주문</option>
+                <option value="PREPARING">배송 준비 중</option>
+                <option value="IN_SHIPPING">배송중</option>
+                <option value="ARRIVE">배송 완료</option>
+                <option value="CANCEL">취소 요청</option>
+                <option value="FAIL">결제 실패</option>
+            </select>
+            <button id="orderStatus-btn" class="btn btn-dark" style="width: 20%">주문 상태 수정</button>
         </div>
         <hr>
         <div>
@@ -24,35 +43,22 @@
             <small th:text="|요청사항: ${order.getRequirement()}|"></small>
         </div>
         <hr>
-        <h5 th:text="|주문 상품 ${detailList.size()}개|"></h5>
-        <small th:text="${order.getOrderStatus()}"></small>
-        <select id="orderStatus" name="orderStatus" class="form-select" style="width: 20px">
-            <option value="NEW">신규 주문</option>
-            <option value="PREPARING">배송 준비 중</option>
-            <option value="IN_SHIPPING">배송중</option>
-            <option value="ARRIVE">배송 완료</option>
-            <option value="CANCEL">취소 요청</option>
-            <option value="FAIL">결제 실패</option>
-        </select>
-        <button id="orderStatus-btn">주문 상태 수정</button>
+        <div class="d-flex flex-row align-items-center"><h5 th:text="|주문 상품 ${detailList.size()}개|"></h5>&nbsp
+            <span class="badge bg-secondary" th:text="${order.getOrderStatus()}"></span>
+        </div>
         <div>
-            <div th:if="${canceledOrder != null && order.getOrderStatus() != order.getOrderStatus().REFUND && order.getOrderStatus() != order.getOrderStatus().EXCHANGE}">
-                사유<br><span th:text="${canceledOrder.getReason()}"></span>
-                <form action="/api/v1/admin/orders/refund" onsubmit="return confirm('요청을 수락하시겠습니까?')" method="post">
-                    <input type="hidden" name="_method" value="patch">
-                    <input type="hidden" name="orderNo" th:value="${orderNo}">
-                    <button type="submit">요청 처리</button>
-                </form>
-            </div>
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-sm-start" th:each="detail : ${detailList}">
-                    <div>
-                        <img th:src="|http://localhost:8080${detail.getProduct().getImages().getFirst().getImageUrl()}|" class="img-fluid rounded-start" alt="Product Image" width="100px">
+                    <div class="me-3">
+                        <img th:src="|http://localhost:8080${detail.getProduct().getImages().getFirst().getImageUrl()}|"
+                             class="img-fluid img-thumbnail" alt="Product Image" width="100px">
                     </div>
                     <div class="flex-column">
                         <span th:text="${detail.getProduct().getProductName()}">Product Name (M / 2 pcs)</span><br>
-                        <span th:text="|Option:size / ${detail.getQuantity()}개|">옵션 / 개수</span><br>
-                        <span th:text="|${detail.getPrice()}원|">가격</span><br>
+                        <div>
+                            <span th:text="|(${detail.getColor()} / ${detail.getSize()}) / ${detail.getQuantity()}개|">옵션 / 개수</span><br>
+                        </div>
+                        <span th:text="|${#numbers.formatInteger(detail.getPrice() * detail.getQuantity(), 0, 'COMMA')}원|">가격</span><br>
                     </div>
                 </li>
             </ul>
@@ -65,24 +71,25 @@
         </div>
         <div class="d-flex justify-content-between">
             <p>포인트 사용</p>
-            <p th:if="${point.getAmount() > 0}" th:text="|-${#numbers.formatInteger(point.getAmount(), 0, 'COMMA')}P|"></p>
+            <p th:if="${point.getAmount() > 0}"
+               th:text="|-${#numbers.formatInteger(point.getAmount(), 0, 'COMMA')}P|"></p>
             <p th:if="${point.getAmount() <= 0}">-</p>
         </div>
         <div class="d-flex justify-content-between">
             <p>배송비</p>
             <p th:if="${order.getTotalPrice() >= 50000}">무료</p>
-            <p th:if="${order.getTotalPrice() < 50000}">3000원</p>
+            <p th:if="${order.getTotalPrice() < 50000}">3,000원</p>
         </div>
         <div th:if="${payment.getPayStatus() != payment.getPayStatus().FAIL}">
-        <div class="d-flex justify-content-between">
-            <p style="font-size: 20px">결제 금액</p>
-            <p th:text="|${#numbers.formatInteger(payment.getAmount(), 0, 'COMMA')}원|">총 결제 금액</p>
-        </div>
-        <!-- TODO 상품 상세 제대로 표시하기 -->
-        <div class="d-flex justify-content-between">
-            <p>결제 수단</p>
-            <p th:text="${payment.getPayMethod()}">결제 수단</p>
-        </div>
+            <div class="d-flex justify-content-between">
+                <p style="font-size: 20px">결제 금액</p>
+                <p th:text="|${#numbers.formatInteger(payment.getAmount(), 0, 'COMMA')}원|">총 결제 금액</p>
+            </div>
+            <!-- TODO 상품 상세 제대로 표시하기 -->
+            <div class="d-flex justify-content-between">
+                <p>결제 수단</p>
+                <p th:text="${payment.getPayMethod()}">결제 수단</p>
+            </div>
             <div th:if="${payment.getPayStatus() == payment.getPayStatus().CANCEL}" align="center">
                 <h3>결제 취소</h3>
             </div>
@@ -93,7 +100,7 @@
 <script src="/common/js/bootstrap.bundle.min.js"></script>
 <script>
     document.getElementById("orderStatus-btn").addEventListener("click", () => {
-         const orderStatus = document.querySelector("select[name = 'orderStatus']").value;
+        const orderStatus = document.querySelector("select[name = 'orderStatus']").value;
         fetch(`/api/v1/orders/${window.location.pathname.split("/").pop()}/update-status`, {
             method: "PATCH",
             headers: {
