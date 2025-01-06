@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문 내역</title>
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/common/css/common-button.css">
 </head>
 <body>
 <main layout:fragment="content">
@@ -47,7 +48,7 @@
                 <div class="review-btn-container"
                      th:if="${#strings.equals(order.getOrderStatus().toString(), '구매 확정')
                      && T(java.time.temporal.ChronoUnit).DAYS.between(detail.updatedDate.toLocalDate(), T(java.time.LocalDate).now()) <= 30}">
-                    <button type="button" class="review-btn btn btn-outline-dark" style="margin-left: 15px;"
+                    <button type="button" class="review-btn btn btn-outline-dark common-confirm-button" style="margin-left: 15px;"
                             th:if="${not reviewStatus.get(detail.getOrderDetailId())}"
                             th:data-order-detail-id="${detail.getOrderDetailId()}"
                             th:data-product-name="${detail.getProduct().getProductName()}"
