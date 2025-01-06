@@ -10,10 +10,9 @@ import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByDepth(int depth);
-    Category findByCategoryName(String categoryName);
+    Category findByCategoryNameAndDepth(String categoryName, int depth);
     Category findByCategoryId(Long categoryId);
     boolean existsByCategoryName(String categoryName);
-
 
     @Query("SELECT c FROM Category c LEFT JOIN FETCH c.parentCategory WHERE c.categoryId = :categoryId")
     Optional<Category> findByCategoryIdWithParent(@Param("categoryId") Long categoryId);

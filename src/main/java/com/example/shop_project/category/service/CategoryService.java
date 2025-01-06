@@ -66,7 +66,7 @@ public class CategoryService {
     public CategoryResDto createSubCategory(CategoryCreateReqDto categoryCreateReqDto) {
         log.debug("카테고리 추가(service) - 메인 카테고리 추가 메서드 실행: {}", categoryCreateReqDto.isCreatingMainCategory());
 
-        Category mainCategory = categoryRepository.findByCategoryName(categoryCreateReqDto.getMainCategoryName());
+        Category mainCategory = categoryRepository.findByCategoryNameAndDepth(categoryCreateReqDto.getMainCategoryName(), 0);
 
         // 서브 카테고리 중복 검사
         List<Category> subCategories = mainCategory.getSubCategories();
