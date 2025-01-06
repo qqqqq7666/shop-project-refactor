@@ -80,3 +80,7 @@
 .inquiry-right .btn-sm {
     font-size: 0.95rem;
 }
+
+.inquiry-list-row:last-child {
+    border-bottom: none;
+}
