@@ -6,7 +6,7 @@ function joinRoom(roomId) {
     // 상담사 할당
     fetch('/api/v1/chat/admin/assign?roomId=' + roomId + '&adminId=' + adminId)
     .then(() => {
-        alert("해당 방 승인 완료 (IN_PROGRESS)");
+        alert("승인 완료 (IN_PROGRESS)");
         selectedRoomId = roomId;
         document.getElementById('room-id-span').innerText = roomId;
         document.getElementById('chat-section').style.display = 'block';
@@ -119,11 +119,13 @@ function appendMessage(content, sender) {
 
 	if (sender === adminId) {
 	    messageDiv.classList.add('bot'); // 어드민 메시지 (왼쪽)
+		messageDiv.textContent = "상담사: ";
 	} else {
 	    messageDiv.classList.add('user'); // 사용자 메시지 (오른쪽)
+		messageDiv.textContent = "고객: ";
 	}
-
-	messageDiv.textContent = content;
+	
+	messageDiv.textContent += content;
 	container.appendChild(messageDiv);
 	container.scrollTop = container.scrollHeight;
 }
