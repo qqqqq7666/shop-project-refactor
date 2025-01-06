@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <title>관리자 페이지</title>
     <style>
         /* 임시로 간단한 스타일 */
+        h2 {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
         .container {
             width: 80%;
             margin: auto;
@@ -55,13 +60,14 @@
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 </head>
 <body>
+<main layout:fragment="content">
     <div class="container">
         <h2>관리자 페이지</h2>
-        <nav>
+        <nav class="d-flex justify-content-center gap-5">
             <a th:href="@{/admin/orders}">주문 관리</a>
             <a th:href="@{/admin/members}">회원 관리</a>
-            <a th:href="@{/admin/categories}">카테고리 수정</a>
-            <a th:href="@{/admin/products}">상품 등록</a>
+            <a th:href="@{/admin/categories}">카테고리 관리</a>
+            <a th:href="@{/admin/products}">상품 관리</a>
             <a th:href="@{/admin/point}">포인트 관리</a>
         </nav>
         
@@ -88,6 +94,7 @@
 		    <button onclick="sendAdminMsg()">전송</button>
 		</div>
     </div>
-<script src="/admin/js/adminChat.js"></script>
+    <script src="/admin/js/adminChat.js"></script>
+</main>
 </body>
 </html>
