@@ -7,6 +7,7 @@ import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.entity.*;
 import com.example.shop_project.product.repository.ProductOptionRepository;
 import com.example.shop_project.product.repository.ProductRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.bridge.MessageUtil;
@@ -376,5 +377,21 @@ public class ProductService {
         return productOptions.stream()
                 .map(option -> new ProductOptionDto(option.getSize(), option.getColor(), option.getStockQuantity()))
                 .collect(Collectors.toList());
+    }
+
+    // 클라이언트 IP 가져오기
+    @Transactional
+    public String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 }
