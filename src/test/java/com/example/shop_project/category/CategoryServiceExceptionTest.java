@@ -73,7 +73,7 @@ public class CategoryServiceExceptionTest {
     void createSubCategory_duplicateName() {
         CategoryCreateReqDto reqDto = new CategoryCreateReqDto("MainCategory", "SubCategory", false);
 
-        Mockito.when(categoryRepository.findByCategoryName(reqDto.getMainCategoryName())).thenReturn(mainCategory);
+        Mockito.when(categoryRepository.findByCategoryNameAndDepth(reqDto.getMainCategoryName(), 0)).thenReturn(mainCategory);
 
         assertThrows(CategoryCustomException.class, () -> categoryService.createSubCategory(reqDto));
     }
