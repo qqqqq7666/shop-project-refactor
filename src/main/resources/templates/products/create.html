@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}" lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +8,12 @@
   <link rel="stylesheet" href="/product/css/productCreate.css">
 </head>
 <body>
-
+<main layout:fragment="content">
 <form id="productForm">
-  <h2>제품을 판매해 보세요</h2>
+  <h2>상품을 판매해 보세요</h2>
   <div class="mb-3">
-    <label class="form-label" for="productName">*제품 이름</label>
-    <input type="text" id="productName" name="productName" placeholder="제품 이름을 입력하세요" class="form-control">
+    <label class="form-label" for="productName">*상품 이름</label>
+    <input type="text" id="productName" name="productName" placeholder="상품 이름을 입력하세요" class="form-control">
     <span class="error-message" id="productNameError"></span>
   </div>
 
@@ -46,10 +46,10 @@
       <input class="form-control" type="text" name="colors[]" placeholder="색상 입력">
       <input class="form-control" type="number" name="stocks[]" placeholder="재고 입력" min="0">
       <button type="button" class="remove-size-color-stock">삭제</button>
-      <span class="error-message" id="sizeAndStockError"></span>
+      <span class="error-message"></span>
     </div>
   </div>
-  <button type="button" id="addSizeColorStock">+ 색상 및 재고 추가</button>
+  <button type="button" id="addSizeColorStock">색상 및 재고 추가</button>
 
   <div class="mb-3">
     <label class="form-label" for="price">*가격</label>
@@ -83,6 +83,6 @@
 </form>
 <script src="/product/js/productCreate.js"></script>
 <script src="/product/js/productCreateValidation.js"></script>
-
+</main>
 </body>
 </html>

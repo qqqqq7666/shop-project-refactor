@@ -183,11 +183,13 @@ function renderSelectedOptions() {
         optionElement.classList.add("selected-option");
         optionElement.innerHTML = `
             <div class="option-info">
-                <span>${option.name} (${option.size} - ${option.color})</span>
-                <div class="quantity-controls">
-                    <button onclick="changeQuantity(${index}, -1)">-</button>
-                    <span>${option.quantity}</span>
-                    <button onclick="changeQuantity(${index}, 1)">+</button>
+                <span>${option.name}<br> (${option.size} - ${option.color})</span>
+                <div class="d-flex"> <br>
+                    <button class="round-button" onclick="changeQuantity(${index}, -1)">-</button>
+                    &nbsp&nbsp
+                    <input type="text" value="${option.quantity}" readonly />
+                    &nbsp&nbsp
+                    <button class="round-button" onclick="changeQuantity(${index}, 1)">+</button>
                 </div>
                 <span class="option-price">₩${(option.quantity * option.price).toLocaleString()}</span>
                 <button class="delete-button" onclick="removeOption(${index})">x</button>
