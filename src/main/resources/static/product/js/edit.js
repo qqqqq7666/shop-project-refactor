@@ -37,15 +37,15 @@ document.getElementById('addSizeColorStock').addEventListener('click', function 
     const div = document.createElement('div');
     div.classList.add('size-color-stock-group');
     div.innerHTML = `
-    <select name="sizes[]" required>
+    <select class="form-control" name="sizes[]" required>
       <option value="">사이즈 선택</option>
       <option value="S">S</option>
       <option value="M">M</option>
       <option value="L">L</option>
       <option value="XL">XL</option>
     </select>
-    <input type="text" name="colors[]" placeholder="색상 입력" required>
-    <input type="number" name="stocks[]" placeholder="재고 입력" min="0" required>
+    <input class="form-control" type="text" name="colors[]" placeholder="색상 입력" required>
+    <input class="form-control" type="number" name="stocks[]" placeholder="재고 입력" min="0" required>
     <button type="button" class="remove-size-color-stock">삭제</button>
   `;
 

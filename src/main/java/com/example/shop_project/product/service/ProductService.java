@@ -161,6 +161,9 @@ public class ProductService {
             if (option.getSize() == null) {
                 throw new InvalidProductException("사이즈는 선택 필수 항목입니다.");
             }
+            if (option.getColor() == null || option.getColor().isBlank()) {
+                throw new InvalidProductException("색상은 선택 필수 항목입니다.");
+            }
             if (option.getStockQuantity() < 1) {
                 throw new InvalidProductException("재고는 1 이상이어야 합니다.");
             }

@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>상품 수정</title>
     <link rel="stylesheet" href="/product/css/productCreate.css">
 </head>
 <body>
-<h1>상품 수정 페이지</h1>
+<main layout:fragment="content">
+<h2>상품 수정 페이지</h2>
 <form id="productUpdateForm" enctype="multipart/form-data">
     <input type="hidden" id="productId" th:value="${product.productId}" />
 
-    <div>
-        <label for="productName">*제품 이름</label>
-        <input type="text" id="productName" name="productName" th:value="${product.productName}" required>
+    <div class="mb-3">
+        <label class="form-label" for="productName">*상품 이름</label>
+        <input class="form-control" type="text" id="productName" name="productName" th:value="${product.productName}" required>
     </div>
 
-    <div>
-        <label for="mainCategory">메인 카테고리</label>
-        <select id="mainCategory" name="mainCategory" required>
+    <div class="mb-3">
+        <label class="form-label" for="mainCategory">메인 카테고리</label>
+        <select class="form-control" id="mainCategory" name="mainCategory" required>
             <option value="">메인 카테고리를 선택하세요</option>
             <option th:each="mainCategory : ${mainCategories}"
                     th:value="${mainCategory.categoryId}"
@@ -26,9 +27,9 @@
             </option>
         </select>
     </div>
-    <div>
-        <label for="subCategory">서브 카테고리</label>
-        <select id="subCategory" name="subCategory" required>
+    <div class="mb-3">
+        <label class="form-label" for="subCategory">서브 카테고리</label>
+        <select class="form-control" id="subCategory" name="subCategory" required>
             <option value="">서브 카테고리를 선택하세요</option>
             <option th:each="subCategory : ${selectedMainCategory.subCategories}"
                     th:value="${subCategory.categoryId}"
@@ -41,13 +42,13 @@
 
 
 
-    <div id="sizeColorStockContainer">
-        <label>*사이즈별 색상 및 재고</label>
+    <div  id="sizeColorStockContainer">
+        <label class="form-label">*사이즈별 색상 및 재고</label>
 
         <!-- 기존 데이터 불러오기 -->
         <div class="size-color-stock-group" th:each="option, stat : ${product.options}">
             <!-- 사이즈 선택 필드 -->
-            <select name="sizes[]" title="사이즈를 선택하세요">
+            <select class="form-control" name="sizes[]" title="사이즈를 선택하세요">
                 <option value="">사이즈 선택</option>
                 <option value="S" th:selected="${option.size.name() == 'S'}">S</option>
                 <option value="M" th:selected="${option.size.name() == 'M'}">M</option>
@@ -56,11 +57,11 @@
             </select>
 
             <!-- 색상 입력 필드 -->
-            <input type="text" name="colors[]" placeholder="색상 입력"
+            <input class="form-control" type="text" name="colors[]" placeholder="색상 입력"
                    th:value="${option.color}">
 
             <!-- 재고 입력 필드 -->
-            <input type="number" name="stocks[]" placeholder="재고 입력" min="0"
+            <input class="form-control" type="number" name="stocks[]" placeholder="재고 입력" min="0"
                    th:value="${option.stockQuantity}">
 
             <!-- 삭제 버튼 -->
@@ -74,14 +75,14 @@
     <button type="button" id="addSizeColorStock">+ 색상 및 재고 추가</button>
 
 
-    <div>
-        <label for="price">*가격</label>
-        <input type="number" id="price" name="price" th:value="${product.price}" required>
+    <div class="mb-3">
+        <label class="form-label" for="price">*가격</label>
+        <input class="form-control" type="number" id="price" name="price" th:value="${product.price}" required>
     </div>
 
-    <div>
-        <label for="description">*상세 설명</label>
-        <textarea id="description" name="description" rows="5" th:text="${product.description}" required></textarea>
+    <div class="mb-3">
+        <label class="form-label" for="description">*상세 설명</label>
+        <textarea class="form-control" id="description" name="description" rows="5" th:text="${product.description}" required></textarea>
     </div>
 
 
@@ -110,5 +111,6 @@
 
 <script src="/product/js/productCreateValidation.js"></script>
 <script src="/product/js/edit.js"></script>
+</main>
 </body>
 </html>
