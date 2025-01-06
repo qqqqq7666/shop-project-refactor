@@ -25,12 +25,12 @@ public class Product {
     private Long categoryId;
 
     @NotBlank
-    @Size(max = 20, message = "상품명은 최대 50자까지 가능합니다.")
+    @Size(max = 50, message = "상품명은 최대 50자까지 가능합니다.")
     @Column(nullable = false, length = 50)
     private String productName;
 
     @NotBlank
-    @Size(max = 100, message = "상품 상세 내용은 최대 500자까지 가능합니다.")
+    @Size(max = 500, message = "상품 상세 내용은 최대 500자까지 가능합니다.")
     @Column(nullable = false, length = 500)
     private String description;
 

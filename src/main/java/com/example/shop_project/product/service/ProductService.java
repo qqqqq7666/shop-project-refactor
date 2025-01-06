@@ -136,8 +136,8 @@ public class ProductService {
         if (productRequestDto.getProductName() == null || productRequestDto.getProductName().isBlank()) {
             throw new InvalidProductException("제품 이름은 필수 입력 항목입니다.");
         }
-        if (productRequestDto.getProductName().length() > 20) {
-            throw new InvalidProductException("제품 이름은 최대 20자까지 가능합니다.");
+        if (productRequestDto.getProductName().length() > 50) {
+            throw new InvalidProductException("제품 이름은 최대 50자까지 가능합니다.");
         }
 
         // 카테고리 검증
@@ -149,8 +149,8 @@ public class ProductService {
         if (productRequestDto.getDescription() == null || productRequestDto.getDescription().isBlank()) {
             throw new InvalidProductException("상세 설명은 필수 입력 항목입니다.");
         }
-        if (productRequestDto.getDescription().length() > 100) {
-            throw new InvalidProductException("상세 설명은 최대 100자까지 가능합니다.");
+        if (productRequestDto.getDescription().length() > 500) {
+            throw new InvalidProductException("상세 설명은 최대 500자까지 가능합니다.");
         }
 
         // 옵션 검증

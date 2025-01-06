@@ -9,14 +9,14 @@ import java.util.List;
 @Data
 public class ProductRequestDto {
     @NotBlank(message = "제품 이름은 필수 입력 항목입니다.")
-    @Size(max = 20, message = "제품 이름은 최대 20자까지 가능합니다.")
+    @Size(max = 50, message = "제품 이름은 최대 50자까지 가능합니다.")
     private String productName;
 
     @NotNull(message = "카테고리는 필수 선택 항목입니다.")
     private Long categoryId;
 
     @NotBlank(message = "상세 설명은 필수 입력 항목입니다.")
-    @Size(max = 100, message = "상세 설명은 최대 100자까지 가능합니다.")
+    @Size(max = 500, message = "상세 설명은 최대 500자까지 가능합니다.")
     private String description;
 
     @NotNull(message = "가격은 필수 입력 항목입니다.")
