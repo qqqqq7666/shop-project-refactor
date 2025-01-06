@@ -21,7 +21,7 @@ function addItem(productId, name, price) {
         console.log(optionArray);
         const size = optionArray[optionArray.length - 3].slice(1);
         const color = optionArray[optionArray.length - 1].slice(0, -1)
-        const quantity = parseInt(optionText[i + 1].textContent);
+        const quantity = parseInt(document.querySelector(".option-info input").value);
         console.log(optionText[i + 1].textContent);
 
         const existOption = option.find(o => o.size === size && o.color === color)
