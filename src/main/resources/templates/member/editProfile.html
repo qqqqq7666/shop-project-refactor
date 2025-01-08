@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <title>회원정보 수정</title>
     <!-- 우편번호 API -->
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/member/css/joinStyle.css">
 </head>
 <body>
-
+<main layout:fragment="content">
 <div class="register-container">
     <!-- 상단 제목을 '회원가입'에서 '회원정보 수정'으로 변경 -->
     <div class="register-header">회원정보 수정</div>
@@ -77,12 +77,19 @@
                    placeholder="상세 주소를 입력하세요">
         </div>
 
-        <!-- 취소 버튼 + 수정 버튼 -->
         <div class="form-group-button">
+        	<!-- 탈퇴 버튼 -->
+            <form th:action="@{/mypage/withdraw}" method="post" style="display: inline;">
+            <!-- 실제 서버에서 '회원탈퇴' 로직을 처리하는 POST 엔드포인트 -->
+            <button type="submit" class="btn-cancel"
+                    onclick="return confirm('정말 탈퇴하시겠습니까?')">탈퇴</button>
+            </form>
             <!-- 취소 버튼 -->
             <button type="button" class="btn-cancel" onclick="history.back()">취소</button>
             <!-- 수정 버튼 -->
             <button type="submit" class="btn-purple">수정</button>
+            
+
         </div>
     </form>
 </div>
@@ -90,6 +97,7 @@
 <!-- JS 파일 -->
 <script type="module" src="/member/js/editcheck.js"></script>
 <script src="/member/js/joinPostInput.js"></script>
+</main>
 </body>
 </html>
 

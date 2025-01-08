@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>포인트 내역</title>
+  <link rel="stylesheet" href="/point/css/point_history.css">
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+</head>
+<body>
+<main layout:fragment="content">
+<div class="container" style="width: 30%">
+  <small>현재 적립금</small>
+  <div class="current-points">
+    <h3><span style="color: black" th:text="|${#numbers.formatInteger(point.getBalance(), 0, 'COMMA')}P|">50,000원</span></h3>
+  </div>
+  <div>
+    <span th:text="|${member.getNickname()}님 - |"></span>
+    <small th:text="|${member.getMembership()}등급|"></small>
+  </div>
+  <br>
+
+  <!-- 가로 탭 메뉴 -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a th:classappend="${category.equals('all')} ? active" class="nav-link" aria-current="page" href="?category=all">전체</a>
+    </li>
+    <li class="nav-item">
+      <a th:classappend="${category.equals('save')} ? active" class="nav-link" href="?category=save">적립</a>
+    </li>
+    <li class="nav-item">
+      <a th:classappend="${category.equals('use')} ? active" class="nav-link" href="?category=use">사용</a>
+    </li>
+  </ul>
+
+  <!-- 포인트 내역 -->
+  <div id="all" class="tab-contents">
+    <div th:each="pointHistory : ${pointHistoryList}">
+      <div class="point-item">
+        <div class="point-info">
+          <div class="type" th:if="${pointHistory.getIsUsed()}">결제시 사용</div>
+          <div class="type" th:if="${!pointHistory.getIsUsed()}">주문 적립</div>
+          <div><small class="reason" th:text="${pointHistory.getReason()}"></small></div>
+          <div class="date" th:text="${#temporals.format(pointHistory.getCreatedDate(), 'yyyy.MM.dd')}">2024-12-25</div>
+        </div>
+        <div>
+          <div align="end" class="my-3">
+            <button th:if="${!pointHistory.getIsUsed()}" type="button" name="savedPointId" th:value="${pointHistory.getPointId()}" class="btn-close savedpoint-delete-button" style="width: 7px; height: 7px"></button>
+            <button th:if="${pointHistory.getIsUsed()}" type="button" name="savedPointId" th:value="${pointHistory.getPointId()}" class="btn-close usedpoint-delete-button" style="width: 7px; height: 7px"></button>
+          </div>
+          <div class="points" style="color: #bbbbbb" th:if="${pointHistory.getIsUsed()}" th:text="|-${#numbers.formatInteger(pointHistory.getAmount(), 0, 'COMMA')}P|">5,000원</div>
+          <div class="points" style="color: #6579df" th:if="${!pointHistory.getIsUsed()}" th:text="|+${#numbers.formatInteger(pointHistory.getAmount(), 0, 'COMMA')}P|">5,000원</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/point/js/point_history.js"></script>
+<script src="/common/js/bootstrap.bundle.min.js"></script>
+<script>
+  // 폼 제출 후 응답이 오면 새로 고침
+  const savedDeleteButton = document.getElementsByClassName("savedpoint-delete-button");
+  const usedDeleteButton = document.getElementsByClassName("usedpoint-delete-button");
+  for(let i = 0; i < savedDeleteButton.length; i++){
+    savedDeleteButton[i].addEventListener("click", () => {
+      if(confirm("포인트 내역을 삭제하시겠습니까?")){
+        fetch("/api/v1/admin/points/savedpoint", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: savedDeleteButton.item(i).value
+        })
+                .then(response => {
+                  if(response.ok)
+                    location.reload();
+                })
+      }
+    })
+  }
+
+  for(let i = 0; i < usedDeleteButton.length; i++){
+      usedDeleteButton[i].addEventListener("click", () => {
+          if(confirm("포인트 내역을 삭제하시겠습니까?")){
+              fetch("/api/v1/admin/points/usedpoint", {
+                  method: "DELETE",
+                  headers: {
+                      "Content-Type": "application/json"
+                  },
+                  body: usedDeleteButton.item(i).value
+              })
+                  .then(response => {
+                      if(response.ok)
+                          location.reload();
+                  })
+          }
+      })
+  }
+</script>
+</main>
+</body>
+</html>

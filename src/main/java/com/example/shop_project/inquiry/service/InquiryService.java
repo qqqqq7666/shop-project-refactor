@@ -8,6 +8,8 @@ import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.product.entity.Product;
 import com.example.shop_project.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -48,9 +50,13 @@ public class InquiryService {
     public List<Inquiry> getInquiriesByProductId(Long productId, String currentUserEmail) {
         List<Inquiry> inquiries = inquiryRepository.findByProduct_ProductId(productId);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
         // 비밀글 처리
         for (Inquiry inquiry : inquiries) {
-            if (inquiry.isSecret() && !inquiry.getMember().getEmail().equals(currentUserEmail)) {
+            if (inquiry.isSecret() && !isAdmin && !inquiry.getMember().getEmail().equals(currentUserEmail)) {
                 inquiry.setTitle("비밀글입니다");
                 inquiry.setContent("비밀글입니다");
             }
@@ -85,5 +91,10 @@ public class InquiryService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다: " + email));
         return inquiryRepository.findByMemberId(member.getId());
+    }
+
+    // 특정 회원의 문의 개수 조회
+    public Long getInquiryCountByMember(String userEmail) {
+        return inquiryRepository.countByMemberEmail(userEmail);
     }
 }

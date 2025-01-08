@@ -2,6 +2,7 @@ package com.example.shop_project.order.controller;
 
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.service.MemberService;
+import com.example.shop_project.order.dto.AddressDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.CanceledOrder;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.URI;
 import java.security.Principal;
@@ -38,7 +40,7 @@ public class OrderAPIController {
     }
 
     @GetMapping("/{orderNo}/order-detail")
-    public ResponseEntity<List<OrderDetail>> getOrderDetails(@PathVariable Long orderNo){
+    public ResponseEntity<List<OrderDetail>> getOrderDetails(@PathVariable("orderNo") Long orderNo){
         return ResponseEntity.ok(orderService.getOrderDetailList(orderNo));
     }
 
@@ -49,21 +51,14 @@ public class OrderAPIController {
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
     }
 
-    @PatchMapping("/{orderNo}/update")
-    public ResponseEntity<OrderResponseDto> updateOrder(@PathVariable Long orderNo, @Validated OrderRequestDto orderRequestDto){
-        OrderResponseDto response = orderService.updateOrder(orderNo, orderRequestDto);
-
-        return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
-    }
-
     @DeleteMapping("{orderNo}/delete")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long orderNo){
+    public ResponseEntity<Void> deleteOrder(@PathVariable("orderNo") Long orderNo){
         orderService.deleteOrder(orderNo);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{orderNo}/update-status")
-    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long orderNo, @RequestBody OrderStatus orderStatus){
+    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable("orderNo") Long orderNo, @RequestBody OrderStatus orderStatus){
         OrderResponseDto response = orderService.updateOrderStatus(orderNo, orderStatus);
 
         return ResponseEntity.created(URI.create("/" + response.getOrderNo())).body(response);
@@ -82,14 +77,38 @@ public class OrderAPIController {
     }
 
     @PostMapping("/{orderNo}/canceled-order")
-    public ResponseEntity<CanceledOrder> cancelOrder(@PathVariable Long orderNo, String reason, OrderStatus orderStatus){
+    public RedirectView cancelOrder(@PathVariable("orderNo") Long orderNo, String reason){
         CanceledOrder response = orderService.createCanceledOrder(orderNo, reason);
-        orderService.updateOrderStatus(orderNo, orderStatus);
-        return ResponseEntity.created(URI.create("/" + response.getOrder().getOrderNo())).body(response);
+        orderService.updateOrderStatus(orderNo, OrderStatus.REFUND_REQUIRE);
+        return new RedirectView("/order/" + orderNo);
     }
 
     @GetMapping("/product-option/{productId}")
-    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId){
+    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable("productId") Long productId){
         return ResponseEntity.ok(productService.getProductById(productId));
+    }
+
+    @PatchMapping("/address")
+    public ResponseEntity<Void> updateAddress(@RequestBody AddressDto addressDto){
+        orderService.updateAddress(addressDto);
+        return ResponseEntity.ok().location(URI.create("/order" + addressDto.getOrderNo())).build();
+    }
+
+    @DeleteMapping("/canceled-order")
+    public RedirectView deleteCanceledOrder(Long orderNo){
+        orderService.deleteCanceledOrder(orderNo);
+        return new RedirectView("/order/" + orderNo);
+    }
+
+    @GetMapping("/product-image")
+    public ResponseEntity<String> productImage(Long productId){
+        return ResponseEntity.ok(productService.getProductImageUrls(productId).getFirst());
+    }
+
+    @PostMapping("/{orderNo}/payment-fail")
+    public ResponseEntity<Void> paymentFail(@PathVariable Long orderNo){
+        orderService.updateOrderStatus(orderNo, OrderStatus.FAIL);
+        log.warn("이거 호출됨");
+        return ResponseEntity.ok().build();
     }
 }

@@ -72,10 +72,12 @@ public class JwtProviderImpl implements JwtProvider<AuthTokenImpl> {
 
             // 권한을 SimpleGrantedAuthority에 추가
             String roleKey = claims.get(MemberConstants.AUTHORIZATION_TOKEN_KEY, String.class);
+            // rolekey는 권한 문자열
             if (roleKey == null || roleKey.isEmpty()) {
                 throw new JwtException("Role is missing in the token");
             }
 
+            // rolekey에서 권한들을 저장
             Set<SimpleGrantedAuthority> authorities = Collections.singleton(
                 new SimpleGrantedAuthority(roleKey)
             );

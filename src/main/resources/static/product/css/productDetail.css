@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f8f8;
+    background-color: white;
 }
 
 .product-detail-container {
@@ -11,7 +11,6 @@ body {
     margin: 1px auto;
     padding: 20px;
     background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .product-image {
@@ -26,7 +25,7 @@ body {
 .product-image img {
     width: 100%; /* 부모 요소의 너비에 맞춤 */
     height: 100%; /* 부모 요소의 높이에 맞춤 */
-    object-fit: cover; /* 비율 유지, 넘치는 부분 잘라냄 */
+    object-fit: contain; /* 비율 유지, 넘치는 부분 잘라냄 */
     display: block;
 }
 
@@ -67,7 +66,7 @@ body {
     margin-bottom: 10px;
 }
 
-.sort-dropdown-color select {
+.form-label select {
     margin-left: 26px;
     margin-right: 50px;
     padding: 5px 10px;
@@ -110,7 +109,11 @@ body {
 }
 
 .product-purchase {
-    margin-top: 50px;
+    margin-top: 20px;
+    display: flex; /* Flexbox 활성화 */
+    justify-content: space-between; /* 버튼 사이 간격 균등 */
+    flex-wrap: wrap; /* 버튼이 공간 부족 시 다음 줄로 이동 */
+    gap: 10px; /* 버튼 사이 간격 */
 }
 
 .product-purchase strong {
@@ -124,13 +127,15 @@ body {
 
 
 .product-purchase button {
-    margin-top: 30px;
-    padding: 10px 20px;
+    flex: 1; /* 버튼이 부모 크기에 맞춰 고르게 나눠짐 */
+    min-width: 100px; /* 버튼 최소 너비 설정 */
+    padding: 1px; /* 안쪽 여백 */
     background-color: black;
     color: white;
     border: none;
     cursor: pointer;
-    margin-right: 10px;
+    text-align: center;
+    box-sizing: border-box; /* 패딩 포함 너비 계산 */
 }
 
 
@@ -156,7 +161,7 @@ body {
 
 .option-info {
     display: grid;
-    grid-template-columns: auto 150px 100px 50px; /* 각 열의 너비 설정 */
+    grid-template-columns: 150px 150px 100px 50px; /* 각 열의 너비 설정 */
     align-items: center; /* 세로축 정렬 */
     gap: 20px; /* 열 간격 */
     padding: 10px 0;
@@ -204,4 +209,86 @@ body {
     padding: 5px 5px;
     cursor: pointer;
     border-radius: 5px;
+}
+
+.form-control {
+    display: block;
+    width: 80%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--bs-body-color);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--bs-body-bg);
+    background-clip: padding-box;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    margin-left : 20px
+}
+
+.mb-3 {
+    margin-bottom: 1rem !important;
+    display: flex
+}
+
+.form-label {
+    margin-bottom: .5rem;
+    margin-top: 5px;
+}
+
+#colorSelect {
+    display: block;
+    width: 80%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--bs-body-color);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--bs-body-bg);
+    background-clip: padding-box;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    margin-left : 37px
+}
+
+.d-flex input {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.d-flex button {
+    padding: 5px;
+    margin: 0 5px;
+    cursor: pointer;
+    border : none;
+    background-color: white;
+}
+
+.product-review {
+    margin-top: 15px;
+    display: flex; /* Flexbox 활성화 */
+    justify-content: space-between; /* 버튼 사이 간격 균등 */
+    flex-wrap: wrap; /* 버튼이 공간 부족 시 다음 줄로 이동 */
+    gap: 10px; /* 버튼 사이 간격 */
+}
+
+.product-review button {
+    flex: 1; /* 버튼이 부모 크기에 맞춰 고르게 나눠짐 */
+    min-width: 100px; /* 버튼 최소 너비 설정 */
+    padding: 1px; /* 안쪽 여백 */
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    box-sizing: border-box; /* 패딩 포함 너비 계산 */
 }

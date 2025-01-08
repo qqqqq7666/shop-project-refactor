@@ -1,41 +1,48 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details</title>
     <link href="/common/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/common/css/common-button.css" rel="stylesheet">
     <link href="/order/css/order-detail.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-5">
+<main layout:fragment="content">
+<div class="container w-100">
     <div class="content-container">
         <h2 class="text-center mb-4">주문 상세내역</h2>
-
         <div>
             <h3 th:text="${#temporals.format(order.getCreatedDate(), 'yyyy.MM.dd HH:mm')}"></h3>
             <small th:text="|주문번호 ${orderNo}|"></small>
         </div>
         <hr>
         <div>
-            <p><h5 th:text="${order.getAddressee()}">이름</h5></p>
+            <div class="d-flex justify-content-between">
+                <p th:text="${order.getAddressee()}" style="font-size: 25px"></p>
+                <p th:if="${order.getOrderStatus() == order.getOrderStatus().NEW}">
+                    <button class="btn btn-dark" th:onclick="|location.href='@{/order/modify-address/{orderNo}(orderNo=${orderNo})}'|">배송지 변경</button>
+                </p>
+            </div>
             <p th:text="${order.getContact()}">010-****-1234</p>
             <p th:text="|(${order.getPostNo()}) ${order.getAddress()} ${order.getAddressDetail()}|"></p>
             <small th:text="|요청사항: ${order.getRequirement()}|"></small>
         </div>
         <hr>
-        <h5 th:text="|주문 상품 ${detailList.size()}개|"></h5>
-        <small th:text="${order.getOrderStatus()}"></small>
+        <div class="d-flex flex-row align-items-center"><h5 th:text="|주문 상품 ${detailList.size()}개|"></h5>&nbsp
+            <span class="badge bg-secondary" th:text="${order.getOrderStatus()}"></span>
+        </div>
         <div>
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-sm-start" th:each="detail : ${detailList}">
-                    <div>
-                        <img th:src="|http://localhost:8080${detail.getProduct().getImages().getFirst().getImageUrl()}|" class="img-fluid rounded-start" alt="Product Image" width="100px">
+                    <div class="me-3">
+                        <img th:src="|http://localhost:8080${detail.getProduct().getImages().getFirst().getImageUrl()}|" class="img-fluid img-thumbnail" alt="Product Image" width="100px">
                     </div>
                     <div class="flex-column">
                         <span th:text="${detail.getProduct().getProductName()}">Product Name (M / 2 pcs)</span><br>
                         <div>
-                        <span th:text="|${detail.getColor()} / ${detail.getSize()} / ${detail.getQuantity()}개|">옵션 / 개수</span><br>
+                        <span th:text="|(${detail.getColor()} / ${detail.getSize()}) / ${detail.getQuantity()}개|">옵션 / 개수</span><br>
                         </div>
                         <span th:text="|${#numbers.formatInteger(detail.getPrice() * detail.getQuantity(), 0, 'COMMA')}원|">가격</span><br>
                     </div>
@@ -62,54 +69,59 @@
             <p style="font-size: 20px">결제 금액</p>
             <p th:text="|${#numbers.formatInteger(payment.getAmount(), 0, 'COMMA')}원|">총 결제 금액</p>
         </div>
-        <!-- TODO 상품 상세 제대로 표시하기 -->
         <div class="d-flex justify-content-between">
             <p>결제 수단</p>
             <p th:text="${payment.getPayMethod()}">결제 수단</p>
         </div>
-        <div th:if="${order.getOrderStatus() != isConfirmed}">
-            <br>
+        <div th:if="${payment.getPayStatus() == payment.getPayStatus().CANCEL}" align="center">
+            <h3>결제 취소</h3>
+        </div>
+        <hr>
+        <div th:if="${order.getOrderStatus() != order.getOrderStatus().CONFIRMED && order.getOrderStatus() != order.getOrderStatus().REFUND && order.getOrderStatus() != order.getOrderStatus().EXCHANGE}">
             <div align="center">
                 구매확정시 상품금액 1% 포인트 적립
             </div>
             <div class= "mt-4 d-flex justify-content-around">
-                <button id="confirm-button" class="btn custom-button" name="orderStatus" value="CONFIRMED" onclick="">구매 확정</button>
+                <button id="confirm-button" class="btn common-confirm-button" name="orderStatus" value="CONFIRMED" onclick="">구매 확정</button>
                 <div th:if="${order.getOrderStatus() != orderStatusArray[5] && order.getOrderStatus() != orderStatusArray[6]}">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        교환/환불 요청
+                    <button type="button" class="btn common-cancel-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        환불 요청
                     </button>
                 </div>
                 <div th:if="${order.getOrderStatus() == orderStatusArray[5] || order.getOrderStatus() == orderStatusArray[6]}">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        교환/환불 요청 취소
-                    </button>
+                    <form action="/api/v1/orders/canceled-order" method="post">
+                        <input type="hidden" name="orderNo" th:value="${orderNo}">
+                        <input type="hidden" name="_method" value="delete">
+                        <button type="submit" class="btn btn-dark">
+                            환불 요청 취소
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Button trigger modal -->
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">환불 요청</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form method="post" th:action="|/api/v1/orders/${orderNo}/canceled-order|">
-                        <select name="orderStatus">
-                            <option value="REFUND_REQUIRE">환불 요청</option>
-                            <option value="EXCHANGE_REQUIRE">교환 요청</option>
-                        </select><br>
-                        <textarea id="message-textarea" name="reason" placeholder="교환/환불 사유를 100자 이내로 입력해주세요" required maxlength="100"
+                        <img src="/images/imageInfo.png" class="info-icon">
+                        <br>환불 처리 완료 시 취소가 불가합니다.
+                        <br>환불 요청 시 영업일 기준 2 ~ 3일 이내에 처리가 완료됩니다.
+                        <br>
+                        <br>
+                        <textarea id="message-textarea" name="reason" class="form-control" placeholder="환불 사유를 100자 이내로 입력해주세요" required maxlength="100"
                                   style="width: 100%; height: 6.25em; resize: none;"></textarea>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                            <button type="submit" class="btn btn-dark">환불 요청</button>
                         </div>
                     </form>
                 </div>
@@ -121,9 +133,10 @@
 <script src="/common/js/bootstrap.bundle.min.js"></script>
 <script>
     document.getElementById("confirm-button").addEventListener("click", async () => {
+        const email = `[[${memberEmail}]]`;
         const confirmed = confirm("구매 확정을 하면 교환 및 환불이 불가합니다.");
         let saveReason
-        if([[${detailList.size() - 1}]] === 1)
+        if([[${detailList.size()}]] === 1)
             saveReason = `[[${detailList.get(0).getProduct().getProductName()}]] 구매 확정`
         else
             saveReason = `[[${detailList.get(0).getProduct().getProductName()}]] 외 [[${detailList.size() - 1}]] 개 구매 확정`;
@@ -148,7 +161,7 @@
                             "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
-                            email: "root@root.com",
+                            email,
                             saveReason,
                             savedPoint: [[${order.getTotalPrice() * 0.01}]]
                         }),
@@ -161,5 +174,6 @@
         }
     });
 </script>
+</main>
 </body>
 </html>

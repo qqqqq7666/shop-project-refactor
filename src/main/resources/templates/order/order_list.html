@@ -1,57 +1,67 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문 내역</title>
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/common/css/common-button.css">
 </head>
 <body>
+<main layout:fragment="content">
 <div class="container mt-5 d-flex flex-column align-items-center">
     <h2 class="mb-4">주문내역</h2>
-    <form method="get" action="/order">
-        <input placeholder="상품명으로 주문을 검색하세요" style="width: 450px" name="search">
-        <button type="submit">검색</button>
+    <form method="get" action="/order" class="d-flex flex-row">
+        <input class="form-control" th:value="${keyword}" placeholder="상품명으로 주문을 검색하세요" style="width: 450px" name="search">
+        &nbsp&nbsp
+        <button class="btn btn-dark" type="submit">검색</button>
     </form>
     <br>
     <!-- Card Example -->
-    <div class="card mb-3 w-100" style="max-width: 540px;" id="product-card"
+    <div th:if="${orderPage.isEmpty()}">
+        주문이 존재하지 않습니다
+    </div>
+    <div class="card mb-3 w-100" style="max-width: 720px; background-color: #f5f2f2; padding: 15px" id="product-card"
          th:each="order : ${orderPage}">
         <div>
             <h4 class="mx-3 my-2" th:text="${#temporals.format(order.getCreatedDate(), 'yy.MM.dd')}"></h4>
         </div>
-        <div class="mx-3 my-1"><b th:text="${order.getOrderStatus()}">주문 상태</b></div>
+        <div class="mx-3 my-1"><span class="badge rounded-pill bg-secondary" th:text="${order.getOrderStatus()}">주문 상태</span></div>
         <div class="row g-0" th:each="detail, i : ${order.getOrderDetailList()}">
             <!-- Image Section -->
             <div class="col-md-4">
-                <img th:src="|http://localhost:8080${detail.getProduct().getImages().getFirst().getImageUrl()}|" class="img-fluid rounded-start" alt="Product Image">
+                <img th:src="|http://localhost:8080${detail.getProduct().getImages().getFirst().getImageUrl()}|" class="img-thumbnail" alt="Product Image">
             </div>
             <!-- Text Section -->
             <div class="col-md-8">
                 <div class="card-body">
                     <p class="card-text text-muted"
-                       style="position: absolute; top: 0; right: 0; margin: 10px; font-size: 0.9em;"><a
-                            th:href="|order/${order.getOrderNo()}|">주문 상세</a></p>
+                       style="position: absolute; top: 0; right: 0; margin: 10px; font-size: 0.9em;">
+                        <button class="btn btn-dark"
+                                th:onclick="|location.href='@{/order/{orderNo}(orderNo=${order.getOrderNo()})}'|">주문 상세</button></p>
                     <h5 class="card-title" th:text="${detail.getProduct().getProductName()}">Product Name</h5>
                     <p class="card-text mb-1"
                        th:text="|(${detail.getColor()} / ${detail.getSize()}) / ${detail.getQuantity()}개|">
                         Size/Quantity</p>
-                    <p class="card-text" th:text="|${detail.getPrice()}원|">Price: <strong>price</strong></p>
+                    <p class="card-text" th:text="|${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')}원|">Price: <strong>price</strong></p>
                 </div>
                 <!-- review button -->
-                <div>
-                    <button type="button" class="review-btn btn btn-outline-dark" style="margin-left: 15px;"
+                <div class="review-btn-container"
+                     th:if="${#strings.equals(order.getOrderStatus().toString(), '구매 확정')
+                     && T(java.time.temporal.ChronoUnit).DAYS.between(detail.updatedDate.toLocalDate(), T(java.time.LocalDate).now()) <= 30}">
+                    <button type="button" class="review-btn btn btn-outline-dark common-confirm-button" style="margin-left: 15px;"
+                            th:if="${not reviewStatus.get(detail.getOrderDetailId())}"
                             th:data-order-detail-id="${detail.getOrderDetailId()}"
                             th:data-product-name="${detail.getProduct().getProductName()}"
                             th:data-product-color="${detail.getColor()}"
-                            th:data-product-size="${detail.getSize()}">후기 작성</button>
+                            th:data-product-size="${detail.getSize()}">리뷰 작성</button>
+                    <span th:if="${reviewStatus.get(detail.getOrderDetailId())}" class="text-success" style="margin-left: 15px;">리뷰 작성 완료</span>
                 </div>
-                <br>
-                <br>
             </div>
+            <hr th:if="${detail != order.getOrderDetailList().getLast()}" class="my-4">
         </div>
     </div>
-    <nav aria-label="Page navigation example">
+    <nav aria-label="Page navigation example" th:if="${!orderPage.isEmpty()}">
         <ul class="pagination">
             <li th:if="${currentPage > 0}" class="page-item">
                 <a class="page-link" th:href="|?page=${currentPage - 1}|" aria-label="Previous">
@@ -71,5 +81,6 @@
 </div>
 <script src="/common/js/bootstrap.bundle.min.js"></script>
 <script src="/review/js/storeProductInfo.js"></script>
+</main>
 </body>
 </html>

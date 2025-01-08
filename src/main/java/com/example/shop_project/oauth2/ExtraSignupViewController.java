@@ -2,6 +2,7 @@ package com.example.shop_project.oauth2;
 
 import java.util.Optional;
 
+import com.example.shop_project.point.service.PointService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,7 @@ public class ExtraSignupViewController {
 
     private final MemberRepository memberRepository;
     private final JwtProviderImpl jwtProvider;
+    private final PointService pointService;
 
     @GetMapping("/confirm")
     public String confirmSignup(
@@ -131,7 +133,9 @@ public class ExtraSignupViewController {
         accessCookie.setPath("/");
         accessCookie.setMaxAge((int) (jwtProvider.getAccessExpires() / 1000)); // 밀리초를 초로 변환
         response.addCookie(accessCookie);
-        
+
+        // 가입 이후 회원에게 포인트 할당
+        pointService.createPointByEmail(member.getEmail());
         // 가입 완료 후 /으로 이동
         return "redirect:/";
     }

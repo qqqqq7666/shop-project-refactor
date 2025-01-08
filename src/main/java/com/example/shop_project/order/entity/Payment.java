@@ -32,4 +32,8 @@ public class Payment extends BaseEntity {
     public void assignOrderToCreate(Order order){
         this.order = order;
     }
+
+    public void cancelPay(){
+        payStatus = PayStatus.CANCEL;
+    }
 }

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <title>회원가입</title>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 	<link rel="stylesheet" href="/member/css/joinStyle.css">
 </head>
 <body>
-
+<main layout:fragment="content">
 <div class="register-container">
     <div class="register-header">회원가입</div>
     <form th:action="@{/join}" method="post">
@@ -86,18 +86,12 @@
 
         <!-- 회원가입 버튼 -->
         <button type="submit" class="btn-purple">회원가입</button>
-        
-        <!-- 간편 회원가입 -->
-        <div class="social-login">
-            <h3>간편 회원가입 (OAUTH, 임시)</h3>
-            <button type="button" class="google">Google</button>
-            <button type="button" class="kakao">Kakao</button>
-        </div>
     </form>
 </div>
 
 <script type="module" src="/member/js/joincheck.js"></script>
 <script src="/member/js/joinPostInput.js"></script>
+</main>
 </body>
 </html>
 

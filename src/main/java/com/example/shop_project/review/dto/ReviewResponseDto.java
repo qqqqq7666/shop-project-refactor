@@ -20,5 +20,5 @@ public class ReviewResponseDto {
     private String productName;
     private String color;
     private Size size;
-
+    private String imageUrl;
 }

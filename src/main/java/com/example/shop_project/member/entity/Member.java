@@ -79,6 +79,8 @@ public class Member extends BaseEntity {
     @Column(name = "withdraw", nullable = false)
     private Boolean withdraw;
     
+    private LocalDateTime withdrawDate;
+    
     // OAuth2를 사용하는 경우 provider 저장
     @Column(name = "provider")
     @Enumerated(EnumType.STRING)

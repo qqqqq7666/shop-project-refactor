@@ -4,6 +4,8 @@ import com.example.shop_project.comment.entity.Comment;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.product.entity.Product;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -29,10 +31,14 @@ public class Inquiry {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 50)
+    @NotBlank(message = "문의 제목은 필수입니다.")
+    @Size(max = 50, message = "문의 제목은 50자 이내로 작성해주세요.")
     private String title; // 문의 제목
 
     @Column(nullable = false, columnDefinition = "TEXT")
+    @NotBlank(message = "문의 내용은 필수입니다.")
+    @Size(max = 500, message = "문의 제목은 500자 이내로 작성해주세요.")
     private String content; // 문의 내용
 
     @Column(nullable = false)

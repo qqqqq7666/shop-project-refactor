@@ -1,0 +1,117 @@
+.inquiry-list-board {
+    max-width: 800px;
+    margin: 50px auto;
+    /*border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+}
+
+.inquiry-list-board h2 {
+    text-align: center;
+}
+
+.inquiry-list-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.inquiry-list-container h4 {
+    margin-bottom: 10px;
+}
+
+.inquiry-list-container p {
+    margin: 5px 0;
+}
+
+.inquiry-list-container .info {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.inquiry-write-button {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.btn-primary {
+    background-color: #63009e;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #4E007C;
+    border: none;
+}
+
+.button-group {
+    text-align: right;
+}
+
+.product-info {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.product-info p {
+    margin: 5px 0;
+    font-size: 18px;
+    color: #666;
+}
+
+.zero {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #777;
+}
+
+#inquiry-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.inquiry-list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 15px;
+    border-bottom: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.inquiry-left {
+    flex-grow: 1;
+}
+
+.inquiry-left p.info {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.inquiry-left h5 {
+    margin: 8px 0;
+    font-size: 1.2rem;
+}
+
+.inquiry-right {
+    margin-left: 15px;
+    text-align: right;
+}
+
+.inquiry-right .btn-sm {
+    font-size: 0.95rem;
+}
+
+.inquiry-list-row:last-child {
+    border-bottom: none;
+}
+
+.product-info img {
+    width: 300px; /* 부모 요소의 너비에 맞춤 */
+    height: 300px; /* 부모 요소의 높이에 맞춤 */
+    object-fit: contain; /* 비율 유지, 넘치는 부분 잘라냄 */
+}

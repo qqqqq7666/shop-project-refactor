@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
+<main layout:fragment="content">
 <div class="container" style="width: 30%">
-    <small>현재 적립금</small>
+    <small>현재 포인트</small>
     <div class="current-points">
         <h3><span style="color: black" th:text="|${#numbers.formatInteger(point.getBalance(), 0, 'COMMA')}P|">50,000원</span></h3>
     </div>
@@ -41,7 +42,7 @@
             <div class="point-item">
                 <div class="point-info">
                     <div class="type" th:if="${pointHistory.getIsUsed()}">결제시 사용</div>
-                    <div class="type" th:if="${!pointHistory.getIsUsed()}">주문 적립</div>
+                    <div class="type" th:if="${!pointHistory.getIsUsed()}">적립</div>
                     <div><small class="reason" th:text="${pointHistory.getReason()}"></small></div>
 <!--                    <div th:if="${pointHistory.getIsUsed()}" th:text="${pointHistory.getReason()}"></div>-->
                     <div class="date" th:text="${#temporals.format(pointHistory.getCreatedDate(), 'yyyy.MM.dd')}">2024-12-25</div>
@@ -55,5 +56,6 @@
 
 <script src="/point/js/point_history.js"></script>
 <script src="/common/js/bootstrap.bundle.min.js"></script>
+</main>
 </body>
 </html>

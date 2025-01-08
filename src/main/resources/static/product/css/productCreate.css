@@ -1,11 +1,12 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
 }
 
-h1 {
-    color: green;
+h2 {
+    margin-top:30px;
+    color: #000000;
     text-align: center;
+    margin-bottom: 20px;
 }
 
 form {
@@ -34,10 +35,9 @@ textarea {
 button {
     background-color: black;
     color: white;
-    border: none;
     cursor: pointer;
-    width: 103%;
-    padding: 8px;
+    width: 100%;
+    padding: 6px;
     border-radius: 4px;
 }
 
@@ -66,7 +66,7 @@ button:hover {
     list-style-type: none;
     padding: 0;
     margin-top: 10px;
-    width: 103%;
+    width: 100%;
 }
 
 #imagePreviewList li {
@@ -93,7 +93,7 @@ button:hover {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-left: 300px;
+    margin-left : 290px;
     text-align: center; /* 텍스트 가로 중앙 정렬 */
     line-height: 16px; /* 버튼 높이와 동일하게 설정해 세로 중앙 정렬 */
 }
@@ -127,7 +127,7 @@ button:hover {
 .image-preview {
     width: 50px;
     height: 50px;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .image-container {
@@ -221,4 +221,12 @@ button:hover {
 .submit-button {
     background-color: black; /* 검은색 배경 */
     color: white; /* 흰색 텍스트 */
+}
+
+
+
+.image-item.highlight {
+    border: 2px solid #ccc;
+    box-shadow: 0 0 10px #ccc;
+    background: #d3f3fd
 }

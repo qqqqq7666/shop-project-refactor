@@ -5,7 +5,9 @@ import com.example.shop_project.product.dto.ProductOptionDto;
 import com.example.shop_project.product.dto.ProductRequestDto;
 import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.entity.*;
+import com.example.shop_project.product.repository.ProductOptionRepository;
 import com.example.shop_project.product.repository.ProductRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.bridge.MessageUtil;
@@ -32,6 +34,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ImageService imageService;
+    private final ProductOptionRepository productOptionRepository;
 
     @Transactional
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto, List<MultipartFile> images) {
@@ -100,14 +103,41 @@ public class ProductService {
                 .build();
     }
 
+    public ProductResponseDto mapToResponseDto(Product product, boolean isOutOfStock) {
+        return ProductResponseDto.builder()
+                .productId(product.getProductId())
+                .categoryId(product.getCategoryId())
+                .productName(product.getProductName())
+                .price(product.getPrice())
+                .description(product.getDescription())
+                .viewCount(product.getViewCount())
+                .salesCount(product.getSalesCount())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
+                .nickname(product.getNickname())
+                .imageUrls(product.getImages().stream()
+                        .map(ProductImage::getImageUrl)
+                        .collect(Collectors.toList()))
+                .options(product.getOptions().stream()
+                        .map(option -> {
+                            ProductOptionDto optionDto = new ProductOptionDto();
+                            optionDto.setSize(option.getSize());
+                            optionDto.setColor(option.getColor());
+                            optionDto.setStockQuantity(option.getStockQuantity());
+                            return optionDto;
+                        }).collect(Collectors.toList()))
+                .isOutOfStock(isOutOfStock)
+                .build();
+    }
+
     @Transactional
     public void validateProductRequest(ProductRequestDto productRequestDto) {
         // 제품 이름 검증
         if (productRequestDto.getProductName() == null || productRequestDto.getProductName().isBlank()) {
             throw new InvalidProductException("제품 이름은 필수 입력 항목입니다.");
         }
-        if (productRequestDto.getProductName().length() > 20) {
-            throw new InvalidProductException("제품 이름은 최대 20자까지 가능합니다.");
+        if (productRequestDto.getProductName().length() > 50) {
+            throw new InvalidProductException("제품 이름은 최대 50자까지 가능합니다.");
         }
 
         // 카테고리 검증
@@ -119,8 +149,8 @@ public class ProductService {
         if (productRequestDto.getDescription() == null || productRequestDto.getDescription().isBlank()) {
             throw new InvalidProductException("상세 설명은 필수 입력 항목입니다.");
         }
-        if (productRequestDto.getDescription().length() > 100) {
-            throw new InvalidProductException("상세 설명은 최대 100자까지 가능합니다.");
+        if (productRequestDto.getDescription().length() > 500) {
+            throw new InvalidProductException("상세 설명은 최대 500자까지 가능합니다.");
         }
 
         // 옵션 검증
@@ -131,6 +161,9 @@ public class ProductService {
             if (option.getSize() == null) {
                 throw new InvalidProductException("사이즈는 선택 필수 항목입니다.");
             }
+            if (option.getColor() == null || option.getColor().isBlank()) {
+                throw new InvalidProductException("색상은 선택 필수 항목입니다.");
+            }
             if (option.getStockQuantity() < 1) {
                 throw new InvalidProductException("재고는 1 이상이어야 합니다.");
             }
@@ -139,26 +172,43 @@ public class ProductService {
 
 
     @Transactional
-    public Page<ProductResponseDto> getProductList(String search, String sort, int page, int size) {
+    public Page<ProductResponseDto> getProductList(Long categoryId, String search, String sort, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort));
 
-        // 검색 기능 적용
-        Page<Product> products = productRepository.findByProductNameContaining(search, pageable);
+        Page<Product> products;
+        if (categoryId != null && !search.isEmpty()) {
+            // 카테고리와 검색 조건이 모두 있는 경우
+            products = productRepository.findByCategoryIdAndProductNameContaining(categoryId, search, pageable);
+        } else if (categoryId != null) {
+            // 카테고리만 있는 경우
+            products = productRepository.findByCategoryId(categoryId, pageable);
+        } else if (!search.isEmpty()) {
+            // 검색 조건만 있는 경우
+            products = productRepository.findByProductNameContaining(search, pageable);
+        } else {
+            // 조건이 없는 경우
+            products = productRepository.findAll(pageable);
+        }
 
         // Product -> ProductResponseDto로 변환
-        return products.map(product -> ProductResponseDto.builder()
-                .productId(product.getProductId())
-                .productName(product.getProductName())
-                .price(product.getPrice())
-                .nickname(product.getNickname())
-                .viewCount(product.getViewCount())
-                .salesCount(product.getSalesCount())
-                .createdAt(product.getCreatedAt())
-                .updatedAt(product.getUpdatedAt())
-                .imageUrls(product.getImages().stream()
-                        .map(ProductImage::getImageUrl)
-                        .toList())
-                .build());
+        return products.map(product -> {
+            boolean isOutOfStock = product.getOptions().stream()
+                    .allMatch(option -> option.getStockQuantity() == 0); // 모든 옵션의 재고가 0인지 확인
+            return mapToResponseDto(product, isOutOfStock);
+        });
+    }
+
+    @Transactional
+    public Page<ProductResponseDto> getProductsByCategory(Long categoryId, String sort, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort));
+
+        Page<Product> products = productRepository.findByCategoryId(categoryId, pageable);
+
+        return products.map(product -> {
+            boolean isOutOfStock = product.getOptions().stream()
+                    .allMatch(option -> option.getStockQuantity() == 0); // 모든 옵션의 재고가 0인지 확인
+            return mapToResponseDto(product, isOutOfStock);
+        });
     }
 
 
@@ -319,5 +369,32 @@ public class ProductService {
     @Transactional
     public void incrementViewCount(Long productId, int viewCount) {
         productRepository.incrementViewCount(productId, viewCount);
+    }
+
+    @Transactional
+    public List<ProductOptionDto> getAvailableSizes(Long productId, String color) {
+        // Repository를 통해 데이터베이스에서 조건에 맞는 옵션들을 조회
+        List<ProductOption> productOptions = productOptionRepository.findByProductIdAndColor(productId, color);
+
+        // Entity -> DTO 변환
+        return productOptions.stream()
+                .map(option -> new ProductOptionDto(option.getSize(), option.getColor(), option.getStockQuantity()))
+                .collect(Collectors.toList());
+    }
+
+    // 클라이언트 IP 가져오기
+    @Transactional
+    public String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 }

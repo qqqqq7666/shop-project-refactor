@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>문의 작성</title>
@@ -7,24 +7,28 @@
     <link href="/inquiry/style/create.css" rel="stylesheet">
 </head>
 <body>
+<main layout:fragment="content">
 <div class="container inquiry-create">
     <h2>판매자에게 문의하기</h2>
 
-<!--
     <div class="product-info">
-        <img src="/images/sample-product.jpg" alt="Embroidery Waffle Knit Cream">
+<!--        <img th:src="${product.images}" alt="상품 이미지" class="product-image">-->
+<!--        <img th:src="${productImage}" alt="상품 이미지" class="product-image">-->
         <div>
-            <h3>Embroidery Waffle Knit Cream</h3>
-            <p>₩99,000</p>
+            <img id="productImage" th:src="@{${product.imageUrls[0]}}" alt="Product Image">
+            <h3 th:text="${product.productName}">상품 이름</h3>
+            <p th:text="${formattedPrice} + '원'">상품 가격</p>
         </div>
     </div>
--->
 
     <div class="inquiry-form-container">
         <form th:action="@{/products/{productId}/inquiries(productId=${productId})}" method="post">
             <div class="mb-3">
                 <label class="form-label">제목</label>
-                <input class="form-control" type="text" name="title" placeholder="제목을 입력하세요." required>
+                <input type="text" id="title" name="title" class="form-control"
+                       th:value="${inquiry?.title}" required maxlength="50"
+                       placeholder="제목을 입력하세요. (최대 50자)">
+                <div class="character-counter" id="titleCounter">0 / 50</div>
             </div>
 
             <div class="mb-3">
@@ -39,7 +43,9 @@
 
             <div class="mb-3">
                 <label class="form-label">내용</label>
-                <textarea class="form-control" name="content" placeholder="내용을 입력하세요." required></textarea>
+                <textarea class="form-control" id="content" name="content" placeholder="내용을 입력하세요. (최대 500자)"
+                          required maxlength="500" rows="5"></textarea>
+                <div class="character-counter" id="contentCounter">0 / 500</div>
             </div>
 
             <div class="mb-3">
@@ -49,6 +55,24 @@
             </div>
 
             <script>
+                // 제목 글자 수 카운터
+                const titleInput = document.getElementById('title');
+                const titleCounter = document.getElementById('titleCounter');
+                titleInput.addEventListener('input', () => {
+                    const currentLength = titleInput.value.length;
+                    titleCounter.textContent = `${currentLength} / 50`;
+                    titleCounter.classList.toggle('error', currentLength > 50);
+                });
+
+                // 내용 글자 수 카운터
+                const contentInput = document.getElementById('content');
+                const contentCounter = document.getElementById('contentCounter');
+                contentInput.addEventListener('input', () => {
+                    const currentLength = contentInput.value.length;
+                    contentCounter.textContent = `${currentLength} / 500`;
+                    contentCounter.classList.toggle('error', currentLength > 500);
+                });
+
                 function handleSecretCheckbox(checkbox) {
                     document.getElementById('isSecretHidden').disabled = checkbox.checked;
                 }
@@ -61,5 +85,6 @@
         </form>
     </div>
 </div>
+</main>
 </body>
 </html>

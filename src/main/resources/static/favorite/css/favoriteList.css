@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+h1 {
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 상품 리스트 스타일 */
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    object-fit: cover; /* 이미지 비율 유지 */
+}
+
+.product-card {
+    background-color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
+    object-fit: contain; /* 이미지 비율 유지 */
+}
+
+.product-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+}
+
+.product-card .title {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    margin: 1px 0;
+    color: #333;
+}
+
+.product-card .price {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: #555;
+    margin-top: 0px;
+}
+
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    color: #fafafa;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 8px 8px;
+    margin: 2px 5px;
+    text-decoration: none;
+    color: #333; /* 글자 색상 */
+    background-color: #fff; /* 배경을 하얀색으로 설정 */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination a:hover {
+    background-color: #f0f0f0; /* 호버 시 밝은 회색 */
+    color: #333;
+}
+
+.pagination a.active {
+    background-color: #000; /* 활성화된 페이지: 검정 배경 */
+    color: #fff; /* 글자 색상을 하얀색 */
+    border-color: #000;
+}
+
+button {
+    padding: 3px 3px;
+    background-color: rgb(161 161 161 / 28%);
+    color: #000000;
+    border: none;
+    cursor: pointer;
+}
+
+.remove-favorite-btn {
+    display: block;
+    margin-left: auto;
+}

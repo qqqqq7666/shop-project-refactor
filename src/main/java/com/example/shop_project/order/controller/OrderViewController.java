@@ -8,6 +8,7 @@ import com.example.shop_project.order.service.OrderService;
 import com.example.shop_project.order.service.PaymentService;
 import com.example.shop_project.point.dto.PointDto;
 import com.example.shop_project.point.service.PointService;
+import com.example.shop_project.review.service.ReviewService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/order")
@@ -34,16 +36,11 @@ public class OrderViewController {
     private PaymentService paymentService;
     @Autowired
     private PointService pointService;
+    @Autowired
+    private ReviewService reviewService;
 
-    @GetMapping("/create")
-    public String createOrder(){
-        return "order/order_create";
-    }
-
-    // TODO order의 멤버와 principal로 찾은 맴버를 비교해서 다르면 exception 발생
-    // TODO 결제 실패 시 우선 비공개 처리, 개선할 방법 고려
     @GetMapping("/{orderNo}")
-    public String orderDetail(@PathVariable @ModelAttribute Long orderNo, Model model, Principal principal){
+    public String orderDetail(@PathVariable("orderNo") @ModelAttribute Long orderNo, Model model, Principal principal){
         OrderResponseDto orderResponseDto = orderService.getOrderByOrderNo(orderNo);
         if(!orderResponseDto.getMember().equals(memberService.findByEmail(principal.getName())))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 접근입니다.");
@@ -52,33 +49,40 @@ public class OrderViewController {
         model.addAttribute("payment", paymentService.getPaymentByOrderNo(orderNo));
         model.addAttribute("point", pointService.getUsedPointByOrderNo(orderNo));
         model.addAttribute("orderStatusArray", OrderStatus.values());
+        model.addAttribute("memberEmail", principal.getName());
         return "order/order_detail";
     }
 
     @GetMapping
-    public String orderList(Model model, Principal principal, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String search){
+    public String orderList(Model model, Principal principal, @RequestParam(value = "page",defaultValue = "0") int page, @RequestParam(value = "search", defaultValue = "") String search){
         Page<OrderResponseDto> orderPage = orderService.getOrderPageList(principal, PageRequest.of(page, 10), search);
-        if(orderPage.isEmpty())
-            return "order/order_empty";
+
+        // 리뷰 작성 여부
+        Map<Long, Boolean> reviewStatus = reviewService.getReviewStatusMap(orderPage);
+        model.addAttribute("reviewStatus", reviewStatus);
+
         model.addAttribute("orderPage", orderPage);
         model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", search);
         return "order/order_list";
-    }
-
-    @GetMapping("/{orderNo}/update")
-    public String orderUpdate(@ModelAttribute @PathVariable Long orderNo){
-        return "order/order_update";
     }
 
     @GetMapping("checkout")
     public String checkout(Principal principal, Model model){
         PointDto pointDto = pointService.getPointByMember(principal.getName());
         model.addAttribute("point", pointDto);
+        model.addAttribute("recentOrderNo", orderService.getRecentOrder().getOrderNo());
         return "order/checkout";
     }
 
     @GetMapping("cart")
     public String cart(){
         return "/order/cart/cart";
+    }
+
+    @GetMapping("modify-address/{orderNo}")
+    public String modifyAddress(Model model, @PathVariable Long orderNo){
+        model.addAttribute("orderNo", orderNo);
+        return "/order/modify_address";
     }
 }

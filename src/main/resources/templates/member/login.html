@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
     <link rel="stylesheet" href="/member/css/loginStyle.css">
 </head>
+<main layout:fragment="content">
 <body>
     <div class="login-container">
         <div class="login-box">
@@ -20,13 +21,15 @@
                 <button type="button" id="loginButton" class="btn btn-purple">로그인</button>
             </form>
             <!-- 구글 로그인 버튼 -->
-		    <a href="/oauth2/authorization/google"> 
-		        <button>Google 계정으로 로그인</button>
-		    </a>
+			<a href="/oauth2/authorization/google" class="google-login-btn">
+			    <img src="/images/google-icon.png" alt="Google Icon" class="google-icon">
+			    Google 계정으로 로그인
+			</a>
         </div>
     </div>
     <script src="/member/js/jwtLogin.js"></script>
 </body>
+</main>
 </html>
 
 

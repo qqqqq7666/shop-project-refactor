@@ -26,6 +26,10 @@ public class ChatService {
         return chatRoom;
     }
     
+    public ChatRoom getRoom(String roomId) {
+        return rooms.get(roomId);
+    }
+    
     // 방 목록에서 대기/진행중인 방만 조회
     public List<ChatRoom> getWaitingOrInProgressRooms() {
         List<ChatRoom> result = new ArrayList<>();
@@ -34,8 +38,7 @@ public class ChatService {
                 result.add(room);
             }
         }
-        
-        System.out.println("rooms.size() = " + rooms.size());
+
         return result;
     }
 
@@ -44,6 +47,14 @@ public class ChatService {
         if (room != null) {
             room.setAdminId(adminId);
             room.setStatus("IN_PROGRESS");
+        }
+    }
+    
+    public void endChat(String roomId) {
+        ChatRoom room = rooms.get(roomId);
+        if (room != null) {
+            room.setStatus("CLOSED");
+            System.out.println("Chat room " + roomId + " is closed");
         }
     }
     

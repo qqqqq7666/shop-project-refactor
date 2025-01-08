@@ -14,6 +14,9 @@ const payMethodArray = [
     "TOSS"
 ];
 
+const cartList = document.getElementById("cart-list");
+const cart = JSON.parse(localStorage.getItem("cart"));
+
 // 유효성 검사
 (() => {
     'use strict'
@@ -51,8 +54,8 @@ function sample6_execDaumPostcode() {
 
             // 각 주소의 노출 규칙에 따라 주소를 조합한다.
             // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-            var addr = ''; // 주소 변수
-            var extraAddr = ''; // 참고항목 변수
+            let addr = ''; // 주소 변수
+            let extraAddr = ''; // 참고항목 변수
 
             //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
             if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
@@ -88,9 +91,6 @@ function sample6_execDaumPostcode() {
         }
     }).open();
 }
-
-const cartList = document.getElementById("cart-list");
-const cart = JSON.parse(localStorage.getItem("cart"));
 
 // 결제 품목 표시
 function renderProduct() {
@@ -131,8 +131,11 @@ function renderProduct() {
     if (total >= 50000) {
         const discount = document.getElementById("discount");
         discount.style.removeProperty("display");
-    } else
+        document.getElementById("delivery-fee").textContent = "무료"
+    } else {
+        document.getElementById("delivery-fee").textContent = "3,000원";
         total += 3000;
+    }
 
     document.getElementById("total").innerText = `${total.toLocaleString()}원`;
 }
@@ -198,18 +201,27 @@ function requestPay(payInfo, paymentDto, orderDetailDtoLIst, usedPointRequestDto
     );
 }
 
+// 결제 요청
 async function checkout() {
-    if (formChecked && confirm("주문 하시겠습니까?")) {
-        const pointAmount = parseInt(document.getElementById("point-input").value);
+    if (formChecked) {
+        const orderNo = currentOrderNo;
+        let pointAmount;
+        if(isNaN(parseInt(document.getElementById("point-input").value)))
+            pointAmount = 0;
+        else
+            pointAmount = parseInt(document.getElementById("point-input").value);
         let isPaidWithPoint = false;
         if(pointAmount > 0)
             isPaidWithPoint = true;
-        const orderNoJson = await fetch("/api/v1/orders/recent-order-no");
-        const orderNo = await orderNoJson.json() + 1;
-        window.addEventListener("beforeunload", async (event) => {
+
+        // 결제 도중 페이지 벗어나기 방지
+        window.addEventListener("beforeunload", event => {
             event.preventDefault();
         });
-        window.addEventListener("pagehide", checkoutFail.bind(orderNo));
+
+        // 결제 도중 나가면 결제 취소 처리
+        window.addEventListener("pagehide", checkoutFail);
+
         const orderDetailDtoList = [];
         cart.forEach(item => {
             item.option.forEach(o => {
@@ -236,13 +248,10 @@ async function checkout() {
             return;
         }
 
-        console.log(orderDetailDtoList);
-
         let member;
 
         try {
-            const response = await fetch("/api/v1/orders/member-info")
-            member = await response.json();
+            member = await (await fetch("/api/v1/orders/member-info")).json();
         } catch (error) {
             alert("로그인이 만료되었습니다.");
             window.location.href = "/";
@@ -250,7 +259,6 @@ async function checkout() {
         }
 
         const payMethodVal = document.querySelector("select[name = 'payMethod']").value;
-
         const channelKey = channelKeyArray[parseInt(payMethodVal)];
         const payMethod = payMethodArray[parseInt(payMethodVal)];
 
@@ -310,6 +318,8 @@ async function checkout() {
             name = cart[0].name;
         else
             name = `${cart[0].name} 외 ${cart.length - 1}개`
+
+        // 결제정보 객체
         const payInfo = {
             channelKey,
             pay_method: "card",
@@ -322,21 +332,6 @@ async function checkout() {
             buyer_addr: member.address,
             buyer_postcode: member.postNo,
             m_redirect_url: "{모바일에서 결제 완료 후 리디렉션 될 URL}",
-            // escrow: true, //에스크로 결제인 경우 설정
-            // vbank_due: "YYYYMMDD",
-            // bypass: {
-            //     // PC 경우
-            //     acceptmethod: "noeasypay", // 간편결제 버튼을 통합결제창에서 제외(PC)
-            //     // acceptmethod: "cardpoint", // 카드포인트 사용시 설정(PC)
-            //     // 모바일 경우
-            //     P_RESERVED: "noeasypay=Y", // 간편결제 버튼을 통합결제창에서 제외(모바일)
-            //     // P_RESERVED: "cp_yn=Y", // 카드포인트 사용시 설정(모바일)
-            //     // P_RESERVED: "twotrs_bank=Y&iosapp=Y&app_scheme=your_app_scheme://", // iOS에서 계좌이체시 결제가 이뤄지던 앱으로 돌아가기
-            // },
-            // period: {
-            //     from: "20240101", //YYYYMMDD
-            //     to: "20301231", //YYYYMMDD
-            // },
         };
 
         const paymentDto = {
@@ -382,38 +377,22 @@ function usePoint(usedPointRequestDto){
     })
 }
 
-// function savePoint(savedPointRequestDto){
-//     fetch("/api/v1/points/save-point", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(savedPointRequestDto)
-//     })
-//         .then(response => {
-//             if(!response.ok){
-//                 console.log("포인트 적립 안됨");
-//             }
-//         })
-// }
-
-function checkoutFail(orderNo){
-    fetch(`/api/v1/orders/${orderNo.toString()}/update-status`, {
-        method: "PATCH",
-        body: "FAIL",
-        headers: {
-            "Content-Type": 'application/json',
-        },
-        keepalive: true,
-    })
-        .then(response => {
-            if(response.ok)
-                return response.json();
-        });
+function checkoutFail(){
+    navigator.sendBeacon(`http://localhost:8080/api/v1/orders/${currentOrderNo}/payment-fail`);
 }
 
+function totalCount() {
+    let cnt = 0;
+    cart.forEach(item => item.option.forEach(o => cnt += o.quantity));
+    return cnt;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("point-input").value = 0;
+});
+
 document.getElementById("checkout-btn").addEventListener("click", checkout);
-document.getElementById("total-count").innerText = cart.length;
+document.getElementById("total-count").innerText = totalCount();
 const requirementSelect = document.getElementById("requirement");
 const requireTextarea = document.getElementById("message-textarea");
 const contact = document.querySelector("input[name = 'contact']");
@@ -446,3 +425,5 @@ contact.addEventListener('input', () => {
     contact.value = value;
 });
 renderProduct();
+
+localStorage.setItem("theme", "light");

@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
 document.getElementById('addSizeColorStock').addEventListener('click', function () {
     const container = document.getElementById('sizeColorStockContainer');
 
@@ -53,15 +52,15 @@ document.getElementById('addSizeColorStock').addEventListener('click', function 
     const div = document.createElement('div');
     div.classList.add('size-color-stock-group');
     div.innerHTML = `
-    <select name="sizes[]" required>
+    <select name="sizes[]" required class="form-control">
       <option value="">사이즈 선택</option>
       <option value="S">S</option>
       <option value="M">M</option>
       <option value="L">L</option>
       <option value="XL">XL</option>
     </select>
-    <input type="text" name="colors[]" placeholder="색상 입력" required>
-    <input type="number" name="stocks[]" placeholder="재고 입력" min="0" required>
+    <input class="form-control" type="text" name="colors[]" placeholder="색상 입력" required>
+    <input class="form-control" type="number" name="stocks[]" placeholder="재고 입력" min="0" required>
     <button type="button" class="remove-size-color-stock">삭제</button>
   `;
 
@@ -74,8 +73,6 @@ document.getElementById('addSizeColorStock').addEventListener('click', function 
     });
 });
 
-
-
 const imageInput = document.getElementById("images");
 const imagePreviewList = document.getElementById("imagePreviewList");
 let images = []; // 이미지 정보 저장 (file과 order)
@@ -84,28 +81,47 @@ const customFileButton = document.getElementById("customFileButton");
 const fileCountMessage = document.getElementById("fileCountMessage");
 
 customFileButton.addEventListener("click", () => {
+    console.log("파일 선택 버튼 클릭");
     imageInput.click(); // 실제 파일 선택 필드 클릭
 });
 
-imageInput.addEventListener("change", () => {
-    const newFiles = Array.from(imageInput.files);
+imageInput.addEventListener("change", async function (event) {
+    const files = Array.from(imageInput.files);
+    console.log("선택된 파일 목록:", images); // 파일 데이터 출력
 
     // 현재 이미지 개수 + 새로 추가된 파일 개수 확인
-    if (images.length + newFiles.length > 5) {
+    if (images.length + files.length > 5) {
         alert("*** 이미지는 최대 5개까지 저장 가능합니다 ***");
         imageInput.value = ""; // 입력값 초기화
         return;
     }
 
-    // 새 파일을 기존 배열에 추가
-    newFiles.forEach((file) => {
-        images.push({ file, order: images.length + 1 }); // 새로운 파일 추가
-    });
+    for (const file of files) {
+        console.log("파일 처리 시작");
+        if (file.type.startsWith("image/")) {
+            try {
+                // 이미지 압축 처리
+                const compressedFile = await compressImage(file, 0.8, 800); // 압축 실행
+                images.push({ file: compressedFile, order: images.length + 1 }); // 압축된 파일 추가
+                console.log("압축된 파일 추가 완료");
+            } catch (error) {
+                console.error("이미지 압축 실패:", error);
+            }
+        } else {
+            images.push({ file, order: images.length + 1 }); // 이미지가 아닌 경우 원본 파일 추가
+            console.log("원본 파일 추가 완료");
+        }
+    }
 
-    console.log("선택된 파일 목록:", images); // 파일 데이터 출력
+    // 이미지 미리보기 렌더링
     renderImagePreviews();
-    fileCountMessage.textContent = `선택된 파일: ${images.length}개`; // 파일 개수 표시
-    imageInput.value = ""; // 같은 파일 재선택 가능하도록 초기화
+    console.log("최종 선택된 파일 목록:", images);
+
+    // 파일 개수 표시
+    fileCountMessage.textContent = `선택된 파일: ${images.length}개`;
+
+    // 입력값 초기화로 같은 파일 재선택 가능하도록 설정
+    imageInput.value = "";
 });
 
 function renderImagePreviews() {
@@ -114,6 +130,9 @@ function renderImagePreviews() {
     images.forEach((image, index) => {
         const li = document.createElement("li");
         li.classList.add("image-item");
+        if (index === 0) {
+            li.classList.add("highlight"); // 첫 번째 이미지에만 highlight 클래스 추가
+        }
         li.setAttribute("data-index", index); // 인덱스 저장
 
         li.innerHTML = `
@@ -175,9 +194,57 @@ function swapImages(fromIndex, toIndex) {
 function removeImage(index) {
     images.splice(index, 1); // 해당 인덱스 이미지 삭제
     images.forEach((image, i) => (image.order = i + 1)); // order 재정렬
+    fileCountMessage.textContent = `선택된 파일: ${images.length}개`;
     renderImagePreviews();
 }
 
+
+function compressImage(file, quality = 0.8, maxWidth = 800) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+
+                // 이미지 크기 조정
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth) {
+                    height = (maxWidth / width) * height;
+                    width = maxWidth;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // 압축된 데이터 생성
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) {
+                            resolve(new File([blob], file.name, { type: blob.type }));
+                        } else {
+                            reject(new Error("이미지 압축 실패"));
+                        }
+                    },
+                    file.type,
+                    quality
+                );
+            };
+
+            img.onerror = () => reject(new Error("이미지 로드 실패"));
+        };
+
+        reader.onerror = () => reject(new Error("파일 읽기 실패"));
+    });
+}
 
 
 // 폼 제출 처리
@@ -185,6 +252,12 @@ document.getElementById('productForm').addEventListener('submit', function (even
     event.preventDefault();
 
     const formData = new FormData();
+
+    if(images.length === 0) {
+        fileCountMessage.textContent = '최소 1개의 이미지를 선택해야 합니다.';
+        fileCountMessage.style.color = 'red';
+    }
+
 
     // ProductRequestDto 생성
     const productRequestDto = {
@@ -237,11 +310,12 @@ document.getElementById('productForm').addEventListener('submit', function (even
             return response.json();
         })
         .then(data => {
+            alert("상품 등록이 성공적으로 완료되었습니다.");
             console.log("상품 등록 성공:", data);
-            alert('상품이 성공적으로 등록되었습니다!');
             window.location.href = '/admin/products';
         })
         .catch(errors => {
+            alert("상품 등록 중 문제가 발생했습니다.", errors);
             // 필드별 에러 메시지 표시
             Object.keys(errors).forEach(field => {
                 const errorElement = document.getElementById(`${field}Error`);

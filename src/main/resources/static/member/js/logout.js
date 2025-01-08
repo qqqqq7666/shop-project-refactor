@@ -8,6 +8,10 @@ async function logout() {
         });
         
         if (response.ok) {
+			localStorage.removeItem('chatbotMessages');
+			localStorage.removeItem('currentRoomId');
+			localStorage.removeItem('isCounseling');
+			localStorage.removeItem('userChatMessages');
             alert('로그아웃 되었습니다.');
             window.location.href = '/login';
         } else {

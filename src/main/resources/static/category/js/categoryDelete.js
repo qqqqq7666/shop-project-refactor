@@ -1,5 +1,10 @@
 function deleteSubCategory(categoryId) {
     console.log("categoryId: " + categoryId);
+    const isConfirmed = confirm("해당 카테고리를 삭제하시겠습니까?");
+    if (!isConfirmed) {
+        return;
+    }
+
     fetch('/api/v1/categories/delete', {
         method: 'DELETE',
         headers: {
@@ -14,6 +19,8 @@ function deleteSubCategory(categoryId) {
                 return response.json();
             } else if (response.status === 404) {
                 throw new Error('카테고리 삭제 실패');
+            } else if (response.status === 409) { // 해당 카테고리를 가지고 있는 상품 존재
+                return response.json().then(errorMessage => {throw errorMessage});
             } else { // 그 외 에러 처리
                 throw new Error("카테고리 삭제에 실패했습니다.");
             }
@@ -23,16 +30,17 @@ function deleteSubCategory(categoryId) {
             deleteCategoryToUI(data);
         })
         .catch(error => {
-            console.error("에러 발생:", error);
-            alert('문제가 발생했습니다. 다시 시도해주세요.');
+            console.error('Error:', error);
+            alert(error.message);
         });
 }
 
 function deleteCategoryToUI(data) {
     const subCategory = document.getElementById(`sub-category-${data.subCategoryId}`);
-    const parentElement = subCategory.parentElement;
+    const tdTag = subCategory.parentElement;
+    const trTag = tdTag.parentElement;
 
-    parentElement.remove();
+    trTag.remove();
 
     console.log(data.existMainCategory === false);
     if(data.existMainCategory === false) {

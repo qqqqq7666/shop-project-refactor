@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>마이페이지</title>
+
+
+    <script>
+      window.isCounseling = false;
+    </script>
+
+    <link rel="icon" href="/images/eclipse_icon.png"/>
+    
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/member/css/mypageStyle.css">
 	<link rel="stylesheet" href="/chatbot/css/chatbotStyle.css">
 
-    <!-- SockJS, StompJS (CDN) -->
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-	<script src="/chatbot/js/chatbotWork.js"></script>
-	
 </head>
 <body>
+<main layout:fragment="content">
     <div class="mypage-container">
         <!-- 상단 프로필 섹션 -->
         <div class="profile-header">
@@ -27,11 +31,28 @@
                 </div>
             </div>
             <div class="profile-button">
-                <a href="/mypage/edit">
-                    <button>회원정보 수정</button>
+                <a href="/favorites" class="favorite">
+                    <button>찜 목록</button>
                 </a>
+                <!--  <a href="/mypage/edit">
+                    <button>회원정보 수정</button>
+                </a>-->
+
+                <button id="edit-profile-btn">회원정보 수정</button>
             </div>
         </div>
+
+        <!-- 비밀번호 입력 모달 -->
+		<div id="password-modal" class="modal">
+		    <div class="modal-content">
+		        <h3>비밀번호 확인</h3>
+		        <input type="password" id="password-input" placeholder="현재 비밀번호를 입력하세요">
+		        <div class="modal-actions">
+		            <button id="password-confirm-btn">확인</button>
+		            <button id="password-cancel-btn">취소</button>
+		        </div>
+		    </div>
+		</div>
 
         <!-- 정보 테이블 -->
         <table class="info-table">
@@ -45,38 +66,15 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><a href="/order">주문개수</td>
+                    <td><a href="/order" th:text="${orderCount}">주문개수</a></td>
                     <td><a href="/my-reviews" th:text="${reviewCount}"></a></td>
-                    <td><a href="/my-inquiries">문의개수</a></td>
+                    <td><a href="/my-inquiries" th:text="${inquiryCount}">0</a></td>
                     <td><a th:text="${point.getBalance()}" href="/point"></a></td>
                 </tr>
             </tbody>
         </table>
     </div>
-    
-    <!-- 챗봇 위젯 HTML -->
-	<div id="chatbot-widget">
-	    <div id="chatbot-header">챗봇</div>
-	    <!-- 추천 질문 버튼 (상단 고정) -->
-	    <div id="chatbot-questions">
-	        <button class="chatbot-question-btn">안녕하세요</button>
-	        <button class="chatbot-question-btn">배송 기간은 얼마나 되나요?</button>
-	        <button class="chatbot-question-btn">환불 정책은 어떻게 되나요?</button>
-	        <button class="chatbot-question-btn">감사합니다</button>
-	        <button id="connect-admin-btn" class="chatbot-question-btn">상담사 연결</button>
-	    </div>
-	    <!-- 대화 내용 -->
-	    <div id="chatbot-content"></div>
-	    <!-- 입력 영역 -->
-		<div id="chatbot-input">
-		    <input type="text" id="chatbot-user-input" placeholder="상담사와 대화를 원한다면 연결해주세요" disabled>
-		    <button id="chatbot-send-btn" disabled>전송</button>
-		</div>
-	</div>
-	
-	<script src="/chatbot/js/userChat.js"></script>
-	
-	
-	
+    <script src="/member/js/mypageModal.js"></script>
+</main>
 </body>
 </html>

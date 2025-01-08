@@ -1,5 +1,5 @@
 .navbar {
-    margin-bottom: 20px;
+    margin-bottom: 0;
     padding-right: 15px;
     border-bottom: 2px solid #5c636a;
 }
@@ -8,4 +8,20 @@
     margin: 10px 10px 10px 15px;
     width: 230px;
     height: 50px;
+}
+
+.navbar-nav {
+    display: flex;
+    flex-direction: row; /* 가로 방향으로 정렬 */
+    align-items: center; /* 수직 정렬 */
+    gap: 10px; /* 메뉴 간격 */
+}
+
+.navbar-nav .nav-item {
+    display: inline-block; /* 가로 정렬 유지 */
+}
+
+.navbar-nav .nav-link {
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    padding: 5px 10px; /* 여백 조정 */
 }

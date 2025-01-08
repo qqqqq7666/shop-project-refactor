@@ -1,12 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Product Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/order/css/cart.css">
+    <link rel="stylesheet" href="/common/css/common-button.css">
+    <link href="/common/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/bootstrap.min.css">
     <link rel="stylesheet" href="/product/css/productDetail.css">
 </head>
 <body>
-<div class="product-detail-container">
+<main layout:fragment="content">
+    <div class="product-detail-container">
+        <div id="productData" th:data-product-id="${product.productId}" data-color=""></div>
     <!-- 이미지 섹션 -->
     <div class="product-image">
         <!-- 이미지 슬라이드 -->
@@ -45,27 +52,23 @@
         <h1 th:text="${product.productName}">Product Name</h1>
         <p id="productPrice" th:data-price="${product.price}" th:text="'₩' + ${#numbers.formatInteger(product.price, 3, 'COMMA')}">가격</p>
 
-        <h3>Details</h3>
-        <p th:text="${product.description}">설명</p>
+        <h1>Details</h1>
+        <p style="white-space: pre-line;" th:text="${product.description}">설명</p>
 
         <!-- 사이즈 및 색상 옵션 -->
-        <div class = "sort-dropdown-size">
-            <label>사이즈</label>
-            <select id="sizeSelect">
-                <option value="">사이즈를 선택하세요</option>
-                <option th:each="option : ${product.options}"
-                        th:text="${option.size}"
-                        th:value="${option.size}">Size</option>
-            </select>
-        </div>
-
-        <div class = "sort-dropdown-color">
-            <label>색상</label>
-            <select id="colorSelect">
+        <div class="mb-3">
+            <label class="form-label" >색상</label>
+            <select class="form-control" id="colorSelect" th:data-product-id="${product.productId}">
                 <option value="">색상을 선택하세요</option>
                 <option th:each="option : ${product.options}"
                         th:text="${option.color}"
                         th:value="${option.color}">Color</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">사이즈</label>
+            <select class="form-control" id="sizeSelect" disabled>
+                <option value="">사이즈를 선택하세요</option>
             </select>
         </div>
 
@@ -82,14 +85,43 @@
                 <button id="add-product-btn"
                         th:onclick="addItem([[${product.getProductId()}]], [[${product.getProductName()}]], [[${product.getPrice()}]], 1); alert('장바구니에 상품이 담겼습니다.');"
                 >Add to cart</button>
-                <button onclick="location.href = '/order/cart'">장바구니</button>
-                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/inquiries'|">상품 문의 목록</button>
-                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/reviews'|">상품 리뷰 목록</button>
+                <button id="favoriteButton" th:onclick="toggleFavorite([[${product.productId}]]);"><i class="bi bi-heart"></i></button>
+                <script>
+                    function toggleFavorite(productId) {
+                        fetch(`/api/favorites/${productId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    alert("찜 목록이 업데이트되었습니다.");
+                                } else {
+                                    alert("이미 찜한 상품입니다.");
+                                }
+                            });
+                    }
+                </script>
+            </div>
+            <div class="product-review">
+                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/reviews'|">Review</button>
+                <button th:onclick="|location.href='@{/products/{productId}(productId=${product.productId})}' + '/inquiries'|">Q&A</button>
             </div>
         </div>
     </div>
 </div>
+    <script src="/order/js/productDetail.js"></script>
+    <script th:inline="javascript">
+        const productOptions = /*[[${product.options}]]*/ [];
+        if (!productOptions.length) {
+            console.error("productOptions이 비어 있습니다.");
+        } else {
+            console.log("초기 productOptions:", productOptions);
+        }
+    </script>
+    <script th:inline="javascript">
+        const productId = /*[[${productId}]]*/ 0; // Thymeleaf 변수가 렌더링 시 대체됨
+    </script>
+    <script src="/product/js/productDetail.js"></script>
+</main>
 </body>
-<script src="/order/js/productDetail.js"></script>
-<script src="/product/js/productDetail.js"></script>
 </html>

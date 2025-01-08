@@ -4,6 +4,7 @@ import com.example.shop_project.category.dto.CategoryResDto;
 import com.example.shop_project.category.service.CategoryService;
 import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,14 @@ public class productViewController {
                                   @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort,
                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                   @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                                  @RequestParam(value = "categoryId", required = false) Long categoryId,
                                   Model model) {
-        Page<ProductResponseDto> productPage = productService.getProductList(search, sort, page, size);
+
+        Page<ProductResponseDto> productPage = productService.getProductList(categoryId, search, sort, page, size);
+
+        String subCategoryName = categoryId != null ? categoryService.getSubCategoryName(categoryId) : "";
+        String mainCategoryName = categoryId != null ? categoryService.getMainCategoryName(categoryId) : "전체";
+
 
         // 페이지네이션 블록 설정
         int blockSize = 5; // 페이지 블록 크기 설정
@@ -63,41 +70,70 @@ public class productViewController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("search", search);
         model.addAttribute("sort", sort);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("subCategoryName", subCategoryName);
+        model.addAttribute("mainCategoryName", mainCategoryName);
         return "products/productList";
     }
 
     @GetMapping("/detail/{productId}")
-    public String getProductDetail(@PathVariable("productId") Long productId, Model model, HttpSession session) {
+    public String getProductDetail(@PathVariable("productId") Long productId, Model model, HttpSession session, HttpServletRequest request) {
         // 상품 정보 로드
         ProductResponseDto product = productService.getProductDetail(productId);
         model.addAttribute("product", product);
+        model.addAttribute("productId", productId);
 
-        // Redis에 상품 ID 저장 (TTL: 5초)
-        redisTemplate.opsForValue().set("view:" + productId, "0", Duration.ofSeconds(70));
-
-
+        // Redis에 상품 ID 저장 (TTL: 1시간)
+        // 조회수가 없으면 초기값 저장
+        String clientIp = productService.getClientIp(request);
+        String key = "view:" + productId + ":" + clientIp;
+        if (!Boolean.TRUE.equals(redisTemplate.hasKey(key))) { // 처음 조회된 ip
+            redisTemplate.opsForValue().set(key, "1", Duration.ofHours(1));
+            // 처음 조회된 ip일때만 해당 productId에 대해 totalView를 증가시킴
+            String totalViewKey = "view:total:" + productId;
+            redisTemplate.opsForValue().increment(totalViewKey);
+        }
         return "products/productDetail";
     }
 
-    // 조회수 증가 API
     @PostMapping("/detail/{productId}/confirm-view")
-    public ResponseEntity<String> confirmView(@PathVariable("productId") Long productId) {
+    public ResponseEntity<String> confirmView(@PathVariable("productId") Long productId, HttpServletRequest request) {
         log.debug("### API 요청 들어오는지 확인");
-        // Redis에서 키 확인
-        String key = "view:" + productId;
-        if (redisTemplate.hasKey(key)) {
-            // 조회수 증가
-            // productService.incrementViewCount(productId);
 
-            // Redis 키 삭제
-            redisTemplate.delete(key);
-
-            return ResponseEntity.ok("조회수 증가");
+        // 유효하지 않은 productId 처리
+        if (productId == null || productId <= 0) {
+            log.error("유효하지 않은 productId: {}", productId);
+            return ResponseEntity.badRequest().body("유효하지 않은 상품 ID");
         }
 
-        return ResponseEntity.badRequest().body("조회수 증가 X");
+        // 총 조회수 Redis 키 확인 및 증가
+        String totalViewKey = "view:total:" + productId;
+        String totalViewCountStr = redisTemplate.opsForValue().get(totalViewKey);
+
+        if (totalViewCountStr == null) {
+            log.error("총 조회수 데이터가 없습니다. productId={}", productId);
+            return ResponseEntity.badRequest().body("총 조회수 데이터가 없습니다.");
+        }
+
+        int totalViewCount;
+        try {
+            totalViewCount = Integer.parseInt(totalViewCountStr);
+        } catch (NumberFormatException e) {
+            log.error("총 조회수 변환 실패. productId={}, 값: {}", productId, totalViewCountStr, e);
+            return ResponseEntity.badRequest().body("총 조회수 데이터 오류");
+        }
+
+        // 조회수 증가
+        productService.incrementViewCount(productId, totalViewCount);
+        log.info("조회수 최종 반영: productId={}, 총 조회수={}", productId, totalViewCount);
+
+        // Redis에서 조회수 초기화
+        redisTemplate.delete(totalViewKey);
+
+        return ResponseEntity.ok("조회수 최종 반영 완료");
     }
 
+    /*
     @Transactional
     @Scheduled(fixedRate = 6000) // 1분마다 실행
     public void syncViewCountsToDB() {
@@ -133,7 +169,7 @@ public class productViewController {
             log.debug("No keys found in Redis for view counts.");
         }
     }
-
+*/
 
 
 

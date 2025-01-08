@@ -3,6 +3,7 @@ package com.example.shop_project.comment.entity;
 import com.example.shop_project.inquiry.entity.Inquiry;
 import com.example.shop_project.member.entity.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class Comment {
     private Member member; // 작성자
 
     @Column(nullable = false)
+    @Size(max = 500, message = "문의 답변은 500자 이내로 작성해주세요.")
     private String content; // 댓글 내용
 
     @Column(nullable = false)

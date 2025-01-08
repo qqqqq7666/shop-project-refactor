@@ -5,5 +5,5 @@ import com.example.shop_project.product.entity.ProductImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface productImageRepository extends JpaRepository<ProductImage, Long> {
-
+    ProductImage findFirstByProductAndSortOrder(Product product, int sortOrder);
 }

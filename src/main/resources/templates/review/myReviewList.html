@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <title>나의 리뷰</title>
@@ -8,6 +9,7 @@
     <script src="/review/js/reviewList.js" defer></script>
 </head>
 <body>
+<main layout:fragment="content">
 <div class="container mt-5 d-flex flex-column align-items-center">
     <h2 class="mr-3 mb-3 ">나의 리뷰</h2>
     <div id="review-list">
@@ -15,10 +17,15 @@
             <p class="mb-0">작성한 리뷰가 없습니다.</p>
         </div>
         <div class="review" th:each="review : ${reviews}">
-            <p class="review-info d-flex align-items-center">
-                <span class="fs-4" th:text="${review.productName}"></span>
-                <span class="mx-2" th:text="|${review.color} / ${review.size}|"></span>
-            </p>
+            <div class="review-info d-flex align-items-center">
+                <div class="me-3">
+                    <img th:src="|http://localhost:8080${review.imageUrl}|" alt="Product Image" style="max-width: 100px; height: auto; border-radius: 5px;">
+                </div>
+                <div>
+                    <p class="fs-4 mb-2" th:text="${review.productName}"></p>
+                    <p class="ms-1 mb-0" th:text="|${review.color} / ${review.size}|"></p>
+                </div>
+            </div>
             <p class="review-info">
                 <span th:each="i : ${#numbers.sequence(1, review.stars)}">★</span>
                 <span class="create-date" th:text="${review.date}"></span>
@@ -52,5 +59,6 @@
         </ul>
     </nav>
 </div>
+</main>
 </body>
 </html>
