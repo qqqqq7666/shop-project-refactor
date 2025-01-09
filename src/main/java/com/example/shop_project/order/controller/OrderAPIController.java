@@ -108,7 +108,6 @@ public class OrderAPIController {
     @PostMapping("/{orderNo}/payment-fail")
     public ResponseEntity<Void> paymentFail(@PathVariable Long orderNo){
         orderService.updateOrderStatus(orderNo, OrderStatus.FAIL);
-        log.warn("이거 호출됨");
         return ResponseEntity.ok().build();
     }
 }
