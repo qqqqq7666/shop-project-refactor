@@ -1,8 +1,9 @@
-package com.example.shop_project.order.controller;
+package com.example.shop_project.payment.controller;
 import com.example.shop_project.order.dto.OrderDetailDto;
-import com.example.shop_project.order.dto.PaymentDto;
-import com.example.shop_project.order.entity.Payment;
-import com.example.shop_project.order.service.PaymentService;
+import com.example.shop_project.payment.dto.PaymentDto;
+import com.example.shop_project.payment.entity.Payment;
+import com.example.shop_project.payment.service.PaymentService;
+import com.example.shop_project.product.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,9 @@ import java.util.List;
 @RequestMapping("api/v1/payments")
 public class PaymentAPIController {
     @Autowired
-    PaymentService paymentService;
+    private PaymentService paymentService;
+    @Autowired
+    private ProductService productService;
 
     @PostMapping("/create")
     public ResponseEntity<Payment> createPayment(@Validated @RequestBody PaymentDto paymentDto){
@@ -29,7 +32,7 @@ public class PaymentAPIController {
     @PatchMapping("/decrease-product-stock")
     public ResponseEntity<Void> decreaseProductStock(@Validated @RequestBody List<OrderDetailDto> orderDetailDtoList){
         try {
-            paymentService.decreaseProductStock(orderDetailDtoList);
+            productService.decreaseProductStock(orderDetailDtoList);
         } catch (IllegalStateException e){
             return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
                     .location(URI.create("/")).build();
@@ -39,7 +42,7 @@ public class PaymentAPIController {
 
     @PatchMapping("/restore-product-stock")
     public ResponseEntity<Void> restoreProductStock(@Validated @RequestBody List<OrderDetailDto> orderDetailDtoList){
-        paymentService.productStockRollback(orderDetailDtoList);
+        productService.productStockRollback(orderDetailDtoList);
         return ResponseEntity.ok().build();
     }
 }

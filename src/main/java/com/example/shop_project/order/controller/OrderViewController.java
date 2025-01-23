@@ -1,11 +1,10 @@
 package com.example.shop_project.order.controller;
 
-import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.service.OrderService;
-import com.example.shop_project.order.service.PaymentService;
+import com.example.shop_project.payment.service.PaymentService;
 import com.example.shop_project.point.dto.PointDto;
 import com.example.shop_project.point.service.PointService;
 import com.example.shop_project.review.service.ReviewService;
@@ -13,12 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;

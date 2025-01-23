@@ -5,7 +5,6 @@ import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.order.dto.AddressDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
-import com.example.shop_project.order.entity.CanceledOrder;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.service.OrderService;
@@ -78,7 +77,6 @@ public class OrderAPIController {
 
     @PostMapping("/{orderNo}/canceled-order")
     public RedirectView cancelOrder(@PathVariable("orderNo") Long orderNo, String reason){
-        CanceledOrder response = orderService.createCanceledOrder(orderNo, reason);
         orderService.updateOrderStatus(orderNo, OrderStatus.REFUND_REQUIRE);
         return new RedirectView("/order/" + orderNo);
     }

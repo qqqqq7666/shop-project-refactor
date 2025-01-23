@@ -1,7 +1,7 @@
-package com.example.shop_project.order.repository;
+package com.example.shop_project.payment.repository;
 
 import com.example.shop_project.order.entity.Order;
-import com.example.shop_project.order.entity.Payment;
+import com.example.shop_project.payment.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

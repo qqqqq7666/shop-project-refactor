@@ -7,8 +7,11 @@ import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
-import com.example.shop_project.order.dto.PaymentDto;
+import com.example.shop_project.payment.dto.PaymentDto;
 import com.example.shop_project.order.entity.*;
+import com.example.shop_project.payment.entity.PayMethod;
+import com.example.shop_project.payment.entity.PayStatus;
+import com.example.shop_project.payment.entity.Payment;
 import com.example.shop_project.product.entity.Product;
 import com.nimbusds.jose.shaded.gson.*;
 

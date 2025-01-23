@@ -8,7 +8,7 @@ import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.mapper.OrderMapper;
 import com.example.shop_project.order.repository.OrderDetailRepository;
 import com.example.shop_project.order.repository.OrderRepository;
-import com.example.shop_project.order.repository.PaymentRepository;
+import com.example.shop_project.payment.repository.PaymentRepository;
 import com.example.shop_project.product.repository.ProductRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

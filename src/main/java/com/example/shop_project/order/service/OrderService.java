@@ -1,6 +1,5 @@
 package com.example.shop_project.order.service;
 
-import com.example.shop_project.member.repository.MemberRepository;
 import com.example.shop_project.order.dto.AddressDto;
 import com.example.shop_project.order.dto.OrderRequestDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
@@ -8,13 +7,7 @@ import com.example.shop_project.order.entity.CanceledOrder;
 import com.example.shop_project.order.entity.Order;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.OrderStatus;
-import com.example.shop_project.order.mapper.OrderMapper;
-import com.example.shop_project.order.repository.CanceledOrderRepository;
-import com.example.shop_project.order.repository.OrderDetailRepository;
-import com.example.shop_project.order.repository.OrderRepository;
-import com.example.shop_project.order.repository.PaymentRepository;
-import com.example.shop_project.point.repository.UsedPointRepository;
-import com.example.shop_project.product.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,16 +19,11 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class OrderService {
     private final OrderRefundService orderRefundService;
     private final OrderManagementService orderManagementService;
     private final OrderRetrieveService orderRetrieveService;
-
-    public OrderService(OrderRefundService orderRefundService, OrderManagementService orderManagementService, OrderRetrieveService orderRetrieveService) {
-        this.orderRefundService = orderRefundService;
-        this.orderManagementService = orderManagementService;
-        this.orderRetrieveService = orderRetrieveService;
-    }
 
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {

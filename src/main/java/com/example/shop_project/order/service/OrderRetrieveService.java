@@ -42,7 +42,7 @@ public class OrderRetrieveService {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         Page<Order> orderPage = orderRepository.findAllByMemberAndOrderStatusNotAndOrderDetailListProductProductNameContainingOrderByOrderNoDesc(member, OrderStatus.FAIL, keyword, pageable);
 
-        return orderPage.map(order -> orderMapper.toResponseDto(order));
+        return orderPage.map(orderMapper::toResponseDto);
     }
 
     public OrderResponseDto getOrderByOrderNo(Long orderNo) {
@@ -59,9 +59,9 @@ public class OrderRetrieveService {
 
     public Page<OrderResponseDto> getTotalOrderPage(String email, String orderStatus, Pageable pageable){
         if(orderStatus.equals("all"))
-            return orderRepository.findAllByMemberEmailContainingOrderByOrderNoDesc(email, pageable).map(order -> orderMapper.toResponseDto(order));
+            return orderRepository.findAllByMemberEmailContainingOrderByOrderNoDesc(email, pageable).map(orderMapper::toResponseDto);
         else
             return orderRepository.findAllByOrderStatusAndMemberEmailContainingOrderByOrderNoDesc(OrderStatus.valueOf(orderStatus), email, pageable)
-                    .map(order -> orderMapper.toResponseDto(order));
+                    .map(orderMapper::toResponseDto);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.shop_project.product.service;
 
+import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.product.dto.ProductImageDto;
 import com.example.shop_project.product.dto.ProductOptionDto;
 import com.example.shop_project.product.dto.ProductRequestDto;
@@ -21,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -396,5 +394,39 @@ public class ProductService {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    @Transactional
+    public void decreaseProductStock(List<OrderDetailDto> orderDetailDtoList){
+        orderDetailDtoList.forEach(orderDetailDto -> {
+            Product product = productRepository.findById(orderDetailDto.getProductId()).orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+
+            for(ProductOption option : product.getOptions()){
+                if(option.getSize() == orderDetailDto.getSize() && Objects.equals(option.getColor(), orderDetailDto.getColor())) {
+                    int updatedStock = (int) (option.getStockQuantity() - orderDetailDto.getQuantity());
+                    if(updatedStock < 0)
+                        throw new IllegalStateException("상품 재고가 부족합니다.");
+                    option.setStockQuantity(updatedStock);
+                    break;
+                }
+            }
+            productRepository.save(product);
+        });
+    }
+
+    @Transactional
+    public void productStockRollback(List<OrderDetailDto> orderDetailDtoList){
+        orderDetailDtoList.forEach(orderDetailDto -> {
+            Product product = productRepository.findById(orderDetailDto.getProductId()).orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+
+            for(ProductOption option : product.getOptions()){
+                if(option.getSize() == orderDetailDto.getSize() && Objects.equals(option.getColor(), orderDetailDto.getColor())) {
+                    int updatedStock = (int) (option.getStockQuantity() + orderDetailDto.getQuantity());
+                    option.setStockQuantity(updatedStock);
+                    break;
+                }
+            }
+            productRepository.save(product);
+        });
     }
 }

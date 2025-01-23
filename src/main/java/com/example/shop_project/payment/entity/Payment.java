@@ -1,6 +1,7 @@
-package com.example.shop_project.order.entity;
+package com.example.shop_project.payment.entity;
 
 import com.example.shop_project.common.BaseEntity;
+import com.example.shop_project.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

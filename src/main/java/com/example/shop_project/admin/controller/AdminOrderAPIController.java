@@ -1,11 +1,10 @@
 package com.example.shop_project.admin.controller;
 
-import com.example.shop_project.order.dto.OrderDetailDto;
 import com.example.shop_project.order.dto.OrderResponseDto;
 import com.example.shop_project.order.entity.OrderDetail;
 import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.service.OrderService;
-import com.example.shop_project.order.service.PaymentService;
+import com.example.shop_project.payment.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

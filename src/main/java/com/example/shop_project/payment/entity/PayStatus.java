@@ -1,4 +1,4 @@
-package com.example.shop_project.order.entity;
+package com.example.shop_project.payment.entity;
 
 public enum PayStatus {
     SUCCESS("결제 완료"), CANCEL("결제 취소"), FAIL("결제 실패");
