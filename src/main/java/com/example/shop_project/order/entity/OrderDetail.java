@@ -1,6 +1,6 @@
 package com.example.shop_project.order.entity;
 
-import com.example.shop_project.BaseEntity;
+import com.example.shop_project.common.BaseEntity;
 import com.example.shop_project.product.entity.Product;
 import com.example.shop_project.product.entity.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;

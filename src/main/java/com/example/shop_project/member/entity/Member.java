@@ -1,7 +1,7 @@
 package com.example.shop_project.member.entity;
 import java.time.LocalDateTime;
 
-import com.example.shop_project.BaseEntity;
+import com.example.shop_project.common.BaseEntity;
 import com.example.shop_project.member.Membership;
 import com.example.shop_project.member.Provider;
 import com.example.shop_project.member.Role;

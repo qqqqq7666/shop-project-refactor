@@ -1,9 +1,8 @@
 package com.example.shop_project.point.entity;
 
-import com.example.shop_project.BaseEntity;
+import com.example.shop_project.common.BaseEntity;
 import com.example.shop_project.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

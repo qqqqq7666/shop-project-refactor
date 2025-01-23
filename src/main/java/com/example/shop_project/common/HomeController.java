@@ -1,4 +1,4 @@
-package com.example.shop_project;
+package com.example.shop_project.common;
 
 import java.util.Comparator;
 import java.util.List;
@@ -8,8 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.shop_project.member.repository.MemberRepository;
-import com.example.shop_project.member.service.MemberService;
 import com.example.shop_project.product.dto.ProductResponseDto;
 import com.example.shop_project.product.entity.Product;
 import com.example.shop_project.product.entity.ProductImage;

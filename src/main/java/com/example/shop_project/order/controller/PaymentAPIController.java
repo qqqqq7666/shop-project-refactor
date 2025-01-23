@@ -31,7 +31,6 @@ public class PaymentAPIController {
         try {
             paymentService.decreaseProductStock(orderDetailDtoList);
         } catch (IllegalStateException e){
-            log.error("tlqkfdlkjfas;jfldktlqkfkfktlqkf");
             return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
                     .location(URI.create("/")).build();
         }

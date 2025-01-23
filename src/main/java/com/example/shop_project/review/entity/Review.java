@@ -1,6 +1,5 @@
 package com.example.shop_project.review.entity;
 
-import com.example.shop_project.BaseEntity;
 import com.example.shop_project.member.entity.Member;
 import com.example.shop_project.order.entity.OrderDetail;
 import jakarta.persistence.*;
