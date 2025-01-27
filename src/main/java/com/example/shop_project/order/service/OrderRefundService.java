@@ -24,11 +24,11 @@ public class OrderRefundService {
 
     @Transactional
     public void refund(Long orderNo){
-        CanceledOrder canceledOrder = canceledOrderRepository.findById(orderNo).orElseThrow();
+        CanceledOrder canceledOrder = canceledOrderRepository.findById(orderNo).orElseThrow(() -> new IllegalArgumentException("canceled order doesn't exist"));
         Order order = canceledOrder.getOrder();
         canceledOrder.confirmRequire();
         if(order.getIsPaidWithPoint()){
-            UsedPoint usedPoint = usedPointRepository.findByOrder(order).orElseThrow();
+            UsedPoint usedPoint = usedPointRepository.findByOrder(order).orElseThrow(() -> new IllegalArgumentException("used point doesn't exist"));
             usedPoint.getPoint().rollbackBalance(-usedPoint.getAmount());
             usedPointRepository.delete(usedPoint);
         }
@@ -38,7 +38,7 @@ public class OrderRefundService {
     }
 
     public CanceledOrder createCanceledOrder(Long orderNo, String reason) {
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("order doesn't exist"));
         return canceledOrderRepository.save(CanceledOrder.builder()
                 .order(order)
                 .reason(reason)
@@ -51,7 +51,7 @@ public class OrderRefundService {
 
     @Transactional
     public void deleteCanceledOrder(Long orderNo){
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("order doesn't exist"));
         order.updateStatus(OrderStatus.NEW);
         orderRepository.save(order);
         CanceledOrder canceledOrder = canceledOrderRepository.findById(orderNo).orElseThrow();

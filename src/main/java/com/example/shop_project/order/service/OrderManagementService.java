@@ -39,14 +39,14 @@ public class OrderManagementService {
 
     @Transactional
     public OrderResponseDto updateOrderStatus(Long orderNo, OrderStatus orderStatus) {
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("order doesn't exist"));
         order.updateStatus(orderStatus);
         return orderMapper.toResponseDto(orderRepository.save(order));
     }
 
     @Transactional
     public void deleteOrder(Long orderNo) {
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("order doesn't exist"));
         orderDetailRepository.deleteByOrder(order);
         paymentRepository.deleteByOrder(order);
         orderRepository.deleteByOrderNo(orderNo);
@@ -54,7 +54,7 @@ public class OrderManagementService {
 
     @Transactional
     public void updateAddress(AddressDto addressDto){
-        Order order = orderRepository.findByOrderNo(addressDto.getOrderNo()).orElseThrow();
+        Order order = orderRepository.findByOrderNo(addressDto.getOrderNo()).orElseThrow(() -> new IllegalArgumentException("order doesn't exist"));
         order.updateAddress(addressDto);
         orderRepository.save(order);
     }

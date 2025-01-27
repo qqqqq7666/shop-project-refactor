@@ -39,14 +39,14 @@ public class OrderRetrieveService {
 
     @Transactional(readOnly = true)
     public Page<OrderResponseDto> getOrderPageList(Principal principal, Pageable pageable, String keyword) {
-        Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(() -> new IllegalArgumentException("member doesn't exist"));
         Page<Order> orderPage = orderRepository.findAllByMemberAndOrderStatusNotAndOrderDetailListProductProductNameContainingOrderByOrderNoDesc(member, OrderStatus.FAIL, keyword, pageable);
 
         return orderPage.map(orderMapper::toResponseDto);
     }
 
     public OrderResponseDto getOrderByOrderNo(Long orderNo) {
-        return orderMapper.toResponseDto(orderRepository.findByOrderNo(orderNo).orElseThrow());
+        return orderMapper.toResponseDto(orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new IllegalArgumentException("order doesn't exist")));
     }
 
     public Order getRecentOrder() {
@@ -54,7 +54,7 @@ public class OrderRetrieveService {
     }
 
     public Integer getOrderCountByEmail(String email){
-        return orderRepository.findAllByMember(memberRepository.findByEmail(email).orElseThrow()).size();
+        return orderRepository.findAllByMember(memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("member doesn't exist"))).size();
     }
 
     public Page<OrderResponseDto> getTotalOrderPage(String email, String orderStatus, Pageable pageable){

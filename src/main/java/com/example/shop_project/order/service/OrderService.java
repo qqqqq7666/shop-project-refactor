@@ -57,9 +57,9 @@ public class OrderService {
         return orderRetrieveService.getRecentOrder();
     }
 
-    public CanceledOrder createCanceledOrder(Long orderNo, String reason) {
-        return orderRefundService.createCanceledOrder(orderNo, reason);
-    }
+//    public CanceledOrder createCanceledOrder(Long orderNo, String reason) {
+//        return orderRefundService.createCanceledOrder(orderNo, reason);
+//    }
 
     public CanceledOrder getCanceledOrder(Long orderNo){
         return orderRefundService.getCanceledOrder(orderNo);
