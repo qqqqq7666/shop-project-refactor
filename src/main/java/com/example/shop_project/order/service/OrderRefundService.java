@@ -6,7 +6,8 @@ import com.example.shop_project.order.entity.OrderStatus;
 import com.example.shop_project.order.repository.CanceledOrderRepository;
 import com.example.shop_project.order.repository.OrderRepository;
 import com.example.shop_project.point.entity.UsedPoint;
-import com.example.shop_project.point.repository.UsedPointRepository;import org.springframework.stereotype.Component;
+import com.example.shop_project.point.repository.UsedPointRepository;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component

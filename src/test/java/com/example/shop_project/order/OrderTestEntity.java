@@ -147,7 +147,9 @@ public class OrderTestEntity {
                 "testProfileImage",
                 Role.USER,
                 Membership.BRONZE,
-                false, Provider.NONE);
+                false,
+                LocalDateTime.now(),
+                Provider.NONE);
     }
 
     PaymentDto paymentDto() {
